@@ -68,7 +68,7 @@ var (
 		},
 		SixDecimalsChainID: {
 			Denom:         "utest",
-			ExtendedDenom: "atest",
+			ExtendedDenom: "edgen",
 			DisplayDenom:  "test",
 			Decimals:      evmtypes.SixDecimals,
 		},
