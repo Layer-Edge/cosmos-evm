@@ -18,8 +18,8 @@ var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
 		Decimals:      evmtypes.EighteenDecimals,
 	},
 	CosmosChainID: {
-		Denom:         "uedgen",
-		ExtendedDenom: "uedgen",
+		Denom:         "sedgen",
+		ExtendedDenom: "sedgen",
 		DisplayDenom:  "edgen",
 		Decimals:      evmtypes.EighteenDecimals,
 	},

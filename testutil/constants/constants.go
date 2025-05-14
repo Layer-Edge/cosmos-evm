@@ -82,19 +82,19 @@ var (
 			Decimals:      evmtypes.EighteenDecimals,
 		},
 		SixDecimalsChainID: {
-			Denom:         "uedgen",
+			Denom:         "sedgen",
 			ExtendedDenom: "edgen",
 			DisplayDenom:  "edge",
 			Decimals:      evmtypes.SixDecimals,
 		},
 		TwelveDecimalsChainID: {
-			Denom:         "uedgen2",
+			Denom:         "sedgen2",
 			ExtendedDenom: "edgen2",
 			DisplayDenom:  "edge2",
 			Decimals:      evmtypes.TwelveDecimals,
 		},
 		TwoDecimalsChainID: {
-			Denom:         "uedgen3",
+			Denom:         "sedgen3",
 			ExtendedDenom: "edgen3",
 			DisplayDenom:  "edge3",
 			Decimals:      evmtypes.TwoDecimals,
