@@ -8,6 +8,7 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/cosmos/evm/x/vm/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -53,11 +54,31 @@ func (k *Keeper) DeductTxCostsFromUserBalance(
 		return errorsmod.Wrapf(err, "account not found for sender %s", from)
 	}
 
-	// Deduct fees from the user balance. Notice that it is used
-	// the bankWrapper to properly convert fees from the 18 decimals
-	// representation to the original one before calling into the bank keeper.
-	if err := authante.DeductFees(k.bankWrapper, ctx, signerAcc, fees); err != nil {
-		return errorsmod.Wrapf(err, "failed to deduct full gas cost %s from the user %s balance", fees, from)
+	// Check if any fees are in gas tokens
+	convertedFees := sdk.NewCoins()
+	for _, coin := range fees {
+		if evmtypes.IsAllowedGasToken(coin.Denom) {
+			// Get exchange rate for the gas token
+			exchangeRate, exists := evmtypes.GetGasTokenExchangeRate(coin.Denom)
+			if !exists {
+				return errorsmod.Wrapf(errortypes.ErrInsufficientFee, "no exchange rate found for gas token %s", coin.Denom)
+			}
+
+			// Convert gas token amount to base token using exchange rate
+			convertedAmount := sdkmath.LegacyNewDecFromInt(coin.Amount).Quo(exchangeRate)
+			baseAmount := convertedAmount.RoundInt()
+
+			// Create a new coin with the converted amount in base denomination
+			baseCoin := sdk.NewCoin(evmtypes.GetEVMCoinDenom(), baseAmount)
+			convertedFees = convertedFees.Add(baseCoin)
+		} else {
+			convertedFees = convertedFees.Add(coin)
+		}
+	}
+
+	// Deduct fees from the user balance
+	if err := authante.DeductFees(k.bankWrapper, ctx, signerAcc, convertedFees); err != nil {
+		return errorsmod.Wrapf(err, "failed to deduct full gas cost %s from the user %s balance", convertedFees, from)
 	}
 
 	return nil
