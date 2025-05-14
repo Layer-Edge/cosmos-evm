@@ -15,7 +15,7 @@ By default, this chain has the following configuration:
 | Option              | Value                  |
 |---------------------|------------------------|
 | Binary              | `evmd`                 |
-| Chain ID            | `cosmos_3456-1`      |
+| Chain ID            | `ledgetestnet_3456-1`      |
 | Custom Opcodes      | -                      |
 | Default Token Pairs | 1 for the native token |
 | Denomination        | `atest`                |
