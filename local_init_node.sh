@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CHAINID="${CHAIN_ID:-ledgetestnet_3456-1}"
-MONIKER="localtestnet"
+MONIKER="layeredge-testnet"
 # Remember to change to other types of keyring like 'file' in-case exposing to outside world,
 # otherwise your balance will be wiped quickly
 # The keyring test does not require private key to steal tokens from you

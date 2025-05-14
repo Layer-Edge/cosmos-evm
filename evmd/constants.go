@@ -19,7 +19,7 @@ const (
 	// TwoDecimalsChainID is the chain ID for the 2 decimals chain.
 	TwoDecimalsChainID = "ostwo_9004"
 
-	CosmosChainID = "cosmos_3456"
+	CosmosChainID = "ledgetestnet_3456"
 
 	// TestChainID1 is test chain IDs for IBC E2E test
 	TestChainID1 = "testchain_9001"
