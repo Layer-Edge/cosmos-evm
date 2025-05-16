@@ -163,7 +163,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
 	# set custom pruning settings
 	sed -i.bak 's/node = "tcp:\/\/localhost:26657"/node = "tcp:\/\/0.0.0.0:26657"/g' "$CLIENT_TOML"
-	sed -i.bak 's/pprof_laddr = "localhost:6060"/proxy_app = "pprof_laddr = "0.0.0.0:6060"/' "$CONFIG"
+	sed -i.bak 's/pprof_laddr = "localhost:6060"/pprof_laddr = "0.0.0.0:6060"/' "$CONFIG"
 	sed -i.bak 's/proxy_app = "tcp:\/\/127.0.0.1:26658"/proxy_app = "tcp:\/\/0.0.0.0:26658"/' "$CONFIG"
 	sed -i.bak 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/' "$CONFIG"
 	sed -i.bak 's/address = "tcp:\/\/localhost:1317"/address = "tcp:\/\/0.0.0.0:1317"/g' "$APP_TOML"
