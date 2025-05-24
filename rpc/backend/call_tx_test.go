@@ -341,7 +341,7 @@ func (suite *BackendTestSuite) TestSendRawTransaction() {
 				return bytes
 			},
 			common.Hash{},
-			fmt.Errorf("incorrect chain-id; expected %d, got %d", 262144, big.NewInt(1)).Error(),
+			fmt.Errorf("incorrect chain-id; expected %d, got %d", 3456, big.NewInt(1)).Error(),
 			false,
 		},
 		{
