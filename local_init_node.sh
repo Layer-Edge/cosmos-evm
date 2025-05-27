@@ -101,22 +101,22 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	$evmd init $MONIKER -o --chain-id "$CHAINID" --home "$HOMEDIR"
 
 	# Change parameter token denominations to desired value
-	jq '.app_state["staking"]["params"]["bond_denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["gov"]["params"]["min_deposit"][0]["denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["gov"]["params"]["expedited_min_deposit"][0]["denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["evm"]["params"]["evm_denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["mint"]["params"]["mint_denom"]="sedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["staking"]["params"]["bond_denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["gov"]["params"]["min_deposit"][0]["denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["gov"]["params"]["expedited_min_deposit"][0]["denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["evm"]["params"]["evm_denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["mint"]["params"]["mint_denom"]="edgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Add default token metadata to genesis
-	jq '.app_state["bank"]["denom_metadata"]=[{"description":"The native staking token for evmd.","denom_units":[{"denom":"sedgen","exponent":0,"aliases":["sedgen"]},{"denom":"edgen","exponent":18,"aliases":[]}],"base":"sedgen","display":"sedgen","name":"LayerEdge Testnet Staking Token","symbol":"EDGE","uri":"","uri_hash":""},{"description":"The native gas token for evmd.","denom_units":[{"denom":"tedgen","exponent":0,"aliases":["tedgen"]},{"denom":"tgedgen","exponent":18,"aliases":[]}],"base":"tedgen","display":"tedgen","name":"LayerEdge Testnet Gas Token","symbol":"TEDGE","uri":"","uri_hash":""}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["bank"]["denom_metadata"]=[{"description":"The native staking token for evmd.","denom_units":[{"denom":"edgen","exponent":0,"aliases":["edgen"]},{"denom":"edgen","exponent":18,"aliases":[]}],"base":"edgen","display":"edgen","name":"LayerEdge Testnet Staking Token","symbol":"EDGEN","uri":"","uri_hash":""}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Enable precompiles in EVM params
 	jq '.app_state["evm"]["params"]["active_static_precompiles"]=["0x0000000000000000000000000000000000000100","0x0000000000000000000000000000000000000400","0x0000000000000000000000000000000000000800","0x0000000000000000000000000000000000000801","0x0000000000000000000000000000000000000802","0x0000000000000000000000000000000000000803","0x0000000000000000000000000000000000000804","0x0000000000000000000000000000000000000805"]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Enable native denomination as a token pair for STRv2
 	jq '.app_state.erc20.params.native_precompiles=["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state.erc20.token_pairs=[{contract_owner:1,erc20_address:"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",denom:"sedgen",enabled:true}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state.erc20.token_pairs=[{contract_owner:1,erc20_address:"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",denom:"edgen",enabled:true}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set gas limit in genesis
 	jq '.consensus.params.block.max_gas="10000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -171,7 +171,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	sed -i.bak 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$APP_TOML"
 	sed -i.bak 's/address = "127.0.0.1:8546"/address = "0.0.0.0:8546"/g' "$APP_TOML"
 	sed -i.bak 's/metrics-address = "127.0.0.1:6065"/metrics-address = "0.0.0.0:6065"/g' "$APP_TOML"
-	sed -i.bak 's/minimum-gas-prices = "0aatom"/minimum-gas-prices = "0.025tedgen"/g' "$APP_TOML"
+	sed -i.bak 's/minimum-gas-prices = "0aatom"/minimum-gas-prices = "0.025edgen"/g' "$APP_TOML"
 	sed -i.bak 's/pruning = "default"/pruning = "custom"/g' "$APP_TOML"
 	sed -i.bak 's/pruning = "default"/pruning = "custom"/g' "$APP_TOML"
 	sed -i.bak 's/pruning-keep-recent = "0"/pruning-keep-recent = "2"/g' "$APP_TOML"
