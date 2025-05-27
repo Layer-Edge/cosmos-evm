@@ -1,12 +1,8 @@
 package config
 
-import (
-	erc20types "github.com/cosmos/evm/x/erc20/types"
-)
-
 const (
 	// ExampleChainDenom is the denomination of the Cosmos EVM example chain's base coin.
-	ExampleChainDenom = "edgen"
+	ExampleChainDenom = "wei"
 
 	// ExampleDisplayDenom is the display denomination of the Cosmos EVM example chain's base coin.
 	ExampleDisplayDenom = "edgen"
@@ -33,12 +29,3 @@ const (
 	// WEVMOSContractMainnet is the WEVMOS contract address for mainnet
 	WEVMOSContractMainnet = "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517"
 )
-
-var TokenPairs = []erc20types.TokenPair{
-	{
-		Erc20Address:  WEVMOSContractMainnet,
-		Denom:         ExampleChainDenom,
-		Enabled:       true,
-		ContractOwner: erc20types.OWNER_MODULE,
-	},
-}

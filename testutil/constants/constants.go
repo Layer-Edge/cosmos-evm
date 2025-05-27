@@ -12,16 +12,16 @@ const (
 	DefaultGasPrice = 20
 
 	// ExampleAttoDenom provides an example denom for use in tests
-	ExampleAttoDenom = "aatom"
+	ExampleAttoDenom = "edgen"
 
 	// ExampleMicroDenom provides an example denom for use in tests
-	ExampleMicroDenom = "uatom"
+	ExampleMicroDenom = "wei"
 
 	// ExampleDisplayDenom provides an example display denom for use in tests
-	ExampleDisplayDenom = "atom"
+	ExampleDisplayDenom = "edgen"
 
 	// ExampleBech32Prefix provides an example Bech32 prefix for use in tests
-	ExampleBech32Prefix = "cosmos"
+	ExampleBech32Prefix = "layeredge"
 
 	// ExampleEIP155ChainID provides an example EIP-155 chain ID for use in tests
 	ExampleEIP155ChainID = 9001
@@ -43,7 +43,7 @@ type ChainID struct {
 
 var (
 	// ExampleChainIDPrefix provides a chain ID prefix for EIP-155 that can be used in tests
-	ExampleChainIDPrefix = "cosmos"
+	ExampleChainIDPrefix = "layeredge"
 
 	// ExampleChainID provides a chain ID that can be used in tests
 	ExampleChainID = ChainID{
@@ -82,21 +82,21 @@ var (
 			Decimals:      evmtypes.EighteenDecimals,
 		},
 		SixDecimalsChainID: {
-			Denom:         "sedgen",
+			Denom:         "wei",
 			ExtendedDenom: "edgen",
-			DisplayDenom:  "edge",
+			DisplayDenom:  "edgen",
 			Decimals:      evmtypes.SixDecimals,
 		},
 		TwelveDecimalsChainID: {
-			Denom:         "sedgen2",
+			Denom:         "wei2",
 			ExtendedDenom: "edgen2",
-			DisplayDenom:  "edge2",
+			DisplayDenom:  "edgen2",
 			Decimals:      evmtypes.TwelveDecimals,
 		},
 		TwoDecimalsChainID: {
-			Denom:         "sedgen3",
+			Denom:         "wei3",
 			ExtendedDenom: "edgen3",
-			DisplayDenom:  "edge3",
+			DisplayDenom:  "edgen3",
 			Decimals:      evmtypes.TwoDecimals,
 		},
 	}

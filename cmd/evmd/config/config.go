@@ -18,7 +18,7 @@ var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
 		Decimals:      evmtypes.EighteenDecimals,
 	},
 	CosmosChainID: {
-		Denom:         "edgen",
+		Denom:         "wei",
 		ExtendedDenom: "edgen",
 		DisplayDenom:  "edgen",
 		Decimals:      evmtypes.EighteenDecimals,
@@ -43,7 +43,7 @@ const (
 	// DisplayDenom defines the denomination displayed to users in client applications.
 	DisplayDenom = "edgen"
 	// BaseDenom defines to the default denomination used in the Cosmos EVM example chain.
-	BaseDenom = "edgen"
+	BaseDenom = "wei"
 	// BaseDenomUnit defines the precision of the base denomination.
 	BaseDenomUnit = 18
 	// EVMChainID defines the EIP-155 replay-protection chain id for the current ethereum chain config.
