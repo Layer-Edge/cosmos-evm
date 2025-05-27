@@ -47,7 +47,7 @@ func (suite *EvmAnteTestSuite) TestVerifyAccountBalance() {
 				txArgs, err := txFactory.GenerateDefaultTxTypeArgs(senderKey.Addr, suite.ethTxType)
 				suite.Require().NoError(err)
 
-				statedbAccount.CodeHash = []byte("test")
+				statedbAccount.CodeHash = []byte("edge")
 				suite.Require().NoError(err)
 				return statedbAccount, txArgs
 			},
@@ -109,7 +109,7 @@ func (suite *EvmAnteTestSuite) TestVerifyAccountBalance() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("%v_%v_%v", evmtypes.GetTxTypeName(suite.ethTxType), suite.chainID, tc.name), func() {
-			// Perform test logic
+			// Perform edge logic
 			statedbAccount, txArgs := tc.generateAccountAndArgs()
 			txData, err := txArgs.ToTxData()
 			suite.Require().NoError(err)
@@ -134,7 +134,7 @@ func (suite *EvmAnteTestSuite) TestVerifyAccountBalance() {
 			suite.Require().NoError(err)
 			suite.Require().NotEmpty(acc)
 
-			// Clean block for next test
+			// Clean block for next edge
 			err = unitNetwork.NextBlock()
 			suite.Require().NoError(err)
 		})

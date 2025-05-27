@@ -233,7 +233,7 @@ func (s *PrecompileTestSuite) TestRun() {
 
 	for _, tc := range testcases {
 		s.Run(tc.name, func() {
-			// setup basic test suite
+			// setup basic edge suite
 			s.SetupTest()
 			ctx = s.network.GetContext()
 			baseFee := s.network.App.EVMKeeper.GetBaseFee(ctx)
@@ -456,7 +456,7 @@ func (s *PrecompileTestSuite) TestCMS() {
 
 	for _, tc := range testcases {
 		s.Run(tc.name, func() {
-			// setup basic test suite
+			// setup basic edge suite
 			s.SetupTest()
 			ctx = s.network.GetContext()
 			cms := &testutil.TrackingMultiStore{

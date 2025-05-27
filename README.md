@@ -148,13 +148,13 @@ from the root folder of the respository.
 
 ### Testing
 
-All of the test scripts are found in `Makefile` in the root of the repository.
+All of the edge scripts are found in `Makefile` in the root of the repository.
 Listed below are the commands for various tests:
 
 #### Unit Testing
 
 ```bash
-make test-unit
+make edge-unit
 ```
 
 #### Coverage Test
@@ -163,19 +163,19 @@ This generates a code coverage file `filtered_coverage.txt` and prints out the
 covered code percentage for the working files.
 
 ```bash
-make test-unit-cover
+make edge-unit-cover
 ```
 
 #### Fuzz Testing
 
 ```bash
-make test-fuzz
+make edge-fuzz
 ```
 
 #### Solidity Tests
 
 ```bash
-make test-solidity
+make edge-solidity
 ```
 
 #### Benchmark Tests

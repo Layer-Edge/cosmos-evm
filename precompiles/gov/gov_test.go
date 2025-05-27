@@ -72,7 +72,7 @@ func (s *PrecompileTestSuite) TestRun() {
 
 	for _, tc := range testcases {
 		s.Run(tc.name, func() {
-			// setup basic test suite
+			// setup basic edge suite
 			s.SetupTest()
 			ctx := s.network.GetContext()
 

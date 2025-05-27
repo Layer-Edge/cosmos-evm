@@ -1,4 +1,4 @@
-//nolint:gosec // Reason: G115 warnings are safe in test context
+//nolint:gosec // Reason: G115 warnings are safe in edge context
 package ibctesting
 
 import (
@@ -38,9 +38,9 @@ type Endpoint struct {
 	ChannelConfig    *ChannelConfig
 
 	MerklePathPrefix commitmenttypesv2.MerklePath
-	// disableUniqueChannelIDs is used to enforce, in a test,
+	// disableUniqueChannelIDs is used to enforce, in a edge,
 	// the old way to generate channel IDs (all channels are called channel-0)
-	// It is used only by one test suite and should not be used for new tests.
+	// It is used only by one edge suite and should not be used for new tests.
 	disableUniqueChannelIDs bool
 }
 

@@ -1,7 +1,7 @@
 // Copied from https://github.com/cosmos/ibc-go/blob/e5baeaea3e549f64055f0a60f2617a3404ea777d/modules/apps/transfer/v2/ibc_module_test.go
 //
 // Why was this copied?
-// This test suite was copied to verify that ExampleChain (EVM-based chain)
+// This edge suite was copied to verify that ExampleChain (EVM-based chain)
 // correctly implements IBC v2 packet handling logic, including send, receive,
 // acknowledgement, and timeout flows.
 // Additionally, we made slight modifications to confirm ExampleChain's behavior

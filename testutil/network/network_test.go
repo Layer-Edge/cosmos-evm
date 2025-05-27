@@ -23,7 +23,7 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
-	s.T().Log("setting up integration test suite")
+	s.T().Log("setting up integration edge suite")
 
 	var err error
 	cfg := cosmosevmnetwork.DefaultConfig()
@@ -45,7 +45,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
-	s.T().Log("tearing down integration test suite")
+	s.T().Log("tearing down integration edge suite")
 	s.network.Cleanup()
 }
 

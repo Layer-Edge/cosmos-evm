@@ -30,15 +30,15 @@ func (suite *TokenPairTestSuite) TestTokenPairNew() {
 		expectPass   bool
 	}{
 		{msg: "Register token pair - invalid starts with number", erc20Address: utiltx.GenerateAddress(), denom: "1test", owner: types.OWNER_MODULE, expectPass: false},
-		{msg: "Register token pair - invalid char '('", erc20Address: utiltx.GenerateAddress(), denom: "(test", owner: types.OWNER_MODULE, expectPass: false},
-		{msg: "Register token pair - invalid char '^'", erc20Address: utiltx.GenerateAddress(), denom: "^test", owner: types.OWNER_MODULE, expectPass: false},
+		{msg: "Register token pair - invalid char '('", erc20Address: utiltx.GenerateAddress(), denom: "(edge", owner: types.OWNER_MODULE, expectPass: false},
+		{msg: "Register token pair - invalid char '^'", erc20Address: utiltx.GenerateAddress(), denom: "^edge", owner: types.OWNER_MODULE, expectPass: false},
 		// TODO: (guille) should the "\" be allowed to support unicode names?
-		{msg: "Register token pair - invalid char '\\'", erc20Address: utiltx.GenerateAddress(), denom: "-test", owner: types.OWNER_MODULE, expectPass: false},
+		{msg: "Register token pair - invalid char '\\'", erc20Address: utiltx.GenerateAddress(), denom: "-edge", owner: types.OWNER_MODULE, expectPass: false},
 		// Invalid length
 		{msg: "Register token pair - invalid length token (0)", erc20Address: utiltx.GenerateAddress(), denom: "", owner: types.OWNER_MODULE, expectPass: false},
 		{msg: "Register token pair - invalid length token (1)", erc20Address: utiltx.GenerateAddress(), denom: "a", owner: types.OWNER_MODULE, expectPass: false},
 		{msg: "Register token pair - invalid length token (128)", erc20Address: utiltx.GenerateAddress(), denom: strings.Repeat("a", 129), owner: types.OWNER_MODULE, expectPass: false},
-		{msg: "Register token pair - pass", erc20Address: utiltx.GenerateAddress(), denom: "test", owner: types.OWNER_MODULE, expectPass: true},
+		{msg: "Register token pair - pass", erc20Address: utiltx.GenerateAddress(), denom: "edge", owner: types.OWNER_MODULE, expectPass: true},
 	}
 
 	for i, tc := range testCases {
@@ -46,9 +46,9 @@ func (suite *TokenPairTestSuite) TestTokenPairNew() {
 		err := tp.Validate()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
@@ -59,26 +59,26 @@ func (suite *TokenPairTestSuite) TestTokenPair() {
 		pair       types.TokenPair
 		expectPass bool
 	}{
-		{msg: "Register token pair - invalid address (no hex)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19ZZ", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid address (invalid length 1)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid address (invalid length 2)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb194FFF", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "pass", pair: types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_MODULE}, expectPass: true},
+		{msg: "Register token pair - invalid address (no hex)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19ZZ", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (invalid length 1)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (invalid length 2)", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb194FFF", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "pass", pair: types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_MODULE}, expectPass: true},
 	}
 
 	for i, tc := range testCases {
 		err := tc.pair.Validate()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
 
 func (suite *TokenPairTestSuite) TestGetID() {
 	addr := utiltx.GenerateAddress()
-	denom := "test"
+	denom := "edge"
 	pair := types.NewTokenPair(addr, denom, types.OWNER_MODULE)
 	id := pair.GetID()
 	expID := tmhash.Sum([]byte(addr.String() + "|" + denom))
@@ -87,7 +87,7 @@ func (suite *TokenPairTestSuite) TestGetID() {
 
 func (suite *TokenPairTestSuite) TestGetERC20Contract() {
 	expAddr := utiltx.GenerateAddress()
-	denom := "test"
+	denom := "edge"
 	pair := types.NewTokenPair(expAddr, denom, types.OWNER_MODULE)
 	addr := pair.GetERC20Contract()
 	suite.Require().Equal(expAddr, addr)
@@ -101,17 +101,17 @@ func (suite *TokenPairTestSuite) TestIsNativeCoin() {
 	}{
 		{
 			"no owner",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_UNSPECIFIED},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_UNSPECIFIED},
 			false,
 		},
 		{
 			"external ERC20 owner",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_EXTERNAL},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_EXTERNAL},
 			false,
 		},
 		{
 			"pass",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_MODULE},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_MODULE},
 			true,
 		},
 	}
@@ -134,17 +134,17 @@ func (suite *TokenPairTestSuite) TestIsNativeERC20() {
 	}{
 		{
 			"no owner",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_UNSPECIFIED},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_UNSPECIFIED},
 			false,
 		},
 		{
 			"module owner",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_MODULE},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_MODULE},
 			false,
 		},
 		{
 			"pass",
-			types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_EXTERNAL},
+			types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_EXTERNAL},
 			true,
 		},
 	}

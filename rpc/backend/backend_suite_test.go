@@ -46,7 +46,7 @@ func TestBackendTestSuite(t *testing.T) {
 
 var ChainID = constants.ExampleChainID
 
-// SetupTest is executed before every BackendTestSuite test
+// SetupTest is executed before every BackendTestSuite edge
 func (suite *BackendTestSuite) SetupTest() {
 	ctx := server.NewDefaultContext()
 	ctx.Viper.Set("telemetry.global-labels", []interface{}{})
@@ -90,7 +90,7 @@ func (suite *BackendTestSuite) SetupTest() {
 	suite.backend.cfg.JSONRPC.GasCap = 0
 	suite.backend.cfg.JSONRPC.EVMTimeout = 0
 	suite.backend.cfg.JSONRPC.AllowInsecureUnlock = true
-	suite.backend.cfg.EVM.EVMChainID = 262144
+	suite.backend.cfg.EVM.EVMChainID = 3456
 	suite.backend.queryClient.QueryClient = mocks.NewEVMQueryClient(suite.T())
 	suite.backend.queryClient.FeeMarket = mocks.NewFeeMarketQueryClient(suite.T())
 	suite.backend.ctx = rpctypes.ContextWithHeight(1)

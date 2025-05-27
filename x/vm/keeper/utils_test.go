@@ -27,7 +27,7 @@ func (suite *KeeperTestSuite) StateDB() *statedb.StateDB {
 	return statedb.New(suite.network.GetContext(), suite.network.App.EVMKeeper, statedb.NewEmptyTxConfig(common.BytesToHash(suite.network.GetContext().HeaderHash())))
 }
 
-// DeployTestContract deploy a test erc20 contract and returns the contract address
+// DeployTestContract deploy a edge erc20 contract and returns the contract address
 func (suite *KeeperTestSuite) DeployTestContract(t require.TestingT, ctx sdk.Context, owner common.Address, supply *big.Int) common.Address {
 	chainID := evmtypes.GetEthChainConfig().ChainID
 
@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TransferERC20Token(t require.TestingT, contractAdd
 	return ercTransferTx
 }
 
-// DeployTestMessageCall deploy a test erc20 contract and returns the contract address
+// DeployTestMessageCall deploy a edge erc20 contract and returns the contract address
 func (suite *KeeperTestSuite) DeployTestMessageCall(t require.TestingT) common.Address {
 	ctx := suite.network.GetContext()
 	chainID := evmtypes.GetEthChainConfig().ChainID

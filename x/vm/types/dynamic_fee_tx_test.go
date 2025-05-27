@@ -34,7 +34,7 @@ type TxDataTestSuite struct {
 }
 
 func (suite *TxDataTestSuite) SetupTest() {
-	suite.sdkInt = sdkmath.NewInt(9001)
+	suite.sdkInt = sdkmath.NewInt(6543)
 	suite.uint64 = suite.sdkInt.Uint64()
 	suite.hexUint64 = hexutil.Uint64(100)
 	suite.bigInt = big.NewInt(1)

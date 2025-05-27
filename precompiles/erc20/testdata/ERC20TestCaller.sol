@@ -5,7 +5,7 @@ import "../IERC20.sol" as erc20Precompile;
 
 /// @title ERC20TestCaller
 /// @author Evmos Core Team
-/// @dev This contract is used to test external contract calls to the ERC20 precompile.
+/// @dev This contract is used to edge external contract calls to the ERC20 precompile.
 contract ERC20TestCaller {
     erc20Precompile.IERC20 public token;
     uint256 public counter;

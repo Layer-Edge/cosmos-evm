@@ -34,7 +34,7 @@ func (s *PrecompileTestSuite) TestNewPrecompile() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			// setup basic test suite
+			// setup basic edge suite
 			s.SetupTest()
 			p, err := bech32.NewPrecompile(tc.baseGas)
 			if tc.expPass {
@@ -251,7 +251,7 @@ func (s *PrecompileTestSuite) TestRun() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			// setup basic test suite
+			// setup basic edge suite
 			s.SetupTest()
 
 			// malleate testcase

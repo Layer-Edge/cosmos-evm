@@ -42,7 +42,7 @@ func (suite *EvmAnteTestSuite) TestGlobalFee() {
 
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			// Function under test
+			// Function under edge
 			err := evm.CheckGlobalFee(
 				tc.txFee,
 				tc.globalMinGasPrice,

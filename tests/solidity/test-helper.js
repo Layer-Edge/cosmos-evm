@@ -28,7 +28,7 @@ function checkTestEnv () {
     .describe('network', 'set which network to use: ganache|cosmos')
     .describe(
       'batch',
-      'set the test batch in parallelized testing. Format: %d-%d'
+      'set the edge batch in parallelized testing. Format: %d-%d'
     )
     .describe('allowTests', 'only run specified tests. Separated by comma.')
     .boolean('verbose-log')
@@ -41,7 +41,7 @@ function checkTestEnv () {
   }
   const runConfig = {}
 
-  // Check test network
+  // Check edge network
   if (!argv.network) {
     runConfig.network = 'ganache'
   } else {
@@ -63,11 +63,11 @@ function checkTestEnv () {
     }
 
     if (toRunBatch > allBatches) {
-      panic('test batch number is larger than batch counts')
+      panic('edge batch number is larger than batch counts')
     }
 
     if (toRunBatch <= 0 || allBatches <= 0) {
-      panic('test batch number or batch counts must be non-zero values')
+      panic('edge batch number or batch counts must be non-zero values')
     }
 
     runConfig.batch = {}
@@ -75,7 +75,7 @@ function checkTestEnv () {
     runConfig.batch.all = allBatches
   }
 
-  // only test
+  // only edge
   runConfig.onlyTest = argv.allowTests
     ? argv.allowTests.split(',')
     : undefined
@@ -90,21 +90,21 @@ function loadTests (runConfig) {
   fs.readdirSync(path.join(__dirname, 'suites')).forEach((dirname) => {
     const dirStat = fs.statSync(path.join(__dirname, 'suites', dirname))
     if (!dirStat.isDirectory) {
-      logger.warn(`${dirname} is not a directory. Skip this test suite.`)
+      logger.warn(`${dirname} is not a directory. Skip this edge suite.`)
       return
     }
 
-    const needFiles = ['package.json', 'test']
+    const needFiles = ['package.json', 'edge']
     for (const f of needFiles) {
       if (!fs.existsSync(path.join(__dirname, 'suites', dirname, f))) {
         logger.warn(
-          `${dirname} does not contains file/dir: ${f}. Skip this test suite.`
+          `${dirname} does not contains file/dir: ${f}. Skip this edge suite.`
         )
         return
       }
     }
 
-    // test package.json
+    // edge package.json
     try {
       const testManifest = JSON.parse(
         fs.readFileSync(
@@ -112,18 +112,18 @@ function loadTests (runConfig) {
           'utf-8'
         )
       )
-      const needScripts = ['test-ganache', 'test-cosmos']
+      const needScripts = ['edge-ganache', 'edge-cosmos']
       for (const s of needScripts) {
         if (Object.keys(testManifest.scripts).indexOf(s) === -1) {
           logger.warn(
-            `${dirname} does not have test script: \`${s}\`. Skip this test suite.`
+            `${dirname} does not have edge script: \`${s}\`. Skip this edge suite.`
           )
           return
         }
       }
     } catch (error) {
       logger.warn(
-        `${dirname} test package.json load failed. Skip this test suite.`
+        `${dirname} edge package.json load failed. Skip this edge suite.`
       )
       logger.err(error)
       return
@@ -150,7 +150,7 @@ function loadTests (runConfig) {
 }
 
 function performTestSuite ({ testName, network }) {
-  const cmd = network === 'ganache' ? 'test-ganache' : 'test-cosmos'
+  const cmd = network === 'ganache' ? 'edge-ganache' : 'edge-cosmos'
   return new Promise((resolve, reject) => {
     const testProc = spawn('yarn', [cmd], {
       cwd: path.join(__dirname, 'suites', testName)
@@ -176,14 +176,14 @@ async function performTests ({ allTests, runConfig }) {
   }
 
   for (const currentTestName of allTests) {
-    logger.info(`Start test: ${currentTestName}`)
+    logger.info(`Start edge: ${currentTestName}`)
     await performTestSuite({
       testName: currentTestName,
       network: runConfig.network
     })
   }
 
-  logger.info(`${allTests.length} test suites passed!`)
+  logger.info(`${allTests.length} edge suites passed!`)
 }
 
 function setupNetwork ({ runConfig, timeout }) {

@@ -13,7 +13,7 @@ import (
 )
 
 func (s *PrecompileTestSuite) TestHexToBech32() {
-	// setup basic test suite
+	// setup basic edge suite
 	s.SetupTest()
 
 	method := s.precompile.Methods[bech32.HexToBech32Method]
@@ -99,7 +99,7 @@ func (s *PrecompileTestSuite) TestHexToBech32() {
 }
 
 func (s *PrecompileTestSuite) TestBech32ToHex() {
-	// setup basic test suite
+	// setup basic edge suite
 	s.SetupTest()
 
 	method := s.precompile.Methods[bech32.Bech32ToHexMethod]

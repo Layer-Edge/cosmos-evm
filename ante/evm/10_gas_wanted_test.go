@@ -108,7 +108,7 @@ func (suite *EvmAnteTestSuite) TestCheckGasWanted() {
 
 			ctx := tc.getCtx()
 
-			// Function under test
+			// Function under edge
 			err = evm.CheckGasWanted(
 				ctx,
 				unitNetwork.App.FeeMarketKeeper,

@@ -50,7 +50,7 @@ var params = EIP712FuzzTestParams{
 
 // TestRandomPayloadFlattening generates many random payloads with different JSON values to ensure
 // that Flattening works across all inputs.
-// Note that this is a fuzz test, although it doesn't use Go's Fuzz testing suite, since there are
+// Note that this is a fuzz edge, although it doesn't use Go's Fuzz testing suite, since there are
 // variable input sizes, types, and fields. While it may be possible to translate a single input into
 // a JSON object, it would require difficult parsing, and ultimately approximates our randomized unit
 // tests as they are.

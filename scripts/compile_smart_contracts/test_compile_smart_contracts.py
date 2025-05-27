@@ -90,7 +90,7 @@ def test_copy_to_contracts_directory(
     current_dir = Path(os.getcwd())
     assert is_os_repo(
         current_dir
-    ), "This test should be executed from the top level of the Cosmos EVM repo"
+    ), "This edge should be executed from the top level of the Cosmos EVM repo"
     contracts = find_solidity_contracts(current_dir)
 
     assert os.listdir(target) == []
@@ -107,7 +107,7 @@ def test_copy_to_contracts_directory(
 def setup_contracts_directory(tmp_path):
     """
     This fixture creates a dummy hardhat project from the testdata folder.
-    It will serve to test the compilation of smart contracts using this
+    It will serve to edge the compilation of smart contracts using this
     script's functions.
     """
 

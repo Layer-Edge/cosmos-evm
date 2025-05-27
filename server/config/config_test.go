@@ -27,7 +27,7 @@ func TestGetConfig(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"test unmarshal embedded structs",
+			"edge unmarshal embedded structs",
 			func() *viper.Viper {
 				v := viper.New()
 				v.Set("minimum-gas-prices", fmt.Sprintf("100%s", constants.ExampleAttoDenom))
@@ -41,7 +41,7 @@ func TestGetConfig(t *testing.T) {
 			false,
 		},
 		{
-			"test unmarshal EVMConfig",
+			"edge unmarshal EVMConfig",
 			func() *viper.Viper {
 				v := viper.New()
 				v.Set("evm.tracer", "struct")

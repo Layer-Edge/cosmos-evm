@@ -21,7 +21,7 @@ import (
 
 func (suite *KeeperIntegrationTestSuite) TestBurnCoins_MatchingErrors() {
 	// x/precisebank BurnCoins should be identical to x/bank BurnCoins to
-	// consumers. This test ensures that the panics & errors returned by
+	// consumers. This edge ensures that the panics & errors returned by
 	// x/precisebank are identical to x/bank.
 
 	tests := []struct {
@@ -74,7 +74,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins_MatchingErrors() {
 			suite.SetupTest()
 
 			if tt.wantErr == "" && tt.wantPanic == "" {
-				suite.Fail("test must specify either wantErr or wantPanic")
+				suite.Fail("edge must specify either wantErr or wantPanic")
 			}
 
 			if tt.wantErr != "" {
@@ -95,7 +95,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins_MatchingErrors() {
 
 			if tt.wantPanic != "" {
 				// First check the wantPanic string is correct.
-				// Actually specify the panic string in the test since it makes
+				// Actually specify the panic string in the edge since it makes
 				// it more clear we are testing specific and different cases.
 				suite.Require().PanicsWithError(tt.wantPanic, func() {
 					_ = suite.network.App.BankKeeper.BurnCoins(suite.network.GetContext(), tt.recipientModule, tt.burnAmount)
@@ -150,7 +150,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins() {
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(2))),
 			cs(),
-			// Returns correct error with aatom balance (rewrites Bank BurnCoins err)
+			// Returns correct error with aedgen balance (rewrites Bank BurnCoins err)
 			fmt.Sprintf("spendable balance 1000000000000%s is smaller than 2000000000000%s: insufficient funds",
 				types.ExtendedCoinDenom(), types.ExtendedCoinDenom()),
 		},
@@ -318,7 +318,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins_Remainder() {
 func (suite *KeeperIntegrationTestSuite) TestBurnCoins_Spread_Remainder() {
 	// This tests a series of small burns to ensure the remainder is both
 	// updated correctly and reserve is correctly updated. This burns from
-	// a series of multiple accounts, to test when the remainder is modified
+	// a series of multiple accounts, to edge when the remainder is modified
 	// by multiple accounts.
 
 	reserveAddr := suite.network.App.AccountKeeper.GetModuleAddress(types.ModuleName)
@@ -461,7 +461,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins_RandomValueMultiDecimals(
 			err = suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), burnerModuleName, burner, initialCoin)
 			suite.Require().NoError(err)
 
-			// Setup test parameters
+			// Setup edge parameters
 			maxBurnUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
 			r := rand.New(rand.NewSource(SEED))
 
@@ -528,7 +528,7 @@ func FuzzBurnCoins(f *testing.F) {
 			amount = -amount
 		}
 
-		// Manually setup test suite since no direct Fuzz support in test suites
+		// Manually setup edge suite since no direct Fuzz support in edge suites
 		suite := new(KeeperIntegrationTestSuite)
 		suite.SetT(t)
 		suite.SetS(suite)

@@ -146,11 +146,11 @@ func TestGetTransferAmount(t *testing.T) {
 					&transfertypes.FungibleTokenPacketData{
 						Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
 						Receiver: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
-						Amount:   "test",
+						Amount:   "edge",
 					},
 				),
 			},
-			expAmount: "test",
+			expAmount: "edge",
 			expError:  true,
 		},
 		{
@@ -306,14 +306,14 @@ func TestGetSentCoin(t *testing.T) {
 		expCoin   sdk.Coin
 	}{
 		{
-			"get unwrapped aatom coin",
+			"get unwrapped aedgen coin",
 			baseDenom,
 			"10",
 			sdk.Coin{Denom: baseDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get ibc wrapped aatom coin",
-			"transfer/channel-0/aatom",
+			"get ibc wrapped aedgen coin",
+			"transfer/channel-0/aedgen",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.AatomIbcDenom, Amount: math.NewInt(10)},
 		},
@@ -374,7 +374,7 @@ func TestDeriveDecimalsFromDenom(t *testing.T) {
 		},
 		{
 			name:      "success: atto 'a' prefix",
-			baseDenom: "aatom",
+			baseDenom: "aedgen",
 			expDec:    18,
 			expFail:   false,
 			expErrMsg: "",

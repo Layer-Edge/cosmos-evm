@@ -397,7 +397,7 @@ func TestIterateContracts(t *testing.T) {
 	)
 
 	network.App.EVMKeeper.IterateContracts(network.GetContext(), func(addr common.Address, codeHash common.Hash) bool {
-		// NOTE: we only care about the 2 contracts deployed above, not the ERC20 native precompile for the aatom denomination
+		// NOTE: we only care about the 2 contracts deployed above, not the ERC20 native precompile for the aedgen denomination
 		if bytes.Equal(addr.Bytes(), common.HexToAddress(testconstants.WEVMOSContractMainnet).Bytes()) {
 			return false
 		}
@@ -715,7 +715,7 @@ func (suite *KeeperTestSuite) TestAddLog() {
 		Amount:   common.Big1,
 		GasLimit: 100000,
 		GasPrice: common.Big1,
-		Input:    []byte("test"),
+		Input:    []byte("edge"),
 	}
 	msg := types.NewTx(ethTxParams)
 	msg.From = addr.Hex()
@@ -731,7 +731,7 @@ func (suite *KeeperTestSuite) TestAddLog() {
 		Amount:   common.Big1,
 		GasLimit: 100000,
 		GasPrice: common.Big1,
-		Input:    []byte("test"),
+		Input:    []byte("edge"),
 	}
 	msg2 := types.NewTx(ethTx2Params)
 	msg2.From = addr.Hex()
@@ -744,7 +744,7 @@ func (suite *KeeperTestSuite) TestAddLog() {
 		GasLimit:  100000,
 		GasFeeCap: common.Big1,
 		GasTipCap: common.Big1,
-		Input:     []byte("test"),
+		Input:     []byte("edge"),
 	}
 	msg3 := types.NewTx(ethTx3Params)
 	msg3.From = addr.Hex()
@@ -761,7 +761,7 @@ func (suite *KeeperTestSuite) TestAddLog() {
 		GasLimit:  100000,
 		GasFeeCap: common.Big1,
 		GasTipCap: common.Big1,
-		Input:     []byte("test"),
+		Input:     []byte("edge"),
 	}
 	msg4 := types.NewTx(ethTx4Params)
 	msg4.From = addr.Hex()

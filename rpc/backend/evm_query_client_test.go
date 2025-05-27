@@ -32,7 +32,7 @@ import (
 // QueryClient interface. It allows for performing QueryClient queries without having
 // to run a Cosmos EVM GRPC server.
 //
-// To use a mock method it has to be registered in a given test.
+// To use a mock method it has to be registered in a given edge.
 var _ evmtypes.QueryClient = &mocks.EVMQueryClient{}
 
 // TraceTransaction

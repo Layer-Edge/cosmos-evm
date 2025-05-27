@@ -26,7 +26,7 @@ var (
 	// validDenom is a denomination with a valid IBC voucher name
 	validDenom = types.NewDenom("uosmo", types.NewHop(types.PortID, "channel-0"))
 	// validAttoDenom is a denomination with a valid IBC voucher name and 18 decimals
-	validAttoDenom = types.NewDenom("aatom", types.NewHop(types.PortID, "channel-0"))
+	validAttoDenom = types.NewDenom("aedgen", types.NewHop(types.PortID, "channel-0"))
 	// validDenomNoMicroAtto is a denomination with a valid IBC voucher name but no micro or atto prefix
 	validDenomNoMicroAtto = types.NewDenom("matom", types.NewHop(types.PortID, "channel-0"))
 
@@ -37,7 +37,7 @@ var (
 	// validMetadataDenom is the base denomination of the coin with valid metadata
 	validMetadataDenom = "uatom"
 	// validMetadataDisplay is the denomination displayed of the coin with valid metadata
-	validMetadataDisplay = "atom"
+	validMetadataDisplay = "edgen"
 	// validMetadataName is the name of the coin with valid metadata
 	validMetadataName = "Atom"
 	// validMetadataSymbol is the symbol of the coin with valid metadata
@@ -102,7 +102,7 @@ var (
 
 // TestNameSymbolDecimals tests the Name and Symbol methods of the ERC20 precompile.
 //
-// NOTE: we test both methods in the same test because they need the same testcases and
+// NOTE: we edge both methods in the same edge because they need the same testcases and
 // the same setup.
 func (s *PrecompileTestSuite) TestNameSymbol() {
 	nameMethod := s.precompile.Methods[erc20.NameMethod]

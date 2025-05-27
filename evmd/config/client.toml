@@ -7,7 +7,7 @@
 
 # The network chain ID
 chain-id = ""
-# The keyring's backend, where the keys are stored (os|file|kwallet|pass|test|memory)
+# The keyring's backend, where the keys are stored (os|file|kwallet|pass|edge|memory)
 keyring-backend = "os"
 # CLI output format (text|json)
 output = "text"

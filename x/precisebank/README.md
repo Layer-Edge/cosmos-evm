@@ -43,27 +43,27 @@ The standard unit of currency on the Cosmos Chain is `ATOM`.  This is denominate
 which represents $10^{-6}$ `ATOM` and there are $10^6$ `uatom` per `ATOM`.
 
 In order to support 18 decimals of precision while maintaining `uatom` as the cosmos-native atomic unit,
-we further split each `uatom` unit into $10^{12}$ `aatom` units, the native currency of the Cosmos EVM.
+we further split each `uatom` unit into $10^{12}$ `aedgen` units, the native currency of the Cosmos EVM.
 
 This gives a full $10^{18}$ precision on the EVM. In order to avoid confusion with atomic `uatom` units,
-we will refer to `aatom` as "sub-atomic units".
+we will refer to `aedgen` as "sub-atomic units".
 
 To review we have:
     - `uatom`, the cosmos-native unit and atomic unit of the Cosmos chain
-    - `aatom`, the evm-native unit and sub-atomic unit of the Cosmos chain
+    - `aedgen`, the evm-native unit and sub-atomic unit of the Cosmos chain
 
-In order to maintain consistency between the `aatom` supply and the `uatom` supply,
-we add the constraint that each sub-atomic `aatom`, may only exist as part of an atomic `uatom`.
-Every `aatom` is fully backed by a `uatom` in the `x/bank` module.
+In order to maintain consistency between the `aedgen` supply and the `uatom` supply,
+we add the constraint that each sub-atomic `aedgen`, may only exist as part of an atomic `uatom`.
+Every `aedgen` is fully backed by a `uatom` in the `x/bank` module.
 
 This is a requirement since `uatom` balances in `x/bank` are shared between the cosmos modules and the EVM.
 We are wrapping and extending the `x/bank` module with the `x/precisebank` module to add an extra $10^{12}$ units
-of precision. If $10^{12}$ `aatom` is transferred in the EVM, the cosmos modules will see a 1 `uatom` transfer
-and vice versa. If `aatom` was not fully backed by `uatom`, then balance changes would not be fully consistent
+of precision. If $10^{12}$ `aedgen` is transferred in the EVM, the cosmos modules will see a 1 `uatom` transfer
+and vice versa. If `aedgen` was not fully backed by `uatom`, then balance changes would not be fully consistent
 across the cosmos and the EVM.
 
-This brings us to how account balances are extended to represent `aatom` balances larger than $10^{12}$.
-First, we define $a(n)$, $b(n)$, and $C$ where $a(n)$ is the `aatom` balance of account `n`, $b(n)$ is the
+This brings us to how account balances are extended to represent `aedgen` balances larger than $10^{12}$.
+First, we define $a(n)$, $b(n)$, and $C$ where $a(n)$ is the `aedgen` balance of account `n`, $b(n)$ is the
 `uatom` balance of account `n` stored in the `x/bank` module, and $C$ is the conversion factor equal to $10^{12}$.
 
 Any $a(n)$ divisible by $C$, can be represented by $C$ * $b(n)$.  Any remainder not divisible by $C$,
@@ -94,7 +94,7 @@ $$T_a \equiv \sum_{n \in \mathcal{A}}{a(n)}$$
 
 $$T_b \equiv \sum_{n \in \mathcal{A}}{b(n)}$$
 
-where $\mathcal{A}$ is the set of all accounts, $T_a$ is the total `aatom` supply, and $T_b$ is the total `uatom` supply,
+where $\mathcal{A}$ is the set of all accounts, $T_a$ is the total `aedgen` supply, and $T_b$ is the total `uatom` supply,
 then a reserve account $R$ is added such that
 
 $$a(R) = 0$$
@@ -110,12 +110,12 @@ and
 
 $$ 0 <= r < C$$
 
-We see that $0 \le T_b \cdot C - T_a < C$. If we mint, burn, or transfer `aatom` such that this inequality would be
+We see that $0 \le T_b \cdot C - T_a < C$. If we mint, burn, or transfer `aedgen` such that this inequality would be
 invalid after updates to account balances, we adjust the $T_b$ supply by minting or burning to the reserve account
-which holds `uatom` equal to that of all `aatom` balances less than `C` plus the remainder.
+which holds `uatom` equal to that of all `aedgen` balances less than `C` plus the remainder.
 
 If we didn't add these constraints, then the total supply of `uatom` reported by the bank keeper would not account
-for the `aatom` units.  We would incorrectly increase the supply of `aatom` without increasing the reported
+for the `aedgen` units.  We would incorrectly increase the supply of `aedgen` without increasing the reported
 total supply of ATOM.
 
 ### Adding
@@ -126,7 +126,7 @@ $$a'(n) = a(n) + a$$
 
 $$b'(n) \cdot C + f'(n) = b(n) \cdot C + f(n) + a$$
 
-where $a'(n)$ is the new `aatom` balance after adding `aatom` amount $a$. These
+where $a'(n)$ is the new `aedgen` balance after adding `aedgen` amount $a$. These
 must hold true for all $a$. We can determine the new $b'(n)$ and $f'(n)$ with the following formula.
 
 $$f'(n) = f(n) + a \mod{C}$$
@@ -451,11 +451,11 @@ by other modules as a replacement of the bank module.
 
 The `x/precisebank` module emits the following events, that are meant to be
 match the events emitted by the `x/bank` module. Events emitted by
-`x/precisebank` will only contain `aatom` amounts, as the `x/bank` module will
+`x/precisebank` will only contain `aedgen` amounts, as the `x/bank` module will
 emit events with all other denoms. This means if an account transfers multiple
-coins including `aatom`, the `x/precisebank` module will emit an event with the
-full `aatom` amount. If `uatom` is included in a transfer, mint, or burn, the
-`x/precisebank` module will emit an event with the full equivalent `aatom`
+coins including `aedgen`, the `x/precisebank` module will emit an event with the
+full `aedgen` amount. If `uatom` is included in a transfer, mint, or burn, the
+`x/precisebank` module will emit an event with the full equivalent `aedgen`
 amount.
 
 #### SendCoins

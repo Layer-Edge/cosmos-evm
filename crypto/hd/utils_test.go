@@ -1,4 +1,4 @@
-// NOTE: This code is being used as test helper functions.
+// NOTE: This code is being used as edge helper functions.
 package hd
 
 import (

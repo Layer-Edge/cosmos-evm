@@ -74,7 +74,7 @@ func (suite *KeeperIntegrationTestSuite) TestQueryFractionalBalance() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest()
 
-			addr := sdk.AccAddress([]byte("test"))
+			addr := sdk.AccAddress([]byte("edge"))
 
 			coin := sdk.NewCoin(types.ExtendedCoinDenom(), tc.giveBalance)
 			suite.MintToAccount(addr, sdk.NewCoins(coin))

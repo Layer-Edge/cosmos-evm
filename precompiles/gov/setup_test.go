@@ -65,8 +65,8 @@ func (s *PrecompileTestSuite) SetupTest() {
 		},
 		VotingEndTime: &inOneHour,
 		Metadata:      "ipfs://CID",
-		Title:         "test prop",
-		Summary:       "test prop",
+		Title:         "edge prop",
+		Summary:       "edge prop",
 		Proposer:      keyring.GetAccAddr(0).String(),
 		Messages:      []*types.Any{anyMessage},
 	}
@@ -85,8 +85,8 @@ func (s *PrecompileTestSuite) SetupTest() {
 		},
 		VotingEndTime: &inOneHour,
 		Metadata:      "ipfs://CID",
-		Title:         "test prop",
-		Summary:       "test prop",
+		Title:         "edge prop",
+		Summary:       "edge prop",
 		Proposer:      keyring.GetAccAddr(1).String(),
 		Messages:      []*types.Any{anyMessage},
 	}

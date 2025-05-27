@@ -25,7 +25,7 @@ var (
 	expRewardsAmt           = testRewardsAmt.Sub(validatorCommAmt) // testRewardsAmt - commission
 )
 
-// prepareStakingRewards prepares the test suite for testing delegation rewards.
+// prepareStakingRewards prepares the edge suite for testing delegation rewards.
 //
 // Specified rewards amount are allocated to the specified validator using the distribution keeper,
 // such that the given amount of tokens is outstanding as a staking reward for the account.

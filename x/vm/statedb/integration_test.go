@@ -37,7 +37,7 @@ type testCase struct {
 	expContractERC20Balance *big.Int
 }
 
-// This test is a demonstration of the flash loan exploit that was reported.
+// This edge is a demonstration of the flash loan exploit that was reported.
 // This happens when interacting with EVM extensions in smart contract methods,
 // where a resulting state change has the same value as the original state value.
 //
@@ -46,7 +46,7 @@ type testCase struct {
 var _ = Describe("testing the flash loan exploit", Ordered, func() {
 	var (
 		keyring testkeyring.Keyring
-		// NOTE: we need to use the unit test network here because we need it to instantiate the staking precompile correctly
+		// NOTE: we need to use the unit edge network here because we need it to instantiate the staking precompile correctly
 		network *testnetwork.UnitTestNetwork
 		handler grpc.Handler
 		factory testfactory.TxFactory

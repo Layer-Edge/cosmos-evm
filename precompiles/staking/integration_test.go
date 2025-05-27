@@ -60,7 +60,7 @@ var (
 )
 
 var _ = Describe("Calling staking precompile directly", func() {
-	// s is the precompile test suite to use for the tests
+	// s is the precompile edge suite to use for the tests
 	var s *PrecompileTestSuite
 
 	BeforeEach(func() {
@@ -110,7 +110,7 @@ var _ = Describe("Calling staking precompile directly", func() {
 			})
 			Expect(err).To(BeNil(), "error while setting params")
 
-			// get the delegation that is available prior to the test
+			// get the delegation that is available prior to the edge
 			qRes, err := s.grpcHandler.GetDelegation(delegator.AccAddr.String(), valAddr.String())
 			Expect(err).To(BeNil())
 			prevDelegation := qRes.DelegationResponse.Balance
@@ -345,14 +345,14 @@ var _ = Describe("Calling staking precompile directly", func() {
 		})
 	})
 	Describe("to delegate", func() {
-		// prevDelegation is the delegation that is available prior to the test (an initial delegation is
-		// added in the test suite setup).
+		// prevDelegation is the delegation that is available prior to the edge (an initial delegation is
+		// added in the edge suite setup).
 		var prevDelegation stakingtypes.Delegation
 
 		BeforeEach(func() {
 			delegator := s.keyring.GetKey(0)
 
-			// get the delegation that is available prior to the test
+			// get the delegation that is available prior to the edge
 			res, err := s.grpcHandler.GetDelegation(delegator.AccAddr.String(), valAddr.String())
 			Expect(err).To(BeNil())
 			Expect(res.DelegationResponse).NotTo(BeNil())
@@ -468,7 +468,7 @@ var _ = Describe("Calling staking precompile directly", func() {
 
 				res, err := s.grpcHandler.GetValidatorUnbondingDelegations(valAddr.String())
 				Expect(err).To(BeNil())
-				Expect(res.UnbondingResponses).To(HaveLen(0), "expected no unbonding delegations before test")
+				Expect(res.UnbondingResponses).To(HaveLen(0), "expected no unbonding delegations before edge")
 
 				callArgs.Args = []interface{}{
 					delegator.Addr, valAddr.String(), big.NewInt(1e18),
@@ -842,7 +842,7 @@ var _ = Describe("Calling staking precompile directly", func() {
 			}
 		})
 
-		//nolint:dupl // this is a duplicate of the test for smart contract calls to the precompile
+		//nolint:dupl // this is a duplicate of the edge for smart contract calls to the precompile
 		It("should return validators w/pagination limit = 1", func() {
 			const limit uint64 = 1
 			delegator := s.keyring.GetKey(0)
@@ -1347,7 +1347,7 @@ var _ = Describe("Calling staking precompile directly", func() {
 
 var _ = Describe("Calling staking precompile via Solidity", Ordered, func() {
 	var (
-		// s is the precompile test suite to use for the tests
+		// s is the precompile edge suite to use for the tests
 		s *PrecompileTestSuite
 		// contractAddr is the address of the smart contract that will be deployed
 		contractAddr    common.Address
@@ -1365,9 +1365,9 @@ var _ = Describe("Calling staking precompile via Solidity", Ordered, func() {
 		// err is a basic error type
 		err error
 
-		// nonExistingAddr is an address that does not exist in the state of the test suite
+		// nonExistingAddr is an address that does not exist in the state of the edge suite
 		nonExistingAddr = testutiltx.GenerateAddress()
-		// nonExistingVal is a validator address that does not exist in the state of the test suite
+		// nonExistingVal is a validator address that does not exist in the state of the edge suite
 		nonExistingVal             = sdk.ValAddress(nonExistingAddr.Bytes())
 		testContractInitialBalance = math.NewInt(1e18)
 	)
@@ -1681,8 +1681,8 @@ var _ = Describe("Calling staking precompile via Solidity", Ordered, func() {
 	})
 
 	Context("delegating", func() {
-		// prevDelegation is the delegation that is available prior to the test (an initial delegation is
-		// added in the test suite setup).
+		// prevDelegation is the delegation that is available prior to the edge (an initial delegation is
+		// added in the edge suite setup).
 		var prevDelegation stakingtypes.Delegation
 
 		BeforeEach(func() {
@@ -1709,7 +1709,7 @@ var _ = Describe("Calling staking precompile via Solidity", Ordered, func() {
 			Expect(err).To(BeNil(), "error while calling the smart contract")
 			Expect(s.network.NextBlock()).To(BeNil())
 
-			// get the delegation that is available prior to the test
+			// get the delegation that is available prior to the edge
 			contractAccAddr := sdk.AccAddress(contractAddr.Bytes())
 			Expect(err).To(BeNil())
 			res, err := s.grpcHandler.GetDelegation(contractAccAddr.String(), valAddr.String())
@@ -2439,7 +2439,7 @@ var _ = Describe("Calling staking precompile via Solidity", Ordered, func() {
 			}
 		})
 
-		//nolint:dupl // this is a duplicate of the test for EOA calls to the precompile
+		//nolint:dupl // this is a duplicate of the edge for EOA calls to the precompile
 		It("should return validators with pagination limit = 1", func() {
 			const limit uint64 = 1
 			delegator := s.keyring.GetKey(0)
@@ -3099,7 +3099,7 @@ var _ = Describe("Batching cosmos and eth interactions", func() {
 	)
 
 	var (
-		// s is the precompile test suite to use for the tests
+		// s is the precompile edge suite to use for the tests
 		s *PrecompileTestSuite
 		// contractAddr is the address of the deployed StakingCaller contract
 		contractAddr common.Address

@@ -18,7 +18,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// Network is the interface that wraps the common methods to interact with integration test network.
+// Network is the interface that wraps the common methods to interact with integration edge network.
 //
 // It was designed to avoid users to access module's keepers directly and force integration tests
 // to be closer to the real user's behavior.
@@ -44,7 +44,7 @@ type Network interface {
 	Simulate(txBytes []byte) (*txtypes.SimulateResponse, error)
 	CheckTx(txBytes []byte) (*abcitypes.ResponseCheckTx, error)
 
-	// GetIBCChain returns the IBC test chain.
+	// GetIBCChain returns the IBC edge chain.
 	// NOTE: this is only used for testing IBC related functionality.
 	// The idea is to deprecate this eventually.
 	GetIBCChain(t *testing.T, coord *ibctesting.Coordinator) *ibctesting.TestChain

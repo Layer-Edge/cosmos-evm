@@ -274,7 +274,7 @@ func (suite *BackendTestSuite) TestResend() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			hash, err := suite.backend.Resend(tc.args, tc.gasPrice, tc.gasLimit)
@@ -341,7 +341,7 @@ func (suite *BackendTestSuite) TestSendRawTransaction() {
 				return bytes
 			},
 			common.Hash{},
-			fmt.Errorf("incorrect chain-id; expected %d, got %d", 262144, big.NewInt(1)).Error(),
+			fmt.Errorf("incorrect chain-id; expected %d, got %d", 3456, big.NewInt(1)).Error(),
 			false,
 		},
 		{
@@ -394,7 +394,7 @@ func (suite *BackendTestSuite) TestSendRawTransaction() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			hash, err := suite.backend.SendRawTransaction(tc.rawTx())
@@ -469,7 +469,7 @@ func (suite *BackendTestSuite) TestDoCall() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			msgEthTx, err := suite.backend.DoCall(tc.callArgs, tc.blockNum)
@@ -533,7 +533,7 @@ func (suite *BackendTestSuite) TestGasPrice() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			gasPrice, err := suite.backend.GasPrice()

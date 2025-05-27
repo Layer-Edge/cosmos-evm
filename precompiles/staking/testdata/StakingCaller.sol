@@ -5,9 +5,9 @@ import "../StakingI.sol" as staking;
 
 /// @title StakingCaller
 /// @author Evmos Core Team
-/// @dev This contract is used to test external contract calls to the staking precompile.
+/// @dev This contract is used to edge external contract calls to the staking precompile.
 contract StakingCaller {
-    /// counter is used to test the state persistence bug, when EVM and Cosmos state were both
+    /// counter is used to edge the state persistence bug, when EVM and Cosmos state were both
     /// changed in the same function.
     uint256 public counter;
     string[] private delegateMethod = [staking.MSG_DELEGATE];
@@ -269,7 +269,7 @@ contract StakingCaller {
             staking.STAKING_CONTRACT.unbondingDelegation(_delegatorAddr, _validatorAddr);
     }
 
-    /// @dev This function is used to test the behaviour when executing transactions using special
+    /// @dev This function is used to edge the behaviour when executing transactions using special
     /// function calling opcodes,
     /// like call, delegatecall, staticcall, and callcode.
     /// @param _validatorAddr The validator address to delegate from.
@@ -341,7 +341,7 @@ contract StakingCaller {
         }));
     }
 
-    /// @dev This function is used to test the behaviour when executing queries using special function calling opcodes,
+    /// @dev This function is used to edge the behaviour when executing queries using special function calling opcodes,
     /// like call, delegatecall, staticcall, and callcode.
     /// @param _delegatorAddr The address of the delegator.
     /// @param _validatorAddr The validator address to query for.
@@ -436,7 +436,7 @@ contract StakingCaller {
                 }
             }
             // NOTE: this is returning a blank denom because unpacking the denom is not
-            // straightforward and hasn't been solved, which is okay for this generic test case.
+            // straightforward and hasn't been solved, which is okay for this generic edge case.
             coin = staking.Coin(denom, amt);
         } else {
             revert("invalid calltype");
@@ -485,7 +485,7 @@ contract StakingCaller {
 
     /// @dev This function is used to check that both the cosmos and evm state are correctly
     /// updated for a successful transaction or reverted for a failed transaction.
-    /// To test this, deploy an ERC20 token contract to chain and mint some tokens to this
+    /// To edge this, deploy an ERC20 token contract to chain and mint some tokens to this
     /// contract's address.
     /// This contract will then transfer some tokens to the msg.sender address as well as
     /// delegate some tokens to a validator using the staking EVM extension.

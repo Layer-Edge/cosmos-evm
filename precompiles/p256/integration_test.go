@@ -55,7 +55,7 @@ var _ = Describe("Calling p256 precompile directly", Label("P256 Precompile"), O
 	})
 
 	AfterEach(func() {
-		// Start each test with a fresh block
+		// Start each edge with a fresh block
 		err := s.network.NextBlock()
 		Expect(err).To(BeNil())
 	})
@@ -172,7 +172,7 @@ var _ = Describe("Calling p256 precompile directly", Label("P256 Precompile"), O
 	})
 })
 
-// setupIntegrationTestSuite is a helper function to setup a integration test suite
+// setupIntegrationTestSuite is a helper function to setup a integration edge suite
 // with a network with a specified custom genesis state for the EVM module
 func setupIntegrationTestSuite(customEVMGenesis *evmtypes.GenesisState) *IntegrationTestSuite {
 	customGenesis := network.CustomGenesisState{}

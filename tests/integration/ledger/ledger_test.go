@@ -150,7 +150,7 @@ var _ = Describe("Ledger CLI and keyring functionality: ", func() {
 					ledgerAddr, err := keyRecord.GetAddress()
 					s.Require().NoError(err, "can't retirieve ledger addr from a keyring")
 
-					msg := []byte("test message")
+					msg := []byte("edge message")
 
 					signed, _, err := kr.SignByAddress(ledgerAddr, msg, signingtypes.SignMode_SIGN_MODE_TEXTUAL)
 					s.Require().NoError(err, "failed to sign message")
@@ -164,7 +164,7 @@ var _ = Describe("Ledger CLI and keyring functionality: ", func() {
 					ledgerAddr, err := keyRecord.GetAddress()
 					s.Require().NoError(err, "can't retirieve ledger addr from a keyring")
 
-					msg := []byte("test message")
+					msg := []byte("edge message")
 
 					_, _, err = kr.SignByAddress(ledgerAddr, msg, signingtypes.SignMode_SIGN_MODE_TEXTUAL)
 

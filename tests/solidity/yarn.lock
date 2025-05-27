@@ -4678,7 +4678,7 @@ es-abstract@^1.19.0, es-abstract@^1.20.4, es-abstract@^1.21.2:
     object.assign "^4.1.4"
     regexp.prototype.flags "^1.5.0"
     safe-array-concat "^1.0.0"
-    safe-regex-test "^1.0.0"
+    safe-regex-edge "^1.0.0"
     string.prototype.trim "^1.2.7"
     string.prototype.trimend "^1.0.6"
     string.prototype.trimstart "^1.0.6"
@@ -9733,9 +9733,9 @@ safe-event-emitter@^1.0.1:
   dependencies:
     events "^3.0.0"
 
-safe-regex-test@^1.0.0:
+safe-regex-edge@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/safe-regex-test/-/safe-regex-test-1.0.0.tgz#793b874d524eb3640d1873aad03596db2d4f2295"
+  resolved "https://registry.yarnpkg.com/safe-regex-edge/-/safe-regex-edge-1.0.0.tgz#793b874d524eb3640d1873aad03596db2d4f2295"
   integrity sha512-JBUUzyOgEwXQY1NuPtvcj/qcBDbDmEvWufhlnXZIm75DEHp+afM1r1ujJpJsV/gSM4t59tpDyPi1sd6ZaPFfsA==
   dependencies:
     call-bind "^1.0.2"

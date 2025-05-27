@@ -2,9 +2,9 @@
 
 # TODO: remove this script and just use the local node script for it, add flag to start node in given directory
 
-CHAINID="${CHAIN_ID:-cosmos_262144-1}"
+CHAINID="${CHAIN_ID:-cosmos_3456-1}"
 MONIKER="localtestnet"
-KEYRING="test"          # remember to change to other types of keyring like 'file' in-case exposing to outside world, otherwise your balance will be wiped quickly. The keyring test does not require private key to steal tokens from you
+KEYRING="edge"          # remember to change to other types of keyring like 'file' in-case exposing to outside world, otherwise your balance will be wiped quickly. The keyring edge does not require private key to steal tokens from you
 KEYALGO="eth_secp256k1" #gitleaks:allow
 LOGLEVEL="info"
 # to trace evm
@@ -19,7 +19,7 @@ TMP_GENESIS="$CHAINDIR/config/tmp_genesis.json"
 APP_TOML="$CHAINDIR/config/app.toml"
 CONFIG_TOML="$CHAINDIR/config/config.toml"
 
-# make sure to reset chain directory before test
+# make sure to reset chain directory before edge
 rm -rf "$CHAINDIR"
 
 # validate dependencies are installed
@@ -40,7 +40,7 @@ evmd config set client keyring-backend "$KEYRING" --home "$CHAINDIR"
 
 # myKey address 0x7cb61d4117ae31a12e393a1cfa3bac666481d02e
 VAL_KEY="mykey"
-VAL_MNEMONIC="gesture inject test cycle original hollow east ridge hen combine junk child bacon zero hope comfort vacuum milk pitch cage oppose unhappy lunar seat"
+VAL_MNEMONIC="gesture inject edge cycle original hollow east ridge hen combine junk child bacon zero hope comfort vacuum milk pitch cage oppose unhappy lunar seat"
 
 # user1 address 0xc6fe5d33615a1c52c08018c47e8bc53646a0e101
 USER1_KEY="user1"
@@ -68,12 +68,12 @@ echo "$USER4_MNEMONIC" | evmd keys add "$USER4_KEY" --recover --keyring-backend 
 # Set moniker and chain-id for Cosmos EVM (Moniker can be anything, chain-id must be an integer)
 evmd init "$MONIKER" --chain-id "$CHAINID" --home "$CHAINDIR"
 
-# Change parameter token denominations to atest
-jq '.app_state["staking"]["params"]["bond_denom"]="atest"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="atest"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-jq '.app_state["gov"]["params"]["min_deposit"][0]["denom"]="atest"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-jq '.app_state["evm"]["params"]["evm_denom"]="atest"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-jq '.app_state["mint"]["params"]["mint_denom"]="atest"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+# Change parameter token denominations to aedge
+jq '.app_state["staking"]["params"]["bond_denom"]="aedge"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="aedge"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+jq '.app_state["gov"]["params"]["min_deposit"][0]["denom"]="aedge"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+jq '.app_state["evm"]["params"]["evm_denom"]="aedge"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+jq '.app_state["mint"]["params"]["mint_denom"]="aedge"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 # Enable precompiles in EVM params
 jq '.app_state["evm"]["params"]["active_static_precompiles"]=["0x0000000000000000000000000000000000000100","0x0000000000000000000000000000000000000400","0x0000000000000000000000000000000000000800","0x0000000000000000000000000000000000000801","0x0000000000000000000000000000000000000802","0x0000000000000000000000000000000000000803","0x0000000000000000000000000000000000000804"]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -93,11 +93,11 @@ jq '.app_state["feemarket"]["params"]["base_fee"]="'${BASEFEE}'"' "$GENESIS" >"$
 sed -i.bak 's/create_empty_blocks = true/create_empty_blocks = false/g' "$CONFIG_TOML"
 
 # Allocate genesis accounts (cosmos formatted addresses)
-evmd genesis add-genesis-account "$(evmd keys show "$VAL_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 100000000000000000000000000atest --keyring-backend "$KEYRING" --home "$CHAINDIR"
-evmd genesis add-genesis-account "$(evmd keys show "$USER1_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000atest --keyring-backend "$KEYRING" --home "$CHAINDIR"
-evmd genesis add-genesis-account "$(evmd keys show "$USER2_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000atest --keyring-backend "$KEYRING" --home "$CHAINDIR"
-evmd genesis add-genesis-account "$(evmd keys show "$USER3_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000atest --keyring-backend "$KEYRING" --home "$CHAINDIR"
-evmd genesis add-genesis-account "$(evmd keys show "$USER4_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000atest --keyring-backend "$KEYRING" --home "$CHAINDIR"
+evmd genesis add-genesis-account "$(evmd keys show "$VAL_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 100000000000000000000000000aedge --keyring-backend "$KEYRING" --home "$CHAINDIR"
+evmd genesis add-genesis-account "$(evmd keys show "$USER1_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000aedge --keyring-backend "$KEYRING" --home "$CHAINDIR"
+evmd genesis add-genesis-account "$(evmd keys show "$USER2_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000aedge --keyring-backend "$KEYRING" --home "$CHAINDIR"
+evmd genesis add-genesis-account "$(evmd keys show "$USER3_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000aedge --keyring-backend "$KEYRING" --home "$CHAINDIR"
+evmd genesis add-genesis-account "$(evmd keys show "$USER4_KEY" -a --keyring-backend "$KEYRING" --home "$CHAINDIR")" 1000000000000000000000aedge --keyring-backend "$KEYRING" --home "$CHAINDIR"
 
 # set custom pruning settings
 if [ "$PRUNING" = "custom" ]; then
@@ -110,11 +110,11 @@ fi
 sed -i.bak 's/localhost/0.0.0.0/g' "$CONFIG_TOML"
 sed -i.bak 's/127.0.0.1/0.0.0.0/g' "$APP_TOML"
 
-# use timeout_commit 1s to make test faster
+# use timeout_commit 1s to make edge faster
 sed -i.bak 's/timeout_commit = "3s"/timeout_commit = "1s"/g' "$CONFIG_TOML"
 
 # Sign genesis transaction
-evmd genesis gentx "$VAL_KEY" 1000000000000000000000atest --gas-prices ${BASEFEE}atest --keyring-backend "$KEYRING" --chain-id "$CHAINID" --home "$CHAINDIR"
+evmd genesis gentx "$VAL_KEY" 1000000000000000000000aedge --gas-prices ${BASEFEE}aedge --keyring-backend "$KEYRING" --chain-id "$CHAINID" --home "$CHAINDIR"
 ## In case you want to create multiple validators at genesis
 ## 1. Back to `evmd keys add` step, init more keys
 ## 2. Back to `evmd add-genesis-account` step, add balance for those

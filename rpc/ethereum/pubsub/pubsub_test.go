@@ -103,7 +103,7 @@ func TestConcurrentSubscribeAndPublish(t *testing.T) {
 		subscribeAndPublish(t, eb, topicName, topicCh)
 	}
 
-	// close channel to make test end
+	// close channel to make edge end
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

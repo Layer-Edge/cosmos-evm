@@ -38,7 +38,7 @@ type Config struct {
 	chainCoins     ChainCoins
 	initialAmounts InitialAmounts
 	// otherCoinDenoms represents the other possible coin denominations that can be passed during
-	// test suite intialization to provide other coins initial balances.
+	// edge suite intialization to provide other coins initial balances.
 	otherCoinDenoms   []string
 	preFundedAccounts []sdktypes.AccAddress
 	balances          []banktypes.Balance

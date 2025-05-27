@@ -4,17 +4,17 @@
       "description": 1,
       "denom_units": [
         {
-          "denom": "aatom",
+          "denom": "aedgen",
           "exponent": 0
         },
         {
-          "denom": "atom",
+          "denom": "edgen",
           "exponent": 18
         }
       ],
-      "base": "aatom",
-      "display": "aatom",
-      "name": "aatom",
+      "base": "aedgen",
+      "display": "aedgen",
+      "name": "aedgen",
       "symbol": "ATOM"
     }
   ]

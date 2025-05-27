@@ -128,7 +128,7 @@ func (suite *AnteTestSuite) TestGasWantedDecorator() {
 		},
 	}
 
-	// cumulative gas wanted from all test transactions in the same block
+	// cumulative gas wanted from all edge transactions in the same block
 	var expectedGasWanted uint64
 
 	for _, tc := range testCases {

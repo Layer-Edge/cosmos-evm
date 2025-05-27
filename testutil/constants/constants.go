@@ -12,19 +12,19 @@ const (
 	DefaultGasPrice = 20
 
 	// ExampleAttoDenom provides an example denom for use in tests
-	ExampleAttoDenom = "aatom"
+	ExampleAttoDenom = "aedgen"
 
 	// ExampleMicroDenom provides an example denom for use in tests
 	ExampleMicroDenom = "uatom"
 
 	// ExampleDisplayDenom provides an example display denom for use in tests
-	ExampleDisplayDenom = "atom"
+	ExampleDisplayDenom = "edgen"
 
 	// ExampleBech32Prefix provides an example Bech32 prefix for use in tests
 	ExampleBech32Prefix = "cosmos"
 
 	// ExampleEIP155ChainID provides an example EIP-155 chain ID for use in tests
-	ExampleEIP155ChainID = 9001
+	ExampleEIP155ChainID = 6543
 
 	// WEVMOSContractMainnet is the WEVMOS contract address for mainnet
 	WEVMOSContractMainnet = "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517"
@@ -48,7 +48,7 @@ var (
 	// ExampleChainID provides a chain ID that can be used in tests
 	ExampleChainID = ChainID{
 		ChainID:    ExampleChainIDPrefix + "-1",
-		EVMChainID: 9001,
+		EVMChainID: 3456,
 	}
 
 	// SixDecimalsChainID provides a chain ID which is being set up with 6 decimals
@@ -83,8 +83,8 @@ var (
 		},
 		SixDecimalsChainID: {
 			Denom:         "utest",
-			ExtendedDenom: "atest",
-			DisplayDenom:  "test",
+			ExtendedDenom: "aedge",
+			DisplayDenom:  "edge",
 			Decimals:      evmtypes.SixDecimals,
 		},
 		TwelveDecimalsChainID: {

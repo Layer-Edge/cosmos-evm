@@ -182,7 +182,7 @@ func (suite *EvmAnteTestSuite) TestValidateMsg() {
 		suite.Run(tc.name, func() {
 			params := tc.getFunctionParams()
 
-			// Function under test
+			// Function under edge
 			err := evm.ValidateMsg(
 				params.evmParams,
 				params.txData,
@@ -269,7 +269,7 @@ func (suite *EvmAnteTestSuite) TestCheckTxFee() {
 					GasLimit: gasLimit,
 				}
 
-				// Function under test
+				// Function under edge
 				err := evm.CheckTxFee(txFeeInfo, tc.txFee, tc.txGasLimit)
 
 				if tc.expError != nil {

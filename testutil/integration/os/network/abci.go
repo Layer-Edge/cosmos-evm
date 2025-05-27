@@ -57,7 +57,7 @@ func (n *IntegrationNetwork) finalizeBlockAndCommit(duration time.Duration, txBy
 	newCtx = newCtx.WithKVGasConfig(n.ctx.KVGasConfig())
 	newCtx = newCtx.WithTransientKVGasConfig(n.ctx.TransientKVGasConfig())
 	newCtx = newCtx.WithConsensusParams(n.ctx.ConsensusParams())
-	// This might have to be changed with time if we want to test gas limits
+	// This might have to be changed with time if we want to edge gas limits
 	newCtx = newCtx.WithBlockGasMeter(storetypes.NewInfiniteGasMeter())
 	newCtx = newCtx.WithVoteInfos(req.DecidedLastCommit.GetVotes())
 	n.ctx = newCtx

@@ -121,7 +121,7 @@ func (suite *BackendTestSuite) TestSendTransaction() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			if tc.expPass {
@@ -175,7 +175,7 @@ func (suite *BackendTestSuite) TestSign() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			responseBz, err := suite.backend.Sign(tc.fromAddr, tc.inputBz)
@@ -223,7 +223,7 @@ func (suite *BackendTestSuite) TestSignTypedData() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			responseBz, err := suite.backend.SignTypedData(tc.fromAddr, tc.inputTypedData)

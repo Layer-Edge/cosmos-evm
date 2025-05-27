@@ -259,15 +259,15 @@ func (suite *KeeperTestSuite) TestCheckSenderBalance() {
 			)
 
 			if tc.expectPass {
-				suite.Require().NoError(err, "valid test %d failed", i)
+				suite.Require().NoError(err, "valid edge %d failed", i)
 			} else {
-				suite.Require().Error(err, "invalid test %d passed", i)
+				suite.Require().Error(err, "invalid edge %d passed", i)
 			}
 		})
 	}
 }
 
-// TestVerifyFeeAndDeductTxCostsFromUserBalance is a test method for both the VerifyFee
+// TestVerifyFeeAndDeductTxCostsFromUserBalance is a edge method for both the VerifyFee
 // function and the DeductTxCostsFromUserBalance method.
 //
 // NOTE: This method combines testing for both functions, because these used to be
@@ -281,7 +281,7 @@ func (suite *KeeperTestSuite) TestVerifyFeeAndDeductTxCostsFromUserBalance() {
 	fiftyInt := sdkmath.NewInt(50)
 	addr, _ := utiltx.NewAddrKey()
 
-	// should be enough to cover all test cases
+	// should be enough to cover all edge cases
 	initBalance := sdkmath.NewInt((ethparams.InitialBaseFee + 10) * 105)
 
 	testCases := []struct {
@@ -510,7 +510,7 @@ func (suite *KeeperTestSuite) TestVerifyFeeAndDeductTxCostsFromUserBalance() {
 
 			fees, err := keeper.VerifyFee(txData, baseDenom, baseFee, false, false, false, suite.network.GetContext().IsCheckTx())
 			if tc.expectPassVerify {
-				suite.Require().NoError(err, "valid test %d failed - '%s'", i, tc.name)
+				suite.Require().NoError(err, "valid edge %d failed - '%s'", i, tc.name)
 				if tc.enableFeemarket {
 					baseFee := suite.network.App.FeeMarketKeeper.GetBaseFee(suite.network.GetContext())
 					suite.Require().Equal(
@@ -518,7 +518,7 @@ func (suite *KeeperTestSuite) TestVerifyFeeAndDeductTxCostsFromUserBalance() {
 						sdk.NewCoins(
 							sdk.NewCoin(baseDenom, sdkmath.NewIntFromBigInt(txData.EffectiveFee(baseFee.TruncateInt().BigInt()))),
 						),
-						"valid test %d failed, fee value is wrong  - '%s'", i, tc.name,
+						"valid edge %d failed, fee value is wrong  - '%s'", i, tc.name,
 					)
 					suite.Require().Equal(int64(0), priority)
 				} else {
@@ -527,19 +527,19 @@ func (suite *KeeperTestSuite) TestVerifyFeeAndDeductTxCostsFromUserBalance() {
 						sdk.NewCoins(
 							sdk.NewCoin(baseDenom, tc.gasPrice.Mul(sdkmath.NewIntFromUint64(tc.gasLimit))),
 						),
-						"valid test %d failed, fee value is wrong  - '%s'", i, tc.name,
+						"valid edge %d failed, fee value is wrong  - '%s'", i, tc.name,
 					)
 				}
 			} else {
-				suite.Require().Error(err, "invalid test %d passed - '%s'", i, tc.name)
-				suite.Require().Nil(fees, "invalid test %d passed. fees value must be nil - '%s'", i, tc.name)
+				suite.Require().Error(err, "invalid edge %d passed - '%s'", i, tc.name)
+				suite.Require().Nil(fees, "invalid edge %d passed. fees value must be nil - '%s'", i, tc.name)
 			}
 
 			err = suite.network.App.EVMKeeper.DeductTxCostsFromUserBalance(suite.network.GetContext(), fees, common.HexToAddress(tx.From))
 			if tc.expectPassDeduct {
-				suite.Require().NoError(err, "valid test %d failed - '%s'", i, tc.name)
+				suite.Require().NoError(err, "valid edge %d failed - '%s'", i, tc.name)
 			} else {
-				suite.Require().Error(err, "invalid test %d passed - '%s'", i, tc.name)
+				suite.Require().Error(err, "invalid edge %d passed - '%s'", i, tc.name)
 			}
 		})
 	}

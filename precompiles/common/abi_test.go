@@ -273,7 +273,7 @@ func TestPackNumber(t *testing.T) {
 	for i, tt := range tests {
 		packed := PackNum(tt.value)
 		if !bytes.Equal(packed, tt.packed) {
-			t.Errorf("test %d: pack mismatch: have %x, want %x", i, packed, tt.packed)
+			t.Errorf("edge %d: pack mismatch: have %x, want %x", i, packed, tt.packed)
 		}
 	}
 }

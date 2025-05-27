@@ -319,7 +319,7 @@ func (s *PrecompileTestSuite) TestFundCommunityPoolEvent() {
 			},
 		},
 		{
-			// New multi-coin deposit test case
+			// New multi-coin deposit edge case
 			name: "success - multiple coins => multiple events emitted",
 			coins: sdk.NewCoins(
 				sdk.NewCoin(constants.ExampleAttoDenom, math.NewInt(10)),   // coin #1

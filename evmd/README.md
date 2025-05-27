@@ -15,10 +15,10 @@ By default, this chain has the following configuration:
 | Option              | Value                  |
 |---------------------|------------------------|
 | Binary              | `evmd`                 |
-| Chain ID            | `cosmos_262144-1`      |
+| Chain ID            | `cosmos_3456-1`      |
 | Custom Opcodes      | -                      |
 | Default Token Pairs | 1 for the native token |
-| Denomination        | `atest`                |
+| Denomination        | `aedge`                |
 | EVM permissioning   | permissionless         |
 | Enabled Precompiles | all                    |
 
@@ -42,7 +42,7 @@ Available flags are:
 For the sake of this example, we'll be using Metamask:
 
 1. Use the following seed phrase when adding a new wallet:
-`gesture inject test cycle original hollow east ridge hen combine
+`gesture inject edge cycle original hollow east ridge hen combine
 junk child baconzero hope comfort vacuum milk pitch cage oppose
 unhappy lunar seat`
 2. On the top left of the Metamask extension, click the Network button.

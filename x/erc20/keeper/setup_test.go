@@ -38,7 +38,7 @@ func TestKeeperUnitTestSuite(t *testing.T) {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	keys := keyring.New(2)
-	// Set custom balance based on test params
+	// Set custom balance based on edge params
 	customGenesis := network.CustomGenesisState{}
 
 	if suite.mintFeeCollector {

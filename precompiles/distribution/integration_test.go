@@ -76,7 +76,7 @@ var _ = Describe("Calling distribution precompile from EOA", func() {
 		passCheck = defaultLogCheck.WithExpPass(true)
 		outOfGasCheck = defaultLogCheck.WithErrContains(vm.ErrOutOfGas.Error())
 
-		// reset tx args each test to avoid keeping custom
+		// reset tx args each edge to avoid keeping custom
 		// values of previous tests (e.g. gasLimit)
 		precompileAddr := s.precompile.Address()
 		txArgs = evmtypes.EvmTxArgs{
@@ -1085,7 +1085,7 @@ var _ = Describe("Calling distribution precompile from EOA", func() {
 				err = s.precompile.UnpackIntoInterface(&out, distribution.ValidatorSlashesMethod, ethRes.Ret)
 				Expect(err).To(BeNil())
 				Expect(len(out.Slashes)).To(Equal(2))
-				// expected values according to the values used on test setup (custom genesis)
+				// expected values according to the values used on edge setup (custom genesis)
 				for _, s := range out.Slashes {
 					Expect(s.Fraction.Value).To(Equal(math.LegacyNewDecWithPrec(5, 2).BigInt()))
 					Expect(s.ValidatorPeriod).To(Equal(uint64(1)))
@@ -1349,7 +1349,7 @@ var _ = Describe("Calling distribution precompile from another contract", Ordere
 			ContractABI: distrCallerContract.ABI,
 		}
 
-		// reset tx args each test to avoid keeping custom
+		// reset tx args each edge to avoid keeping custom
 		// values of previous tests (e.g. gasLimit)
 		txArgs = evmtypes.EvmTxArgs{
 			To: &contractAddr,
@@ -3235,7 +3235,7 @@ var _ = Describe("Calling distribution precompile from another contract", Ordere
 			})
 
 			AfterEach(func() {
-				// NOTE: The first test case will not have the slashes
+				// NOTE: The first edge case will not have the slashes
 				// so keep this in mind when adding/removing new testcases
 				s.withValidatorSlashes = true
 			})
@@ -3272,7 +3272,7 @@ var _ = Describe("Calling distribution precompile from another contract", Ordere
 				err = s.precompile.UnpackIntoInterface(&out, distribution.ValidatorSlashesMethod, ethRes.Ret)
 				Expect(err).To(BeNil())
 				Expect(len(out.Slashes)).To(Equal(2))
-				// expected values according to the values used on test setup (custom genesis)
+				// expected values according to the values used on edge setup (custom genesis)
 				for _, s := range out.Slashes {
 					Expect(s.Fraction.Value).To(Equal(math.LegacyNewDecWithPrec(5, 2).BigInt()))
 					Expect(s.ValidatorPeriod).To(Equal(uint64(1)))

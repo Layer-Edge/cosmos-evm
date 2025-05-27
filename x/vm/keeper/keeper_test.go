@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestGetAccountStorage() {
 
 				address, err := utils.Bech32ToHexAddr(acc.Address)
 				if err != nil {
-					// NOTE: we panic in the test to see any potential problems
+					// NOTE: we panic in the edge to see any potential problems
 					// instead of skipping to the next account
 					panic(fmt.Sprintf("failed to convert %s to hex address", err))
 				}

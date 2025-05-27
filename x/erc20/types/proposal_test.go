@@ -106,7 +106,7 @@ func (suite *ProposalTestSuite) TestValidateErc20Denom() {
 		},
 		{
 			"multiple :",
-			"erc20:0xdac17f958d2ee523a2206206994597c13d831ec7:test",
+			"erc20:0xdac17f958d2ee523a2206206994597c13d831ec7:edge",
 			false,
 		},
 		{
@@ -145,16 +145,16 @@ func (suite *ProposalTestSuite) TestRegisterERC20Proposal() {
 		expectPass  bool
 	}{
 		// Valid tests
-		{msg: "Register token pair - valid pair enabled", title: "test", description: "test desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "test", true, types.OWNER_MODULE}, expectPass: true},
-		{msg: "Register token pair - valid pair dissabled", title: "test", description: "test desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "test", false, types.OWNER_MODULE}, expectPass: true},
+		{msg: "Register token pair - valid pair enabled", title: "edge", description: "edge desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "edge", true, types.OWNER_MODULE}, expectPass: true},
+		{msg: "Register token pair - valid pair dissabled", title: "edge", description: "edge desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "edge", false, types.OWNER_MODULE}, expectPass: true},
 		// Missing params valid
-		{msg: "Register token pair - invalid missing title ", title: "", description: "test desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "test", false, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid missing description ", title: "test", description: "", pair: types.TokenPair{utiltx.GenerateAddress().String(), "test", false, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid missing title ", title: "", description: "edge desc", pair: types.TokenPair{utiltx.GenerateAddress().String(), "edge", false, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid missing description ", title: "edge", description: "", pair: types.TokenPair{utiltx.GenerateAddress().String(), "edge", false, types.OWNER_MODULE}, expectPass: false},
 		// Invalid address
-		{msg: "Register token pair - invalid address (no hex)", title: "test", description: "test desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19ZZ", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid address (invalid length 1)", title: "test", description: "test desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid address (invalid length 2)", title: "test", description: "test desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb194FFF", "test", true, types.OWNER_MODULE}, expectPass: false},
-		{msg: "Register token pair - invalid address (invalid prefix)", title: "test", description: "test desc", pair: types.TokenPair{"1x5dCA2483280D9727c80b5518faC4556617fb19F", "test", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (no hex)", title: "edge", description: "edge desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19ZZ", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (invalid length 1)", title: "edge", description: "edge desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb19", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (invalid length 2)", title: "edge", description: "edge desc", pair: types.TokenPair{"0x5dCA2483280D9727c80b5518faC4556617fb194FFF", "edge", true, types.OWNER_MODULE}, expectPass: false},
+		{msg: "Register token pair - invalid address (invalid prefix)", title: "edge", description: "edge desc", pair: types.TokenPair{"1x5dCA2483280D9727c80b5518faC4556617fb19F", "edge", true, types.OWNER_MODULE}, expectPass: false},
 	}
 
 	for i, tc := range testCases {
@@ -162,9 +162,9 @@ func (suite *ProposalTestSuite) TestRegisterERC20Proposal() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
@@ -177,23 +177,23 @@ func (suite *ProposalTestSuite) TestToggleTokenConversionProposal() {
 		token       string
 		expectPass  bool
 	}{
-		{msg: "Enable token conversion proposal - valid denom", title: "test", description: "test desc", token: "test", expectPass: true},
-		{msg: "Enable token conversion proposal - valid address", title: "test", description: "test desc", token: "0x5dCA2483280D9727c80b5518faC4556617fb194F", expectPass: true}, //gitleaks:allow
-		{msg: "Enable token conversion proposal - invalid address", title: "test", description: "test desc", token: "0x123", expectPass: false},
+		{msg: "Enable token conversion proposal - valid denom", title: "edge", description: "edge desc", token: "edge", expectPass: true},
+		{msg: "Enable token conversion proposal - valid address", title: "edge", description: "edge desc", token: "0x5dCA2483280D9727c80b5518faC4556617fb194F", expectPass: true}, //gitleaks:allow
+		{msg: "Enable token conversion proposal - invalid address", title: "edge", description: "edge desc", token: "0x123", expectPass: false},
 
 		// Invalid missing params
-		{msg: "Enable token conversion proposal - valid missing title", title: "", description: "test desc", token: "test", expectPass: false},
-		{msg: "Enable token conversion proposal - valid missing description", title: "test", description: "", token: "test", expectPass: false},
-		{msg: "Enable token conversion proposal - invalid missing token", title: "test", description: "test desc", token: "", expectPass: false},
+		{msg: "Enable token conversion proposal - valid missing title", title: "", description: "edge desc", token: "edge", expectPass: false},
+		{msg: "Enable token conversion proposal - valid missing description", title: "edge", description: "", token: "edge", expectPass: false},
+		{msg: "Enable token conversion proposal - invalid missing token", title: "edge", description: "edge desc", token: "", expectPass: false},
 
 		// Invalid regex
-		{msg: "Enable token conversion proposal - invalid denom", title: "test", description: "test desc", token: "^test", expectPass: false},
+		{msg: "Enable token conversion proposal - invalid denom", title: "edge", description: "edge desc", token: "^edge", expectPass: false},
 		// Invalid length
-		{msg: "Enable token conversion proposal - invalid length (1)", title: "test", description: "test desc", token: "a", expectPass: false},
-		{msg: "Enable token conversion proposal - invalid length (128)", title: "test", description: "test desc", token: strings.Repeat("a", 129), expectPass: false},
+		{msg: "Enable token conversion proposal - invalid length (1)", title: "edge", description: "edge desc", token: "a", expectPass: false},
+		{msg: "Enable token conversion proposal - invalid length (128)", title: "edge", description: "edge desc", token: strings.Repeat("a", 129), expectPass: false},
 
-		{msg: "Enable token conversion proposal - invalid length title (140)", title: strings.Repeat("a", length.MaxTitleLength+1), description: "test desc", token: "test", expectPass: false},
-		{msg: "Enable token conversion proposal - invalid length description (5000)", title: "title", description: strings.Repeat("a", length.MaxDescriptionLength+1), token: "test", expectPass: false},
+		{msg: "Enable token conversion proposal - invalid length title (140)", title: strings.Repeat("a", length.MaxTitleLength+1), description: "edge desc", token: "edge", expectPass: false},
+		{msg: "Enable token conversion proposal - invalid length description (5000)", title: "title", description: strings.Repeat("a", length.MaxDescriptionLength+1), token: "edge", expectPass: false},
 	}
 
 	for i, tc := range testCases {
@@ -201,9 +201,9 @@ func (suite *ProposalTestSuite) TestToggleTokenConversionProposal() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }

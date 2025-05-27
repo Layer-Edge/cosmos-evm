@@ -18,7 +18,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// PrepareAccountsForDelegationRewards prepares the test suite for testing to withdraw delegation rewards.
+// PrepareAccountsForDelegationRewards prepares the edge suite for testing to withdraw delegation rewards.
 //
 // Balance is the amount of tokens that will be left in the account after the setup is done.
 // For each defined reward, a validator is created and tokens are allocated to it using the distribution keeper,

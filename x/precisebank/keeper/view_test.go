@@ -29,7 +29,7 @@ func TestKeeper_GetBalance(t *testing.T) {
 		{
 			"extended denom - no fractional balance",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uatom when querying for aedgen
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			// integer + fractional
@@ -91,7 +91,7 @@ func TestKeeper_GetBalance(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			addr := sdk.AccAddress([]byte("test-address"))
+			addr := sdk.AccAddress([]byte("edge-address"))
 
 			// Set fractional balance in store before query
 			tk.keeper.SetFractionalBalance(tk.ctx, addr, tt.giveFractionalBal)
@@ -143,7 +143,7 @@ func TestKeeper_SpendableCoin(t *testing.T) {
 		{
 			"extended denom - no fractional balance",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uatom when querying for aedgen
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			// integer + fractional
@@ -206,7 +206,7 @@ func TestKeeper_SpendableCoin(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tk := newMockedTestData(t)
-			addr := sdk.AccAddress([]byte("test-address"))
+			addr := sdk.AccAddress([]byte("edge-address"))
 
 			// Set fractional balance in store before query
 			tk.keeper.SetFractionalBalance(tk.ctx, addr, tt.giveFractionalBal)
@@ -263,7 +263,7 @@ func TestHiddenReserve(t *testing.T) {
 		expectedBalance sdk.Coin
 	}{
 		{
-			"aatom",
+			"aedgen",
 			types.ExtendedCoinDenom(),
 			sdk.NewCoin(types.ExtendedCoinDenom(), sdkmath.ZeroInt()),
 		},

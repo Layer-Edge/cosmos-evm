@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestGetERC20PrecompileInstance() {
 	)
 	newTokenHexAddr := "0x205CF44075E77A3543abC690437F3b2819bc450a"         //nolint:gosec
 	nonExistendTokenHexAddr := "0x8FA78CEB7F04118Ec6d06AaC37Ca854691d8e963" //nolint:gosec
-	newTokenDenom := "test"
+	newTokenDenom := "edge"
 	tokenPair := types.NewTokenPair(common.HexToAddress(newTokenHexAddr), newTokenDenom, types.OWNER_MODULE)
 
 	testCases := []struct {

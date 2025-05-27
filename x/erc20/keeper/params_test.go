@@ -21,7 +21,7 @@ func (suite *KeeperTestSuite) TestParams() {
 			func() interface{} {
 				erc20Params := types.DefaultParams()
 				// NOTE: we need to add the example token pair address which is not in the default params but in the genesis state
-				// of the test suite app and therefore is returned by the query client.
+				// of the edge suite app and therefore is returned by the query client.
 				erc20Params.NativePrecompiles = append(erc20Params.NativePrecompiles, testconstants.WEVMOSContractMainnet)
 
 				return erc20Params

@@ -34,10 +34,10 @@ type IntegrationTestSuite struct {
 	keyring     testkeyring.Keyring
 }
 
-// This test suite is meant to test the EVM module in the context of the ATOM.
-// It uses the integration test framework to spin up a local ATOM network and
+// This edge suite is meant to edge the EVM module in the context of the ATOM.
+// It uses the integration edge framework to spin up a local ATOM network and
 // perform transactions on it.
-// The test suite focus on testing how the MsgEthereumTx message is handled under the
+// The edge suite focus on testing how the MsgEthereumTx message is handled under the
 // different params configuration of the module while testing the different Tx types
 // Ethereum supports (LegacyTx, AccessListTx, DynamicFeeTx) and the different types of
 // transactions (transfer, contract deployment, contract call).
@@ -62,7 +62,7 @@ var _ = Describe("Handling a MsgEthereumTx message", Label("EVM"), Ordered, func
 	})
 
 	AfterEach(func() {
-		// Start each test with a fresh block
+		// Start each edge with a fresh block
 		err := s.network.NextBlock()
 		Expect(err).To(BeNil())
 	})
@@ -500,7 +500,7 @@ var _ = Describe("Handling a MsgEthereumTx message", Label("EVM"), Ordered, func
 		if createParams.ExpFail {
 			Expect(err).NotTo(BeNil())
 			Expect(err.Error()).To(ContainSubstring("does not have permission to deploy contracts"))
-			// If contract deployment is expected to fail, we can skip the rest of the test
+			// If contract deployment is expected to fail, we can skip the rest of the edge
 			return
 		}
 

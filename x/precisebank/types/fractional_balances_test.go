@@ -146,7 +146,7 @@ func TestFractionalBalances_SumAmount_Overflow(t *testing.T) {
 
 	fbs := types.FractionalBalances{
 		types.NewFractionalBalance(sdk.AccAddress{1}.String(), sdkmath.NewInt(100)),
-		// This is NOT valid, but just to test overflows will panic
+		// This is NOT valid, but just to edge overflows will panic
 		types.NewFractionalBalance(
 			sdk.AccAddress{2}.String(),
 			sdkmath.NewIntFromBigInt(maxInt),

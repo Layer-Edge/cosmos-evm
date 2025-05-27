@@ -61,9 +61,9 @@ func (suite *MsgsTestSuite) TestMsgConvertERC20New() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
@@ -124,9 +124,9 @@ func (suite *MsgsTestSuite) TestMsgConvertERC20() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
@@ -135,7 +135,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoinGetters() {
 	msgInvalid := types.MsgConvertCoin{}
 	msg := types.NewMsgConvertCoin(
 		sdk.NewCoin(
-			"atest",
+			"aedge",
 			math.NewInt(100),
 		),
 		utiltx.GenerateAddress(),
@@ -157,7 +157,7 @@ func (suite *MsgsTestSuite) TestNewMsgConvertCoin() {
 	}{
 		{
 			"msg convert coin - pass",
-			"atest",
+			"aedge",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
@@ -170,9 +170,9 @@ func (suite *MsgsTestSuite) TestNewMsgConvertCoin() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }
@@ -196,7 +196,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"cannot mint a non-positive amount",
-			"atest",
+			"aedge",
 			math.NewInt(-100),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
 			utiltx.GenerateAddress().String(),
@@ -204,7 +204,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"invalid sender address",
-			"atest",
+			"aedge",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress{}.String(),
@@ -212,7 +212,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"invalid receiver hex address",
-			"atest",
+			"aedge",
 			math.NewInt(100),
 			"not_a_hex_address",
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
@@ -220,7 +220,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"msg convert coin - pass",
-			"atest",
+			"aedge",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
@@ -237,9 +237,9 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		err := tx.ValidateBasic()
 
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s, %v", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s, %v", i, tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s, %v", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s, %v", i, tc.msg)
 		}
 	}
 }

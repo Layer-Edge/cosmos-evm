@@ -30,7 +30,7 @@ import (
 // interface. It allows for performing Client queries without having to run a
 // Tendermint RPC Client server.
 //
-// To use a mock method it has to be registered in a given test.
+// To use a mock method it has to be registered in a given edge.
 var _ cmtrpcclient.Client = &mocks.Client{}
 
 // Tx Search
@@ -190,7 +190,7 @@ func RegisterBlockResultsWithEventLog(client *mocks.Client, height int64) (*cmtr
 				Type: evmtypes.EventTypeTxLog,
 				Attributes: []abci.EventAttribute{{
 					Key:   evmtypes.AttributeKeyTxLog,
-					Value: "{\"test\": \"hello\"}", // TODO refactor the value to unmarshall to a evmtypes.Log struct successfully
+					Value: "{\"edge\": \"hello\"}", // TODO refactor the value to unmarshall to a evmtypes.Log struct successfully
 					Index: true,
 				}},
 			}}},

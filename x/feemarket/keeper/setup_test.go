@@ -22,7 +22,7 @@ type KeeperTestSuite struct {
 	denom string
 }
 
-// SetupTest setup test environment
+// SetupTest setup edge environment
 func (suite *KeeperTestSuite) SetupTest() {
 	keyring := testkeyring.New(2)
 	nw := network.NewUnitTestNetwork(

@@ -22,4 +22,4 @@ else
 	yarn install
 fi
 
-yarn test --network cosmos "$@"
+yarn edge --network cosmos "$@"

@@ -33,7 +33,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// Network is the interface that wraps the methods to interact with integration test network.
+// Network is the interface that wraps the methods to interact with integration edge network.
 //
 // It was designed to avoid users to access module's keepers directly and force integration tests
 // to be closer to the real user's behavior.

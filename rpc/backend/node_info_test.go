@@ -46,7 +46,7 @@ func (suite *BackendTestSuite) TestRPCMinGasPrice() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			minPrice := suite.backend.RPCMinGasPrice()
@@ -79,9 +79,9 @@ func (suite *BackendTestSuite) TestGenerateMinGasCoin() {
 		{
 			"pass - different min gas Coin",
 			*defaultGasPrice,
-			sdk.DecCoins{sdk.NewDecCoin("test", math.NewInt(1))},
+			sdk.DecCoins{sdk.NewDecCoin("edge", math.NewInt(1))},
 			sdk.DecCoin{
-				Denom:  "test",
+				Denom:  "edge",
 				Amount: math.LegacyNewDecFromBigInt(defaultGasPrice.ToInt()),
 			},
 		},
@@ -89,7 +89,7 @@ func (suite *BackendTestSuite) TestGenerateMinGasCoin() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			suite.backend.clientCtx.Viper = viper.New()
 
 			appConf := config.DefaultConfig()
@@ -101,7 +101,7 @@ func (suite *BackendTestSuite) TestGenerateMinGasCoin() {
 	}
 }
 
-// TODO: Combine these 2 into one test since the code is identical
+// TODO: Combine these 2 into one edge since the code is identical
 func (suite *BackendTestSuite) TestListAccounts() {
 	testCases := []struct {
 		name         string
@@ -119,7 +119,7 @@ func (suite *BackendTestSuite) TestListAccounts() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			output, err := suite.backend.ListAccounts()
@@ -151,7 +151,7 @@ func (suite *BackendTestSuite) TestAccounts() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			output, err := suite.backend.Accounts()
@@ -209,7 +209,7 @@ func (suite *BackendTestSuite) TestSyncing() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			output, err := suite.backend.Syncing()
@@ -277,7 +277,7 @@ func (suite *BackendTestSuite) TestSetEtherbase() {
 			common.Address{},
 			false,
 		},
-		// TODO: Finish this test case once ABCIQuery GetAccount is fixed
+		// TODO: Finish this edge case once ABCIQuery GetAccount is fixed
 		// {
 		//	"pass - set the etherbase for the miner",
 		//	func() {
@@ -306,7 +306,7 @@ func (suite *BackendTestSuite) TestSetEtherbase() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			output := suite.backend.SetEtherbase(tc.etherbase)
@@ -349,7 +349,7 @@ func (suite *BackendTestSuite) TestImportRawKey() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			output, err := suite.backend.ImportRawKey(tc.privKey, tc.password)

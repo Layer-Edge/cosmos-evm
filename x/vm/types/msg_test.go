@@ -57,7 +57,7 @@ func (suite *MsgsTestSuite) SetupTest() {
 	encodingConfig := encoding.MakeConfig(suite.chainID.Uint64())
 	suite.clientCtx = client.Context{}.WithTxConfig(encodingConfig.TxConfig)
 
-	err := exampleapp.EvmAppOptions(9001)
+	err := exampleapp.EvmAppOptions(6543)
 	suite.Require().NoError(err)
 }
 
@@ -66,7 +66,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Constructor() {
 		Nonce:    0,
 		To:       &suite.to,
 		GasLimit: 100000,
-		Input:    []byte("test"),
+		Input:    []byte("edge"),
 	}
 	msg := types.NewTx(evmTx)
 
@@ -80,7 +80,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Constructor() {
 	evmTx2 := &types.EvmTxArgs{
 		Nonce:    0,
 		GasLimit: 100000,
-		Input:    []byte("test"),
+		Input:    []byte("edge"),
 	}
 	msg = types.NewTx(evmTx2)
 	suite.Require().NotNil(msg)
@@ -96,7 +96,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_BuildTx() {
 		GasPrice:  big.NewInt(1e18),
 		GasFeeCap: big.NewInt(1e18),
 		GasTipCap: big.NewInt(0),
-		Input:     []byte("test"),
+		Input:     []byte("edge"),
 	}
 	testCases := []struct {
 		name     string
@@ -465,7 +465,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_ValidateBasic() {
 			tx := types.NewTx(evmTx)
 			tx.From = tc.from
 
-			// apply nil assignment here to test ValidateBasic function instead of NewTx
+			// apply nil assignment here to edge ValidateBasic function instead of NewTx
 			if strings.Contains(tc.msg, "nil tx.Data") {
 				tx.Data = nil
 			}
@@ -553,7 +553,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 				Accesses: &ethtypes.AccessList{},
 			},
 			ethtypes.NewEIP2930Signer(suite.chainID),
@@ -567,7 +567,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 			},
 			ethtypes.NewEIP155Signer(suite.chainID),
 			func(tx *types.MsgEthereumTx) { tx.From = suite.from.Hex() },
@@ -580,7 +580,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 			},
 			ethtypes.HomesteadSigner{},
 			func(tx *types.MsgEthereumTx) { tx.From = suite.from.Hex() },
@@ -593,7 +593,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 			},
 			ethtypes.FrontierSigner{},
 			func(tx *types.MsgEthereumTx) { tx.From = suite.from.Hex() },
@@ -606,7 +606,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 				Accesses: &ethtypes.AccessList{},
 			},
 			ethtypes.NewEIP2930Signer(suite.chainID),
@@ -620,7 +620,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 				Nonce:    0,
 				To:       &suite.to,
 				GasLimit: 100000,
-				Input:    []byte("test"),
+				Input:    []byte("edge"),
 				Accesses: &ethtypes.AccessList{},
 			},
 			ethtypes.NewEIP2930Signer(suite.chainID),
@@ -634,13 +634,13 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Sign() {
 		tc.malleate(tx)
 		err := tx.Sign(tc.ethSigner, suite.signer)
 		if tc.expectPass {
-			suite.Require().NoError(err, "valid test %d failed: %s", i, tc.msg)
+			suite.Require().NoError(err, "valid edge %d failed: %s", i, tc.msg)
 
 			sender, err := tx.GetSender(suite.chainID)
 			suite.Require().NoError(err, tc.msg)
 			suite.Require().Equal(tx.From, sender.Hex(), tc.msg)
 		} else {
-			suite.Require().Error(err, "invalid test %d passed: %s", i, tc.msg)
+			suite.Require().Error(err, "invalid edge %d passed: %s", i, tc.msg)
 		}
 	}
 }
@@ -813,7 +813,7 @@ func (suite *MsgsTestSuite) TestFromEthereumTx() {
 		if tc.expectPass {
 			suite.Require().NoError(err)
 
-			// round-trip test
+			// round-trip edge
 			suite.Require().NoError(assertEqual(tx.AsTransaction(), ethTx))
 		} else {
 			suite.Require().Error(err)

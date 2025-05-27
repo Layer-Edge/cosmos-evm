@@ -1,6 +1,6 @@
 //
 // This file contains all utility function that require the access to the unit
-// test network and should only be used in unit tests.
+// edge network and should only be used in unit tests.
 
 package utils
 

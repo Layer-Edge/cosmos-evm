@@ -281,7 +281,7 @@ var _ = Describe("ERC20 Extension -", func() {
 				_, err := is.factory.ExecuteEthTx(sender.Priv, txArgs)
 				// Currently, this check pass because the erc20 precompile does
 				// not expose a fallback handler. Adding a fallback handler, the
-				// test should pass again because of the check on the message
+				// edge should pass again because of the check on the message
 				// value in the precompile before the setup.
 				Expect(err.Error()).To(ContainSubstring(vm.ErrExecutionReverted.Error()), "precompile should not accept transfers")
 			},
@@ -383,7 +383,7 @@ var _ = Describe("ERC20 Extension -", func() {
 				Expect(err).ToNot(HaveOccurred(), "unexpected result calling contract")
 				Expect(ethRes).To(BeNil(), "expected empty result")
 			},
-				// NOTE: we are not passing the direct call here because this test is specific to the contract calls
+				// NOTE: we are not passing the direct call here because this edge is specific to the contract calls
 				Entry(" - through contract", contractCall),
 				Entry(" - through erc20 v5 caller contract", erc20V5CallerCall),
 			)
@@ -409,7 +409,7 @@ var _ = Describe("ERC20 Extension -", func() {
 				Expect(ethRes).To(BeNil(), "expected empty result")
 			},
 				Entry(" - direct call", directCall),
-				// NOTE: we are not passing the contract call here because this test is for direct calls only
+				// NOTE: we are not passing the contract call here because this edge is for direct calls only
 
 				Entry(" - through erc20 contract", erc20Call),
 				// // TODO: The ERC20 V5 contract is raising the ERC-6093 standardized error which we are not as of yet
@@ -712,7 +712,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					)
 				},
 					Entry(" - direct call", directCall),
-					// NOTE: we are not passing the contract call here because this test is for direct calls only
+					// NOTE: we are not passing the contract call here because this edge is for direct calls only
 
 					Entry(" - through erc20 contract", erc20Call),
 					Entry(" - through erc20 v5 contract", erc20V5Call),
@@ -854,7 +854,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					Expect(ethRes).To(BeNil(), "expected empty result")
 				},
 					Entry(" - direct call", directCall),
-					// NOTE: we are not passing the contract call here because this test case only covers direct calls
+					// NOTE: we are not passing the contract call here because this edge case only covers direct calls
 
 					Entry(" - through erc20 contract", erc20Call),
 
@@ -892,7 +892,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					Expect(err).ToNot(HaveOccurred(), "error on NextBlock call")
 				},
 					Entry(" - direct call", directCall),
-					// NOTE: we are not passing the contract call here because this test case only covers direct calls
+					// NOTE: we are not passing the contract call here because this edge case only covers direct calls
 
 					Entry(" - through erc20 contract", erc20Call),
 
@@ -932,7 +932,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					Expect(err).ToNot(HaveOccurred(), "error on NextBlock call")
 				},
 					Entry(" - direct call", directCall),
-					// NOTE: we are not passing the contract call here because this test case only covers direct calls
+					// NOTE: we are not passing the contract call here because this edge case only covers direct calls
 
 					Entry(" - through erc20 contract", erc20Call),
 
@@ -999,7 +999,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					// Entry(" - direct call", directCall),
 					Entry(" - through contract", contractCall),
 					// NOTE: we are not passing the erc20 contract call here because this is supposed to
-					// test external contract calls
+					// edge external contract calls
 					Entry(" - through erc20 v5 caller contract", erc20V5CallerCall),
 				)
 
@@ -1058,7 +1058,7 @@ var _ = Describe("ERC20 Extension -", func() {
 						spender, owner.Addr, common.Big0,
 					)
 				},
-					// NOTE: we are not passing the direct call here because this test is specific to the contract calls
+					// NOTE: we are not passing the direct call here because this edge is specific to the contract calls
 
 					Entry(" - through contract", contractCall),
 					Entry(" - through erc20 v5 caller contract", erc20V5CallerCall),
@@ -1095,7 +1095,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					err = is.network.NextBlock()
 					Expect(err).ToNot(HaveOccurred(), "error on NextBlock call")
 				},
-					// NOTE: we are not passing the direct call here because this test is for contract calls only
+					// NOTE: we are not passing the direct call here because this edge is for contract calls only
 					Entry(" - through contract", contractCall),
 					Entry(" - through erc20 v5 caller contract", erc20V5CallerCall),
 				)
@@ -1793,7 +1793,7 @@ var _ = Describe("ERC20 Extension -", func() {
 	Context("metadata query -", func() {
 		Context("for a token without registered metadata", func() {
 			BeforeEach(func() {
-				// Deploy ERC20NoMetadata contract for this test
+				// Deploy ERC20NoMetadata contract for this edge
 				erc20NoMetadataContract, err := testdata.LoadERC20NoMetadataContract()
 				Expect(err).ToNot(HaveOccurred(), "failed to load contract")
 
@@ -1870,7 +1870,7 @@ var _ = Describe("ERC20 Extension -", func() {
 				erc20Addr = contractsData.GetContractData(erc20V5Call).Address
 				expName = erc20types.CreateDenom(erc20Addr.String())
 
-				// Register ERC20 token pair for this test
+				// Register ERC20 token pair for this edge
 				tokenPairs, err := integrationutils.RegisterERC20(is.factory, is.network, integrationutils.ERC20RegistrationData{
 					Addresses:    []string{erc20Addr.Hex()},
 					ProposerPriv: is.keyring.GetPrivKey(0),
@@ -1878,7 +1878,7 @@ var _ = Describe("ERC20 Extension -", func() {
 				Expect(err).ToNot(HaveOccurred(), "failed to register ERC20 token")
 				Expect(tokenPairs).To(HaveLen(1))
 
-				// overwrite the other precompile with this one, so that the test utils like is.getTxAndCallArgs still work.
+				// overwrite the other precompile with this one, so that the edge utils like is.getTxAndCallArgs still work.
 				is.precompile, err = setupNewERC20PrecompileForTokenPair(is.keyring.GetPrivKey(0), is.network, is.factory, tokenPairs[0])
 				Expect(err).ToNot(HaveOccurred(), "failed to set up erc20 precompile")
 
@@ -2393,7 +2393,7 @@ var _ = Describe("ERC20 Extension -", func() {
 					approveAmount = big.NewInt(100)
 
 					// NOTE: We set up the allowance here for the erc20 precompile and then also
-					// set up the allowance for the ERC20 contract, so that we can test both.
+					// set up the allowance for the ERC20 contract, so that we can edge both.
 					is.setAllowanceForContract(directCall, contractsData, owner.Priv, spender.Addr, approveAmount)
 					is.setAllowanceForContract(erc20Call, contractsData, owner.Priv, spender.Addr, approveAmount)
 				})
@@ -2720,7 +2720,7 @@ var _ = Describe("ERC20 Extension migration Flows -", func() {
 		})
 
 		It("should migrate the full token balance to the bank module", func() {
-			// TODO: implement test on follow-up PR
+			// TODO: implement edge on follow-up PR
 			Skip("will be addressed on follow-up PR")
 
 			Expect(true).To(BeFalse(), "not implemented")

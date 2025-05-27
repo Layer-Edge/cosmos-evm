@@ -60,7 +60,7 @@ type EIP712TestParams struct {
 
 func TestEIP712TestSuite(t *testing.T) {
 	suite.Run(t, &EIP712TestSuite{})
-	// Note that we don't test the Legacy EIP-712 Extension, since that case
+	// Note that we don't edge the Legacy EIP-712 Extension, since that case
 	// is sufficiently covered by the AnteHandler tests.
 	suite.Run(t, &EIP712TestSuite{
 		useLegacyEIP712TypedData: true,
@@ -76,7 +76,7 @@ func (suite *EIP712TestSuite) SetupTest() {
 	sdk.GetConfig().SetBech32PrefixForAccount(chainconfig.Bech32Prefix, "")
 }
 
-// createTestAddress creates random test addresses for messages
+// createTestAddress creates random edge addresses for messages
 func (suite *EIP712TestSuite) createTestAddress() sdk.AccAddress {
 	privkey, _ := ethsecp256k1.GenerateKey()
 	key, err := privkey.ToECDSA()
@@ -434,7 +434,7 @@ func (suite *EIP712TestSuite) verifyPayloadAgainstFlattened(payload gjson.Result
 }
 
 // verifyPayloadMapAgainstFlattenedMap directly compares two JSON maps in Go representations to
-// test flattening.
+// edge flattening.
 func (suite *EIP712TestSuite) verifyPayloadMapAgainstFlattenedMap(original map[string]interface{}, flattened map[string]interface{}) {
 	interfaceMessages, ok := original[msgsFieldName]
 	suite.Require().True(ok)

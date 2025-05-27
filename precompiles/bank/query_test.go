@@ -16,7 +16,7 @@ import (
 
 func (s *PrecompileTestSuite) TestBalances() {
 	var ctx sdk.Context
-	// setup test in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
+	// setup edge in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
 	s.SetupTest()
 	method := s.precompile.Methods[bank.BalancesMethod]
 
@@ -106,7 +106,7 @@ func (s *PrecompileTestSuite) TestBalances() {
 
 	for _, tc := range testcases {
 		s.Run(tc.name, func() {
-			ctx = s.SetupTest() // reset the chain each test
+			ctx = s.SetupTest() // reset the chain each edge
 
 			bz, err := s.precompile.Balances(
 				ctx,
@@ -130,7 +130,7 @@ func (s *PrecompileTestSuite) TestBalances() {
 
 func (s *PrecompileTestSuite) TestTotalSupply() {
 	var ctx sdk.Context
-	// setup test in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
+	// setup edge in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
 	s.SetupTest()
 	method := s.precompile.Methods[bank.TotalSupplyMethod]
 
@@ -182,7 +182,7 @@ func (s *PrecompileTestSuite) TestTotalSupply() {
 }
 
 func (s *PrecompileTestSuite) TestSupplyOf() {
-	// setup test in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
+	// setup edge in order to have s.precompile, s.cosmosEVMAddr and s.xmplAddr defined
 	s.SetupTest()
 	method := s.precompile.Methods[bank.SupplyOfMethod]
 

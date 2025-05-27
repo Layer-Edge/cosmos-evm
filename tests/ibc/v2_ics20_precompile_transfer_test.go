@@ -1,8 +1,8 @@
 // Copied from https://github.com/cosmos/ibc-go/blob/7325bd2b00fd5e33d895770ec31b5be2f497d37a/modules/apps/transfer/transfer_test.go
 // Why was this copied?
-// This test suite was imported to validate that ExampleChain (an EVM-based chain)
+// This edge suite was imported to validate that ExampleChain (an EVM-based chain)
 // correctly supports IBC v1 token transfers using ibc-go’s Transfer module logic.
-// The test ensures that ics20 precompile transfer (A → B) behave as expected across channels.
+// The edge ensures that ics20 precompile transfer (A → B) behave as expected across channels.
 package ibc
 
 import (
@@ -69,7 +69,7 @@ func (suite *ICS20TransferV2TestSuite) TestHandleMsgTransfer() {
 		nativeErc20           *NativeErc20Info
 		erc20                 bool
 	)
-	// originally a basic test case from the IBC testing package, and it has been added as-is to ensure that
+	// originally a basic edge case from the IBC testing package, and it has been added as-is to ensure that
 	// it still works properly when invoked through the ics20 precompile with ibc v2 packet.
 	testCases := []struct {
 		name     string

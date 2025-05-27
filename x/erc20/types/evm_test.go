@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewERC20Data(t *testing.T) {
-	data := types.NewERC20Data("test", "ERC20", uint8(18))
-	exp := types.ERC20Data{Name: "test", Symbol: "ERC20", Decimals: 0x12}
+	data := types.NewERC20Data("edge", "ERC20", uint8(18))
+	exp := types.ERC20Data{Name: "edge", Symbol: "ERC20", Decimals: 0x12}
 	require.Equal(t, exp, data)
 }

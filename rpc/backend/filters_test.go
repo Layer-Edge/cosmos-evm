@@ -18,7 +18,7 @@ func (suite *BackendTestSuite) TestGetLogs() {
 	block := cmttypes.MakeBlock(1, []cmttypes.Tx{bz}, nil, nil)
 	logs := make([]*evmtypes.Log, 0, 1)
 	var log evmtypes.Log
-	err := json.Unmarshal([]byte("{\"test\": \"hello\"}"), &log) // TODO refactor this to unmarshall to a log struct successfully
+	err := json.Unmarshal([]byte("{\"edge\": \"hello\"}"), &log) // TODO refactor this to unmarshall to a log struct successfully
 	suite.Require().NoError(err)
 
 	logs = append(logs, &log)

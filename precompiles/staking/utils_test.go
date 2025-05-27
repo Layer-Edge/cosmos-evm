@@ -142,7 +142,7 @@ func (s *PrecompileTestSuite) CheckValidatorOutput(valOut staking.ValidatorInfo)
 
 	operatorAddress := sdk.ValAddress(common.HexToAddress(valOut.OperatorAddress).Bytes()).String()
 
-	Expect(slices.Contains(validatorAddrs, operatorAddress)).To(BeTrue(), "operator address not found in test suite validators")
+	Expect(slices.Contains(validatorAddrs, operatorAddress)).To(BeTrue(), "operator address not found in edge suite validators")
 	Expect(valOut.DelegatorShares).To(Equal(big.NewInt(1e18)), "expected different delegator shares")
 }
 

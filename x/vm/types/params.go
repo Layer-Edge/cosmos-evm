@@ -18,9 +18,9 @@ import (
 
 var (
 	// DefaultEVMDenom is the default value for the evm denom
-	DefaultEVMDenom = "atest"
+	DefaultEVMDenom = "aedge"
 	// DefaultEVMChainID is the default value for the evm chain ID
-	DefaultEVMChainID = "cosmos_262144-1"
+	DefaultEVMChainID = "cosmos_3456-1"
 	// DefaultEVMDecimals is the default value for the evm denom decimal precision
 	DefaultEVMDecimals uint64 = 18
 	// DefaultAllowUnprotectedTxs rejects all unprotected txs (i.e false)

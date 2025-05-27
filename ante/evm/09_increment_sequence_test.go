@@ -52,7 +52,7 @@ func (suite *EvmAnteTestSuite) TestIncrementSequence() {
 
 			nonce := tc.malleate(account)
 
-			// Function under test
+			// Function under edge
 			err = evm.IncrementNonce(
 				unitNetwork.GetContext(),
 				unitNetwork.App.AccountKeeper,

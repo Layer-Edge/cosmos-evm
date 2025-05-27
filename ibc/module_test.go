@@ -28,7 +28,7 @@ type MockIBCModule struct {
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanOpenInit(
 	ctx sdk.Context,
 	order channeltypes.Order,
@@ -47,7 +47,7 @@ func (m MockIBCModule) OnChanOpenInit(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanOpenTry(
 	ctx sdk.Context,
 	order channeltypes.Order,
@@ -66,7 +66,7 @@ func (m MockIBCModule) OnChanOpenTry(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanOpenAck(
 	ctx sdk.Context,
 	portID,
@@ -83,7 +83,7 @@ func (m MockIBCModule) OnChanOpenAck(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanOpenConfirm(
 	ctx sdk.Context,
 	portID,
@@ -98,7 +98,7 @@ func (m MockIBCModule) OnChanOpenConfirm(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanCloseInit(
 	ctx sdk.Context,
 	portID,
@@ -113,7 +113,7 @@ func (m MockIBCModule) OnChanCloseInit(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnChanCloseConfirm(
 	ctx sdk.Context,
 	portID,
@@ -128,7 +128,7 @@ func (m MockIBCModule) OnChanCloseConfirm(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnRecvPacket(
 	ctx sdk.Context,
 	channelVersion string,
@@ -144,7 +144,7 @@ func (m MockIBCModule) OnRecvPacket(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnAcknowledgementPacket(
 	ctx sdk.Context,
 	channelVersion string,
@@ -161,7 +161,7 @@ func (m MockIBCModule) OnAcknowledgementPacket(
 //
 //	and escaping revive for unused parameters which are okay since they indicate the expected mocked interface
 //
-//nolint:all // escaping govet since we can copy locks here as it is a test
+//nolint:all // escaping govet since we can copy locks here as it is a edge
 func (m MockIBCModule) OnTimeoutPacket(
 	ctx sdk.Context,
 	channelVersion string,

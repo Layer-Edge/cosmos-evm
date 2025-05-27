@@ -56,7 +56,7 @@ func BenchmarkEthGasConsumeDecorator(b *testing.B) {
 	for _, tc := range testCases {
 		b.Run(fmt.Sprintf("Case %s", tc.name), func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				// Stop the timer to perform expensive test setup
+				// Stop the timer to perform expensive edge setup
 				b.StopTimer()
 				addr := testutiltx.GenerateAddress()
 				args.Accesses = &ethtypes.AccessList{{Address: addr, StorageKeys: nil}}
@@ -64,7 +64,7 @@ func BenchmarkEthGasConsumeDecorator(b *testing.B) {
 				tx.From = addr.Hex()
 
 				cacheCtx, _ := ctx.CacheContext()
-				// Create new stateDB for each test case from the cached context
+				// Create new stateDB for each edge case from the cached context
 				vmdb = testutil.NewStateDB(cacheCtx, s.GetNetwork().App.EVMKeeper)
 				cacheCtx = s.prepareAccount(cacheCtx, addr.Bytes(), tc.balance, tc.rewards)
 				s.Require().NoError(vmdb.Commit())

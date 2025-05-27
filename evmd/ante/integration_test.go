@@ -57,7 +57,7 @@ var _ = Describe("when sending a Cosmos transaction", Label("AnteHandler"), Orde
 			// rewards are the real accrued rewards
 			rewards sdk.DecCoins
 			// minExpRewards are the minimun rewards that should be accrued
-			// for the test case
+			// for the edge case
 			minExpRewards  = sdk.DecCoins{sdk.DecCoin{Amount: math.LegacyNewDec(1e5), Denom: s.network.GetBaseDenom()}}
 			delegationCoin = sdk.Coin{Amount: math.NewInt(1e15), Denom: s.network.GetBaseDenom()}
 			transferAmt    = math.NewInt(1e14)
@@ -128,7 +128,7 @@ var _ = Describe("when sending a Cosmos transaction", Label("AnteHandler"), Orde
 			addr, priv = testutiltx.NewAccAddressAndKey()
 
 			// this is a new address that does not exist on chain.
-			// Transfer 1 aatom to this account so it is
+			// Transfer 1 aedgen to this account so it is
 			// added on chain
 			err := s.factory.FundAccount(
 				s.keyring.GetKey(0),

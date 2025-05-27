@@ -5,9 +5,9 @@ import "../StakingI.sol" as staking;
 
 /// @title StakingCaller
 /// @author Evmos Core Team
-/// @dev This contract is used to test external contract calls to the staking precompile.
+/// @dev This contract is used to edge external contract calls to the staking precompile.
 contract StakingCallerTwo {
-    /// counter is used to test the state persistence bug, when EVM and Cosmos state were both
+    /// counter is used to edge the state persistence bug, when EVM and Cosmos state were both
     /// changed in the same function.
     uint256 public counter;
 

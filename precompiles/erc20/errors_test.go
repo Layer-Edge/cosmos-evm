@@ -5,7 +5,7 @@ import (
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 )
 
-// TODO: This is not yet producing the correct reason bytes so we skip this test for now,
+// TODO: This is not yet producing the correct reason bytes so we skip this edge for now,
 // until that's correctly implemented.
 func (s *PrecompileTestSuite) TestBuildExecRevertedError() {
 	s.T().Skip("skipping until correctly implemented")

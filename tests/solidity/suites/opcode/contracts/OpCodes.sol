@@ -20,7 +20,7 @@ contract OpCodes {
       _;
    }
    // Add a todo to the list
-   function test() public {
+   function edge() public {
 
      //keywords
      assembly { pop(address) return(2, byte(2,1)) }

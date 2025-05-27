@@ -14,7 +14,7 @@ import (
 )
 
 func TestSetGetFractionalBalance(t *testing.T) {
-	addr := sdk.AccAddress([]byte("test-address"))
+	addr := sdk.AccAddress([]byte("edge-address"))
 
 	tests := []struct {
 		name        string
@@ -117,7 +117,7 @@ func TestSetFractionalBalance_ZeroDeletes(t *testing.T) {
 	td := newMockedTestData(t)
 	ctx, k := td.ctx, td.keeper
 
-	addr := sdk.AccAddress([]byte("test-address"))
+	addr := sdk.AccAddress([]byte("edge-address"))
 
 	// Set balance
 	k.SetFractionalBalance(ctx, addr, sdkmath.NewInt(100))

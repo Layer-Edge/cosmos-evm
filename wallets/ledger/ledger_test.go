@@ -118,7 +118,7 @@ func (suite *LedgerTestSuite) TestSignatures() {
 			false,
 		},
 		{
-			"pass - test ledger amino signature",
+			"pass - edge ledger amino signature",
 			suite.txAmino,
 			func() {
 				RegisterOpen(suite.mockWallet)
@@ -128,7 +128,7 @@ func (suite *LedgerTestSuite) TestSignatures() {
 			true,
 		},
 		{
-			"pass - test ledger protobuf signature",
+			"pass - edge ledger protobuf signature",
 			suite.txProtobuf,
 			func() {
 				RegisterOpen(suite.mockWallet)

@@ -748,7 +748,7 @@ func NewExampleApp(
 	}
 	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
 
-	// add test gRPC service for testing gRPC queries in isolation
+	// add edge gRPC service for testing gRPC queries in isolation
 	testdata_pulsar.RegisterQueryServer(app.GRPCQueryRouter(), testdata_pulsar.QueryImpl{})
 
 	// create the simulation manager and define the order of the modules for deterministic simulations

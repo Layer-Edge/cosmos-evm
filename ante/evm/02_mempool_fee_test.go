@@ -46,7 +46,7 @@ func (suite *EvmAnteTestSuite) TestMempoolFee() {
 
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			// Function under test
+			// Function under edge
 			err := evm.CheckMempoolFee(
 				tc.txFee,
 				tc.minGasPrice,

@@ -93,7 +93,7 @@ func (suite *KeeperTestSuite) TestQueryAccount() {
 			expectedResponse := tc.expResponse
 
 			ctx := suite.network.GetContext()
-			// Function under test
+			// Function under edge
 			res, err := suite.network.GetEvmClient().Account(ctx, req)
 
 			suite.Require().Equal(expectedResponse, res)
@@ -176,7 +176,7 @@ func (suite *KeeperTestSuite) TestQueryCosmosAccount() {
 
 			ctx := suite.network.GetContext()
 
-			// Function under test
+			// Function under edge
 			res, err := suite.network.GetEvmClient().CosmosAccount(ctx, req)
 
 			suite.Require().Equal(expectedResponse, res)
@@ -920,7 +920,7 @@ func (suite *KeeperTestSuite) TestEstimateGas() {
 			// Start from a clean state
 			suite.Require().NoError(suite.network.NextBlock())
 
-			// Update feemarket params per test
+			// Update feemarket params per edge
 			evmParams := feemarkettypes.DefaultParams()
 			if !tc.enableFeemarket {
 				evmParams := suite.network.App.FeeMarketKeeper.GetParams(
@@ -946,7 +946,7 @@ func (suite *KeeperTestSuite) TestEstimateGas() {
 				ProposerAddress: suite.network.GetContext().BlockHeader().ProposerAddress,
 			}
 
-			// Function under test
+			// Function under edge
 			rsp, err := suite.network.GetEvmClient().EstimateGas(
 				suite.network.GetContext(),
 				&req,
@@ -1162,7 +1162,7 @@ func (suite *KeeperTestSuite) TestTraceTx() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
-			// Clean up per test
+			// Clean up per edge
 			defaultEvmParams := types.DefaultParams()
 			err := suite.network.App.EVMKeeper.SetParams(suite.network.GetContext(), defaultEvmParams)
 			suite.Require().NoError(err)
@@ -1200,7 +1200,7 @@ func (suite *KeeperTestSuite) TestTraceTx() {
 			traceReq.Predecessors = predecessors
 			traceReq.Msg = msgToTrace
 
-			// Function under test
+			// Function under edge
 			res, err := suite.network.GetEvmClient().TraceTx(
 				suite.network.GetContext(),
 				&traceReq,
@@ -1537,7 +1537,7 @@ func (suite *KeeperTestSuite) TestQueryBaseFee() {
 			tc.setParams()
 			// Get the expected response
 			expResp := tc.getExpResp()
-			// Function under test
+			// Function under edge
 			res, err := suite.network.GetEvmClient().BaseFee(
 				suite.network.GetContext(),
 				&types.QueryBaseFeeRequest{},

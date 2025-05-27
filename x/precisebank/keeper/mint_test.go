@@ -102,7 +102,7 @@ func TestMintCoins_PanicValidations(t *testing.T) {
 			}
 
 			require.NotPanics(t, func() {
-				// Not testing errors, only panics for this test
+				// Not testing errors, only panics for this edge
 				_ = td.keeper.MintCoins(td.ctx, tt.recipientModule, tt.mintAmount)
 			})
 		})
@@ -234,7 +234,7 @@ func TestMintCoins_ExpectedCalls(t *testing.T) {
 			td := newMockedTestData(t)
 
 			// Set initial fractional balance
-			// Initial integer balance doesn't matter for this test
+			// Initial integer balance doesn't matter for this edge
 			moduleAddr := sdk.AccAddress{1}
 			td.keeper.SetFractionalBalance(
 				td.ctx,
@@ -254,7 +254,7 @@ func TestMintCoins_ExpectedCalls(t *testing.T) {
 					),
 					minttypes.ModuleName,
 					// Include minter permissions - not testing permission in
-					// this test
+					// this edge
 					authtypes.Minter,
 				)).
 				Once()
@@ -314,7 +314,7 @@ func TestMintCoins_ExpectedCalls(t *testing.T) {
 					Return(moduleAddr).
 					Once()
 
-				// Initial integer balance is always 0 for this test
+				// Initial integer balance is always 0 for this edge
 				mintIntegerAmount := extCoins.Amount.Quo(types.ConversionFactor())
 
 				// Minted coins does NOT include roll-over, simply excludes

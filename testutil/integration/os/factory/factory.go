@@ -57,7 +57,7 @@ type TxFactory interface {
 	// compiled contract data and constructor arguments
 	DeployContract(privKey cryptotypes.PrivKey, txArgs evmtypes.EvmTxArgs, deploymentData ContractDeploymentData) (common.Address, error)
 	// CallContractAndCheckLogs is a helper function to call a contract and check the logs using
-	// the integration test utilities.
+	// the integration edge utilities.
 	//
 	// It returns the Cosmos Tx response, the decoded Ethereum Tx response and an error. This error value
 	// is nil, if the expected logs are found and the VM error is the expected one, should one be expected.

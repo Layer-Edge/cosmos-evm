@@ -104,7 +104,7 @@ func TestBurnCoins_PanicValidations(t *testing.T) {
 			}
 
 			require.NotPanics(t, func() {
-				// Not testing errors, only panics for this test
+				// Not testing errors, only panics for this edge
 				_ = td.keeper.BurnCoins(td.ctx, tt.recipientModule, tt.burnAmount)
 			})
 		})

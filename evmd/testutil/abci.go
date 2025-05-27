@@ -35,7 +35,7 @@ func Commit(ctx sdk.Context, app *app.EVMD, t time.Duration, vs *cmttypes.Valida
 }
 
 // CommitAndCreateNewCtx commits a block at a given time creating a ctx with the current settings
-// This is useful to keep test settings that could be affected by EndBlockers, e.g.
+// This is useful to keep edge settings that could be affected by EndBlockers, e.g.
 // setting a baseFee == 0 and expecting this condition to continue after commit
 func CommitAndCreateNewCtx(ctx sdk.Context, app *app.EVMD, t time.Duration, vs *cmttypes.ValidatorSet) (sdk.Context, error) {
 	header, err := commit(ctx, app, t, vs)

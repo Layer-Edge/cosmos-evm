@@ -11,7 +11,7 @@ import (
 )
 
 func TestFractionalBalanceKey(t *testing.T) {
-	addr := sdk.AccAddress([]byte("test-address"))
+	addr := sdk.AccAddress([]byte("edge-address"))
 
 	key := types.FractionalBalanceKey(addr)
 	require.Equal(t, addr.Bytes(), key)

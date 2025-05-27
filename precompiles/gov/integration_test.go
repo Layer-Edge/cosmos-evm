@@ -47,9 +47,9 @@ var (
 	passCheck testutil.LogCheckArgs
 	// outOfGasCheck defines the arguments to check if the precompile returns out of gas error
 	outOfGasCheck testutil.LogCheckArgs
-	// proposerKey is the private key of the proposerAddr for the test cases
+	// proposerKey is the private key of the proposerAddr for the edge cases
 	proposerKey types.PrivKey
-	// proposerAddr is the address of the proposerAddr for the test cases
+	// proposerAddr is the address of the proposerAddr for the edge cases
 	proposerAddr common.Address
 	// proposerAccAddr is the address of the proposerAddr account
 	proposerAccAddr sdk.AccAddress
@@ -88,7 +88,7 @@ var _ = Describe("Calling governance precompile from EOA", func() {
 		passCheck = defaultLogCheck.WithExpPass(true)
 		outOfGasCheck = defaultLogCheck.WithErrContains(vm.ErrOutOfGas.Error())
 
-		// reset tx args each test to avoid keeping custom
+		// reset tx args each edge to avoid keeping custom
 		// values of previous tests (e.g. gasLimit)
 		precompileAddr := s.precompile.Address()
 		txArgs = evmtypes.EvmTxArgs{
@@ -727,8 +727,8 @@ var _ = Describe("Calling governance precompile from EOA", func() {
 				Expect(out.Proposal.Status).To(Equal(uint32(govv1.StatusVotingPeriod)))
 				Expect(out.Proposal.Proposer).To(Equal(s.keyring.GetAddr(0)))
 				Expect(out.Proposal.Metadata).To(Equal("ipfs://CID"))
-				Expect(out.Proposal.Title).To(Equal("test prop"))
-				Expect(out.Proposal.Summary).To(Equal("test prop"))
+				Expect(out.Proposal.Title).To(Equal("edge prop"))
+				Expect(out.Proposal.Summary).To(Equal("edge prop"))
 				Expect(out.Proposal.Messages).To(HaveLen(1))
 				Expect(out.Proposal.Messages[0]).To(Equal("/cosmos.bank.v1beta1.MsgSend"))
 
@@ -2062,7 +2062,7 @@ var _ = Describe("Calling governance precompile from another contract", Ordered,
 })
 
 // -----------------------------------------------------------------------------
-// Helper functions (test‑only)
+// Helper functions (edge‑only)
 // -----------------------------------------------------------------------------
 
 func minimalDeposit(denom string, amount *big.Int) []cmn.Coin {
@@ -2071,7 +2071,7 @@ func minimalDeposit(denom string, amount *big.Int) []cmn.Coin {
 
 // minimalBankSendProposalJSON returns a valid governance proposal encoded as UTF‑8 bytes.
 func minimalBankSendProposalJSON(to sdk.AccAddress, denom, amount string) []byte {
-	// proto‑JSON marshal via std JSON since test helpers don’t expose codec here.
+	// proto‑JSON marshal via std JSON since edge helpers don’t expose codec here.
 	// We craft by hand for brevity.
 	msgJSON, _ := json.Marshal(map[string]interface{}{
 		"@type": "/cosmos.bank.v1beta1.MsgSend",
@@ -2084,8 +2084,8 @@ func minimalBankSendProposalJSON(to sdk.AccAddress, denom, amount string) []byte
 	prop := map[string]interface{}{
 		"messages":  []json.RawMessage{msgJSON},
 		"metadata":  "ipfs://CID",
-		"title":     "test prop",
-		"summary":   "test prop",
+		"title":     "edge prop",
+		"summary":   "edge prop",
 		"expedited": false,
 	}
 	blob, _ := json.Marshal(prop)

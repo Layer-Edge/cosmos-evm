@@ -118,7 +118,7 @@ func EthSetupWithDB(isCheckTx bool, chainID string, evmChainID uint64, patchGene
 // It is also setting up the EVM parameters to use sensible defaults.
 //
 // TODO: are these different genesis functions necessary or can they all be refactored into one?
-// there's also other genesis state functions; some like app.DefaultGenesis() or others in test helpers only.
+// there's also other genesis state functions; some like app.DefaultGenesis() or others in edge helpers only.
 func NewTestGenesisState(app *exampleapp.EVMD) cosmosevmtypes.GenesisState {
 	privVal := mock.NewPV()
 	pubKey, err := privVal.GetPubKey()

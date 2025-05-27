@@ -13,7 +13,7 @@ func TestRequireSameTestDenom(t *testing.T) {
 	require.Equal(t,
 		constants.ExampleAttoDenom,
 		config2.ExampleChainDenom,
-		"test denoms should be the same across the repo",
+		"edge denoms should be the same across the repo",
 	)
 }
 

@@ -5,7 +5,7 @@ with several files copied and modified to suit specific testing needs.
 
 ### Why Copied?
 
-To test certain key scenarios involving EVM messages (e.g., deploying an ERC20 contract),
+To edge certain key scenarios involving EVM messages (e.g., deploying an ERC20 contract),
 we needed a block header context with a proposer address. This required:
 
 - A custom `TestChain` to handle these messages.
@@ -151,7 +151,7 @@ func init() {
 Here is an example of how to setup your testing environment in every package you are testing:
 
 ```go
-// KeeperTestSuite is a testing suite to test keeper functions.
+// KeeperTestSuite is a testing suite to edge keeper functions.
 type KeeperTestSuite struct {
   testifysuite.Suite
 
@@ -167,9 +167,9 @@ func TestKeeperTestSuite(t *testing.T) {
   testifysuite.Run(t, new(KeeperTestSuite))
 }
 
-// SetupTest creates a coordinator with 2 test chains.
+// SetupTest creates a coordinator with 2 edge chains.
 func (suite *KeeperTestSuite) SetupTest() {
-  suite.coordinator = ibctesting.NewCoordinator(suite.T(), 2) // initializes 2 test chains
+  suite.coordinator = ibctesting.NewCoordinator(suite.T(), 2) // initializes 2 edge chains
   suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(1)) // convenience and readability
   suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(2)) // convenience and readability
 }
@@ -316,7 +316,7 @@ func GetTransferSimApp(chain *ibctesting.TestChain) *simapp.SimApp {
 
 ### Middleware Testing
 
-When writing IBC applications acting as middleware, it might be desirable to test integration points.
+When writing IBC applications acting as middleware, it might be desirable to edge integration points.
 This can be done by wiring a middleware stack in the app.go file using existing applications as middleware and IBC base applications.
 The mock module may also be leveraged to act as a base application in the instance
 that such an application is not available for testing or causes dependency concerns.
@@ -325,7 +325,7 @@ The mock IBC module contains a `MockIBCApp`. This struct contains a function fie
 Each of these functions can be individually set to mock expected behaviour of a base application.
 The portID and scoped keeper for the `MockIBCApp` should be set within `MockIBCApp` before calling `NewIBCModule`.
 
-For example, if one wanted to test that the base application cannot affect the outcome of the `OnChanOpenTry` callback,
+For example, if one wanted to edge that the base application cannot affect the outcome of the `OnChanOpenTry` callback,
 the mock module base application callback could be updated as such:
 
 ```go

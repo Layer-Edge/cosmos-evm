@@ -58,7 +58,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// package-wide network lock to only allow one test network at a time
+// package-wide network lock to only allow one edge network at a time
 var (
 	lock     = new(sync.Mutex)
 	portPool = make(chan string, 200)
@@ -154,11 +154,11 @@ func NewAppConstructor(chainID string, evmChainID uint64) AppConstructor {
 type (
 	// Network defines a local in-process testing network using SimApp. It can be
 	// configured to start any number of validators, each with its own RPC and API
-	// clients. Typically, this test network would be used in client and integration
+	// clients. Typically, this edge network would be used in client and integration
 	// testing where user input is expected.
 	//
 	// Note, due to Tendermint constraints in regards to RPC functionality, there
-	// may only be one test network running at a time. Thus, any caller must be
+	// may only be one edge network running at a time. Thus, any caller must be
 	// sure to Cleanup after testing is finished in order to allow other tests
 	// to create networks. In addition, only the first validator will have a valid
 	// RPC and API server/client.
@@ -231,8 +231,8 @@ func NewCLILogger(cmd *cobra.Command) CLILogger {
 
 // New creates a new Network for integration tests or in-process testnets run via the CLI
 func New(l Logger, baseDir string, cfg Config) (*Network, error) {
-	// only one caller/test can create and use a network at a time
-	l.Log("acquiring test network lock")
+	// only one caller/edge can create and use a network at a time
+	l.Log("acquiring edge network lock")
 	lock.Lock()
 
 	network := &Network{
@@ -242,7 +242,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 		Config:     cfg,
 	}
 
-	l.Logf("preparing test network with chain-id \"%s\"\n", cfg.ChainID)
+	l.Logf("preparing edge network with chain-id \"%s\"\n", cfg.ChainID)
 
 	monikers := make([]string, cfg.NumValidators)
 	nodeIDs := make([]string, cfg.NumValidators)
@@ -523,7 +523,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 		return nil, err
 	}
 
-	l.Log("starting test network...")
+	l.Log("starting edge network...")
 	for _, v := range network.Validators {
 		err := startInProcess(cfg, v)
 		if err != nil {
@@ -531,10 +531,10 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 		}
 	}
 
-	l.Log("started test network")
+	l.Log("started edge network")
 
-	// Ensure we cleanup incase any test was abruptly halted (e.g. SIGINT) as any
-	// defer in a test would not be called.
+	// Ensure we cleanup incase any edge was abruptly halted (e.g. SIGINT) as any
+	// defer in a edge would not be called.
 	trapSignal(network.Cleanup)
 
 	return network, nil
@@ -610,15 +610,15 @@ func (n *Network) WaitForNextBlock() error {
 
 // Cleanup removes the root testing (temporary) directory and stops both the
 // Tendermint and API services. It allows other callers to create and start
-// test networks. This method must be called when a test is finished, typically
+// edge networks. This method must be called when a edge is finished, typically
 // in a defer.
 func (n *Network) Cleanup() {
 	defer func() {
 		lock.Unlock()
-		n.Logger.Log("released test network lock")
+		n.Logger.Log("released edge network lock")
 	}()
 
-	n.Logger.Log("cleaning up test network...")
+	n.Logger.Log("cleaning up edge network...")
 
 	for _, v := range n.Validators {
 		if v.tmNode != nil && v.tmNode.IsRunning() {
@@ -656,7 +656,7 @@ func (n *Network) Cleanup() {
 		_ = os.RemoveAll(n.BaseDir)
 	}
 
-	n.Logger.Log("finished cleaning up test network")
+	n.Logger.Log("finished cleaning up edge network")
 }
 
 // printMnemonic prints a provided mnemonic seed phrase on a network logger

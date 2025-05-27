@@ -104,7 +104,7 @@ func (suite *BackendTestSuite) TestTraceTransaction() {
 					},
 				},
 			},
-			map[string]interface{}{"test": "hello"},
+			map[string]interface{}{"edge": "hello"},
 			false,
 		},
 		{
@@ -149,7 +149,7 @@ func (suite *BackendTestSuite) TestTraceTransaction() {
 					},
 				},
 			},
-			map[string]interface{}{"test": "hello"},
+			map[string]interface{}{"edge": "hello"},
 			true,
 		},
 		{
@@ -181,14 +181,14 @@ func (suite *BackendTestSuite) TestTraceTransaction() {
 					},
 				},
 			},
-			map[string]interface{}{"test": "hello"},
+			map[string]interface{}{"edge": "hello"},
 			true,
 		},
 	}
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			db := dbm.NewMemDB()
@@ -250,7 +250,7 @@ func (suite *BackendTestSuite) TestTraceBlock() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("case %s", tc.name), func() {
-			suite.SetupTest() // reset test and queries
+			suite.SetupTest() // reset edge and queries
 			tc.registerMock()
 
 			traceResults, err := suite.backend.TraceBlock(1, tc.config, tc.resBlock)

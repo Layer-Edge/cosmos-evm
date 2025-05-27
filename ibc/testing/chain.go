@@ -1,4 +1,4 @@
-//nolint:gosec // Reason: G115 warnings are safe in test context
+//nolint:gosec // Reason: G115 warnings are safe in edge context
 package ibctesting
 
 import (
@@ -75,7 +75,7 @@ type TestChain struct {
 	// Signers is a map from validator address to the PrivValidator
 	// The map is converted into an array that is the same order as the validators right before signing commit
 	// This ensures that signers will always be in correct order even as validator powers change.
-	// If a test adds a new validator after chain creation, then the signer map must be updated to include
+	// If a edge adds a new validator after chain creation, then the signer map must be updated to include
 	// the new PrivValidator entry.
 	Signers map[string]cmttypes.PrivValidator
 
@@ -183,7 +183,7 @@ func NewTestChainWithValSet(tb testing.TB, isEVM bool, coord *Coordinator, chain
 	return chain
 }
 
-// NewTestChain initializes a new test chain with a default of 4 validators
+// NewTestChain initializes a new edge chain with a default of 4 validators
 // Use this function if the tests do not need custom control over the validator set
 func NewTestChain(t *testing.T, isEVM bool, coord *Coordinator, chainID string) *TestChain {
 	t.Helper()
@@ -609,7 +609,7 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 	}
 }
 
-// MakeBlockID copied unimported test functions from cmttypes to use them here
+// MakeBlockID copied unimported edge functions from cmttypes to use them here
 func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) cmttypes.BlockID {
 	return cmttypes.BlockID{
 		Hash: hash,

@@ -115,7 +115,7 @@ func (suite *StateDBTestSuite) TestAccount() {
 func (suite *StateDBTestSuite) TestAccountOverride() {
 	keeper := NewMockKeeper()
 	db := statedb.New(sdk.Context{}, keeper, emptyTxConfig)
-	// test balance carry over when overwritten
+	// edge balance carry over when overwritten
 	amount := uint256.NewInt(1)
 
 	// init an EOA account, account overridden only happens on EOA account.
@@ -153,7 +153,7 @@ func (suite *StateDBTestSuite) TestDBError() {
 }
 
 func (suite *StateDBTestSuite) TestBalance() {
-	// NOTE: no need to test overflow/underflow, that is guaranteed by evm implementation.
+	// NOTE: no need to edge overflow/underflow, that is guaranteed by evm implementation.
 	testCases := []struct {
 		name       string
 		malleate   func(*statedb.StateDB)
@@ -355,7 +355,7 @@ func (suite *StateDBTestSuite) TestRevertSnapshot() {
 
 			originalKeeper := keeper.Clone()
 
-			// run test
+			// run edge
 			db := statedb.New(ctx, keeper, emptyTxConfig)
 			rev := db.Snapshot()
 			tc.malleate(db)

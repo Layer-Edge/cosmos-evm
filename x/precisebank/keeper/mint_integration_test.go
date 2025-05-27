@@ -45,7 +45,7 @@ func (suite *KeeperIntegrationTestSuite) TestBlockedRecipient() {
 
 func (suite *KeeperIntegrationTestSuite) TestMintCoins_MatchingErrors() {
 	// x/precisebank MintCoins should be identical to x/bank MintCoins to
-	// consumers. This test ensures that the panics & errors returned by
+	// consumers. This edge ensures that the panics & errors returned by
 	// x/precisebank are identical to x/bank.
 
 	tests := []struct {
@@ -85,7 +85,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins_MatchingErrors() {
 			suite.SetupTest()
 
 			if tt.wantErr == "" && tt.wantPanic == "" {
-				suite.Fail("test must specify either wantErr or wantPanic")
+				suite.Fail("edge must specify either wantErr or wantPanic")
 			}
 
 			if tt.wantErr != "" {
@@ -106,7 +106,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins_MatchingErrors() {
 
 			if tt.wantPanic != "" {
 				// First check the wantPanic string is correct.
-				// Actually specify the panic string in the test since it makes
+				// Actually specify the panic string in the edge since it makes
 				// it more clear we are testing specific and different cases.
 				suite.Require().PanicsWithError(tt.wantPanic, func() {
 					_ = suite.network.App.BankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, tt.mintAmount)
@@ -131,7 +131,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins() {
 		name            string
 		recipientModule string
 		// Instead of having a start balance, we just have a list of mints to
-		// both test & get into desired non-default states.
+		// both edge & get into desired non-default states.
 		mints []mintTest
 	}{
 		{
@@ -178,7 +178,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins() {
 					wantBalance: cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().QuoRaw(4).MulRaw(3))),
 				},
 				{
-					// Add another 0.50 to incur carry to test reserve on carry
+					// Add another 0.50 to incur carry to edge reserve on carry
 					mintAmount:  cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().QuoRaw(2))),
 					wantBalance: cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().QuoRaw(4).MulRaw(5))),
 				},
@@ -385,7 +385,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins_RandomValueMultiDecimals(
 			// Target balance
 			targetBalance := types.ConversionFactor().MulRaw(100)
 
-			// Setup test parameters
+			// Setup edge parameters
 			maxMintUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
 			r := rand.New(rand.NewSource(SEED))
 
@@ -451,7 +451,7 @@ func FuzzMintCoins(f *testing.F) {
 			amount = -amount
 		}
 
-		// Manually setup test suite since no direct Fuzz support in test suites
+		// Manually setup edge suite since no direct Fuzz support in edge suites
 		suite := new(KeeperIntegrationTestSuite)
 		suite.SetT(t)
 		suite.SetS(suite)

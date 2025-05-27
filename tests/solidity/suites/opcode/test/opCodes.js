@@ -11,7 +11,7 @@ contract('OpCodes', () => {
   it('Should run the majority of opcodes without errors', async () => {
     let error
     try {
-      await contractInstance.test()
+      await contractInstance.edge()
       await contractInstance.test_stop()
     } catch (err) {
       error = err

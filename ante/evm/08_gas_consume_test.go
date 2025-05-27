@@ -80,7 +80,7 @@ func (suite *EvmAnteTestSuite) TestUpdateCumulativeGasWanted() {
 
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			// Function under test
+			// Function under edge
 			gasWanted := evmante.UpdateCumulativeGasWanted(
 				tc.getCtx(),
 				tc.msgGasWanted,
@@ -93,7 +93,7 @@ func (suite *EvmAnteTestSuite) TestUpdateCumulativeGasWanted() {
 	}
 }
 
-// NOTE: claim rewards are not tested since there is an independent suite to test just that
+// NOTE: claim rewards are not tested since there is an independent suite to edge just that
 func (suite *EvmAnteTestSuite) TestConsumeGasAndEmitEvent() {
 	keyring := testkeyring.New(1)
 	unitNetwork := network.NewUnitTestNetwork(
@@ -165,7 +165,7 @@ func (suite *EvmAnteTestSuite) TestConsumeGasAndEmitEvent() {
 			feesAmt := tc.feesAmt.Mul(evmDecimals.ConversionFactor())
 			fees := sdktypes.NewCoins(sdktypes.NewCoin(unitNetwork.GetBaseDenom(), feesAmt))
 
-			// Function under test
+			// Function under edge
 			err = evmante.ConsumeFeesAndEmitEvent(
 				unitNetwork.GetContext(),
 				unitNetwork.App.EVMKeeper,

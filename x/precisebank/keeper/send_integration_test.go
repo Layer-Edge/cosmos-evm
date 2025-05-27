@@ -55,7 +55,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule_Matchi
 			// Reset
 			suite.SetupTest()
 
-			suite.Require().NotEmpty(tt.wantPanic, "test case must have a wantPanic")
+			suite.Require().NotEmpty(tt.wantPanic, "edge case must have a wantPanic")
 
 			suite.Require().PanicsWithError(tt.wantPanic, func() {
 				err := suite.network.App.BankKeeper.SendCoinsFromAccountToModule(suite.network.GetContext(), tt.sender, tt.recipientModule, tt.sendAmount)
@@ -74,7 +74,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount_Matchi
 	// Ensure errors match x/bank errors AND panics. This needs to be well
 	// tested before SendCoins as all send tests rely on this to initialize
 	// account balances.
-	// No unit test with mock x/bank for SendCoinsFromModuleToAccount since
+	// No unit edge with mock x/bank for SendCoinsFromModuleToAccount since
 	// we only are testing the errors/panics specific to the method and
 	// remaining logic is the same as SendCoins.
 
@@ -172,7 +172,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount_Matchi
 			"insufficient balance - extended",
 			senderModuleName,
 			sdk.AccAddress([]byte{2}),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still edge insufficient bal errors with "aedgen" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -187,11 +187,11 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount_Matchi
 			suite.SetupTest()
 
 			if tt.wantPanic == "" && tt.wantErr == "" {
-				suite.FailNow("test case must have a wantErr or wantPanic")
+				suite.FailNow("edge case must have a wantErr or wantPanic")
 			}
 
 			if tt.wantPanic != "" {
-				suite.Require().Empty(tt.wantErr, "test case must not have a wantErr if wantPanic is set")
+				suite.Require().Empty(tt.wantErr, "edge case must not have a wantErr if wantPanic is set")
 
 				suite.Require().PanicsWithError(tt.wantPanic, func() {
 					err := suite.network.App.BankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
@@ -248,7 +248,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 		{
 			"insufficient empty balance - extended",
 			cs(),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still edge insufficient bal errors with "aedgen" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -261,8 +261,8 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 			fmt.Sprintf("spendable balance 100%s is smaller than 1000%s: insufficient funds",
 				types.IntegerCoinDenom(), types.IntegerCoinDenom()),
 		},
-		// non-empty aatom transfer error is tested in SendCoins, not here since
-		// x/bank doesn't hold aatom
+		// non-empty aedgen transfer error is tested in SendCoins, not here since
+		// x/bank doesn't hold aedgen
 	}
 
 	for _, tt := range tests {
@@ -272,7 +272,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 			sender := sdk.AccAddress([]byte{1})
 			recipient := sdk.AccAddress([]byte{2})
 
-			suite.Require().NotEmpty(tt.wantErr, "test case must have a wantErr")
+			suite.Require().NotEmpty(tt.wantErr, "edge case must have a wantErr")
 
 			suite.MintToAccount(sender, tt.initialAmount)
 
@@ -293,7 +293,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 }
 
 func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
-	// SendCoins is tested mostly in this integration test, as a unit test with
+	// SendCoins is tested mostly in this integration edge, as a unit edge with
 	// mocked BankKeeper overcomplicates expected keepers and makes initializing
 	// balances very complex.
 
@@ -334,12 +334,12 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 			"",
 		},
 		{
-			"aatom send - 1aatom to 0 balance",
+			"aedgen send - 1aatom to 0 balance",
 			// Starting balances
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(5))),
 			cs(),
 			// Send amount
-			cs(c(types.ExtendedCoinDenom(), 1)), // aatom
+			cs(c(types.ExtendedCoinDenom(), 1)), // aedgen
 			"",
 		},
 		{
@@ -406,7 +406,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 			recipientBalAfter := suite.GetAllBalances(recipient)
 
 			// Convert send amount coins to extended coins. i.e. if send coins
-			// includes uatom, convert it so that its the equivalent aatom
+			// includes uatom, convert it so that its the equivalent aedgen
 			// amount so its easier to compare. Compare extended coins only.
 			sendAmountFullExtended := tt.giveAmt
 			sendAmountInteger := tt.giveAmt.AmountOf(types.IntegerCoinDenom())
@@ -432,14 +432,14 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 
 			// Check events
 
-			// FULL aatom equivalent, including uatom only/mixed sends
+			// FULL aedgen equivalent, including uatom only/mixed sends
 			sendExtendedAmount := sdk.NewCoin(
 				types.ExtendedCoinDenom(),
 				sendAmountFullExtended.AmountOf(types.ExtendedCoinDenom()),
 			)
 			extCoins := sdk.NewCoins(sendExtendedAmount)
 
-			// No extra events if not sending aatom
+			// No extra events if not sending aedgen
 			if sendExtendedAmount.IsZero() {
 				return
 			}
@@ -471,7 +471,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 }
 
 func (suite *KeeperIntegrationTestSuite) TestSendCoins_Matrix() {
-	// SendCoins is tested mostly in this integration test, as a unit test with
+	// SendCoins is tested mostly in this integration edge, as a unit edge with
 	// mocked BankKeeper overcomplicates expected keepers and makes initializing
 	// balances very complex.
 
@@ -565,7 +565,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_Matrix() {
 					recipientBalAfter := suite.GetAllBalances(recipient)
 
 					// Convert send amount coins to extended coins. i.e. if send coins
-					// includes uatom, convert it so that its the equivalent aatom
+					// includes uatom, convert it so that its the equivalent aedgen
 					// amount so its easier to compare. Compare extended coins only.
 
 					suite.Require().Equal(
@@ -649,7 +649,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule_Blocke
 }
 
 func (suite *KeeperIntegrationTestSuite) TestSendCoins_BlockedRecipientCarry() {
-	// Same test as TestSendCoinsFromModuleToAccount_Blocked, but with SendCoins
+	// Same edge as TestSendCoinsFromModuleToAccount_Blocked, but with SendCoins
 	// which also should not fail when sending to a blocked module account.
 	sender := sdk.AccAddress([]byte{1})
 
@@ -745,7 +745,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_RandomValueMultiDecimals(
 			initialBalance := types.ConversionFactor().MulRaw(100)
 			suite.MintToAccount(sender, cs(ci(types.ExtendedCoinDenom(), initialBalance)))
 
-			// Setup test parameters
+			// Setup edge parameters
 			maxSendUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
 			r := rand.New(rand.NewSource(SEED))
 
@@ -816,7 +816,7 @@ func FuzzSendCoins(f *testing.F) {
 		startBalReceiver uint64,
 		sendAmount uint64,
 	) {
-		// Manually setup test suite since no direct Fuzz support in test suites
+		// Manually setup edge suite since no direct Fuzz support in edge suites
 		suite := new(KeeperIntegrationTestSuite)
 		suite.SetT(t)
 		suite.SetS(suite)

@@ -38,7 +38,7 @@ type MiddlewareTestSuite struct {
 	pathBToA *evmibctesting.Path
 }
 
-// SetupTest initializes the coordinator and test chains before each test.
+// SetupTest initializes the coordinator and edge chains before each edge.
 func (suite *MiddlewareTestSuite) SetupTest() {
 	suite.coordinator = evmibctesting.NewCoordinator(suite.T(), 1, 2)
 	suite.evmChainA = suite.coordinator.GetChain(evmibctesting.GetEvmChainID(1))

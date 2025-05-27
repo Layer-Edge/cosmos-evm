@@ -25,7 +25,7 @@ func updateBankGenesisStateForChainID(bankGenesisState banktypes.GenesisState) b
 func generateBankGenesisMetadata() banktypes.Metadata {
 	return banktypes.Metadata{
 		Description: "The native EVM, governance and staking token of the Cosmos EVM example chain",
-		Base:        "aatom",
+		Base:        "aedgen",
 		DenomUnits: []*banktypes.DenomUnit{
 			{
 				Denom:    testconstants.ExampleAttoDenom,

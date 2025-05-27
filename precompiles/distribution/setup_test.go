@@ -45,7 +45,7 @@ func (s *PrecompileTestSuite) SetupTest() {
 	s.validatorsKeys = generateKeys(3)
 	customGen := network.CustomGenesisState{}
 
-	// set some slashing events for integration test
+	// set some slashing events for integration edge
 	distrGen := distrtypes.DefaultGenesisState()
 	if s.withValidatorSlashes {
 		distrGen.ValidatorSlashEvents = []distrtypes.ValidatorSlashEventRecord{

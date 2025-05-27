@@ -91,7 +91,7 @@ func (suite *EvmAnteTestSuite) TestCanTransfer() {
 			coreMsg, err := signMsg.AsMessage(signer, baseFeeResp.BaseFee.BigInt())
 			suite.Require().NoError(err)
 
-			// Function under test
+			// Function under edge
 			err = evm.CanTransfer(
 				unitNetwork.GetContext(),
 				unitNetwork.App.EVMKeeper,

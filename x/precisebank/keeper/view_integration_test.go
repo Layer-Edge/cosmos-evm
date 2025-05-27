@@ -24,7 +24,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 		{
 			"extended denom, no fractional - locked coins",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uatom when querying for aedgen
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(10))),
@@ -37,7 +37,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 		{
 			"extended denom, with fractional - locked coins",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uatom when querying for aedgen
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.NewInt(5000),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(10))),
@@ -70,7 +70,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 		suite.Run(tt.name, func() {
 			suite.SetupTest()
 
-			addr := sdk.AccAddress([]byte("test-address"))
+			addr := sdk.AccAddress([]byte("edge-address"))
 
 			suite.MintToAccount(addr, tt.giveBankBal)
 

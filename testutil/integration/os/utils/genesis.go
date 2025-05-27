@@ -50,7 +50,7 @@ func CreateGenesisWithTokenPairs(keyring testkeyring.Keyring, denoms ...string) 
 	// Add token pairs to genesis
 	tokenPairs := make([]erc20types.TokenPair, 0, len(denoms)+1)
 	tokenPairs = append(tokenPairs,
-		// NOTE: the example token pairs are being added in the integration test utils
+		// NOTE: the example token pairs are being added in the integration edge utils
 		constants.ExampleTokenPairs...,
 	)
 

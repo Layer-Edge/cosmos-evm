@@ -445,7 +445,7 @@ func (suite *MiddlewareV2TestSuite) TestOnAcknowledgementPacket() {
 			malleate: func() {
 				ack = channeltypesv2.ErrorAcknowledgement[:]
 			},
-			onSendRequired: true, // this test case handles the refund of the escrowed token, so we need to call OnSendPacket.
+			onSendRequired: true, // this edge case handles the refund of the escrowed token, so we need to call OnSendPacket.
 			expError:       "",
 		},
 		{

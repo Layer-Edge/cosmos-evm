@@ -100,7 +100,7 @@ func (suite *KeeperTestSuite) TestCallEVMWithData() {
 			"deploy",
 			types.ModuleAddress,
 			func() []byte {
-				ctorArgs, _ := contracts.ERC20MinterBurnerDecimalsContract.ABI.Pack("", "test", "test", uint8(18))
+				ctorArgs, _ := contracts.ERC20MinterBurnerDecimalsContract.ABI.Pack("", "edge", "edge", uint8(18))
 				data := append(contracts.ERC20MinterBurnerDecimalsContract.Bin, ctorArgs...) //nolint:gocritic
 				return data
 			},
@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) TestCallEVMWithData() {
 					AccessType: evmtypes.AccessTypeRestricted,
 				}
 				_ = suite.network.App.EVMKeeper.SetParams(suite.network.GetContext(), params)
-				ctorArgs, _ := contracts.ERC20MinterBurnerDecimalsContract.ABI.Pack("", "test", "test", uint8(18))
+				ctorArgs, _ := contracts.ERC20MinterBurnerDecimalsContract.ABI.Pack("", "edge", "edge", uint8(18))
 				data := append(contracts.ERC20MinterBurnerDecimalsContract.Bin, ctorArgs...) //nolint:gocritic
 				return data
 			},

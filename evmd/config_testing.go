@@ -1,5 +1,5 @@
-//go:build test
-// +build test
+//go:build edge
+// +build edge
 
 package evmd
 
@@ -25,8 +25,8 @@ var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
 	},
 	config.SixDecimalsChainID: {
 		Denom:         "utest",
-		ExtendedDenom: "atest",
-		DisplayDenom:  "test",
+		ExtendedDenom: "aedge",
+		DisplayDenom:  "edge",
 		Decimals:      evmtypes.SixDecimals,
 	},
 	config.TwelveDecimalsChainID: {

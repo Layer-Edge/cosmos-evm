@@ -347,7 +347,7 @@ func (w *ledgerDriver) ledgerSignTypedMessage(derivationPath gethaccounts.Deriva
 // to avoid compatibility issues with implementations ignoring a leading 00 byte.
 //
 // The Command tag describes the message content. Use TAG_APDU (0x05) for standard
-// APDU payloads, or TAG_PING (0x02) for a simple link test.
+// APDU payloads, or TAG_PING (0x02) for a simple link edge.
 //
 // The Packet sequence index describes the current sequence for fragmented payloads.
 // The first fragment index is 0x00.

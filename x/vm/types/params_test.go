@@ -60,7 +60,7 @@ func TestParamsValidate(t *testing.T) {
 			if !tc.expPass {
 				// NOTE: check that the necessary information is provided. Otherwise, a false
 				// error message could be accepted when checking for an empty string.
-				require.NotEmpty(t, tc.errContains, "expected test case to provide expected error message")
+				require.NotEmpty(t, tc.errContains, "expected edge case to provide expected error message")
 			}
 
 			err := tc.params.Validate()

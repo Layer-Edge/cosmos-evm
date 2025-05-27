@@ -2,8 +2,8 @@
 // The config package provides a convenient way to modify x/evm params and values.
 // Its primary purpose is to be used during application initialization.
 
-//go:build !test
-// +build !test
+//go:build !edge
+// +build !edge
 
 package types
 
@@ -46,7 +46,7 @@ func (ec *EVMConfigurator) Configure() error {
 }
 
 func (ec *EVMConfigurator) ResetTestConfig() {
-	panic("this is only implemented with the 'test' build flag. Make sure you're running your tests using the '-tags=test' flag.")
+	panic("this is only implemented with the 'edge' build flag. Make sure you're running your tests using the '-tags=edge' flag.")
 }
 
 // GetEthChainConfig returns the `chainConfig` used in the EVM (geth type).

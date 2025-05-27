@@ -9,7 +9,7 @@
       "suites/*"
     ],
     "nohoist": [
-      "**/@aragon/contract-helpers-test"
+      "**/@aragon/contract-helpers-edge"
     ]
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "patch-package": "^6.4.7"
   },
   "scripts": {
-    "test": "node test-helper.js",
+    "edge": "node edge-helper.js",
     "postinstall": "patch-package"
   },
   "standard": {

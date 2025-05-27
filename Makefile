@@ -101,28 +101,28 @@ vulncheck:
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
-test: test-unit
-test-all: test-unit test-race
+edge: edge-unit
+edge-all: edge-unit edge-race
 
 # For unit tests we don't want to execute the upgrade tests in tests/e2e but
 # we want to include all unit tests in the subfolders (tests/e2e/*)
 PACKAGES_UNIT=$(shell go list ./... | grep -v '/tests/e2e$$')
 TEST_PACKAGES=./...
-TEST_TARGETS := test-unit test-unit-cover test-race
+TEST_TARGETS := edge-unit edge-unit-cover edge-race
 
-# Test runs-specific rules. To add a new test target, just add
+# Test runs-specific rules. To add a new edge target, just add
 # a new rule, customise ARGS or TEST_PACKAGES ad libitum, and
 # append the new rule to the TEST_TARGETS list.
-test-unit: ARGS=-timeout=15m
-test-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
+edge-unit: ARGS=-timeout=15m
+edge-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
 
-test-race: ARGS=-race
-test-race: TEST_PACKAGES=$(PACKAGES_NOSIMULATION)
+edge-race: ARGS=-race
+edge-race: TEST_PACKAGES=$(PACKAGES_NOSIMULATION)
 $(TEST_TARGETS): run-tests
 
-test-unit-cover: ARGS=-timeout=15m -coverprofile=coverage.txt -covermode=atomic
-test-unit-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
-test-unit-cover:
+edge-unit-cover: ARGS=-timeout=15m -coverprofile=coverage.txt -covermode=atomic
+edge-unit-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
+edge-unit-cover:
 	@echo "Filtering ignored files from coverage.txt..."
 	@grep -v -E '/cmd/|/client/|/proto/|/testutil/|/mocks/|/test_.*\.go:|\.pb\.go:|\.pb\.gw\.go:|/x/[^/]+/module\.go:|/scripts/|/ibc/testing/|/version/|\.md:|\.pulsar\.go:' coverage.txt > tmp_coverage.txt && mv tmp_coverage.txt coverage.txt
 	@echo "Function-level coverage summary:"
@@ -131,9 +131,9 @@ test-unit-cover:
 
 run-tests:
 ifneq (,$(shell which tparse 2>/dev/null))
-	go test -tags=test -mod=readonly -json $(ARGS) $(EXTRA_ARGS) $(TEST_PACKAGES) | tparse
+	go edge -tags=edge -mod=readonly -json $(ARGS) $(EXTRA_ARGS) $(TEST_PACKAGES) | tparse
 else
-	go test -tags=test -mod=readonly $(ARGS)  $(EXTRA_ARGS) $(TEST_PACKAGES)
+	go edge -tags=edge -mod=readonly $(ARGS)  $(EXTRA_ARGS) $(TEST_PACKAGES)
 endif
 
 # Use the old Apple linker to workaround broken xcode - https://github.com/golang/go/issues/65169
@@ -141,25 +141,25 @@ ifeq ($(OS_FAMILY),Darwin)
   FUZZLDFLAGS := -ldflags=-extldflags=-Wl,-ld_classic
 endif
 
-test-fuzz:
-	go test -tags=test $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzMintCoins ./x/precisebank/keeper
-	go test -tags=test $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzBurnCoins ./x/precisebank/keeper
-	go test -tags=test $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzSendCoins ./x/precisebank/keeper
-	go test -tags=test $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzGenesisStateValidate_NonZeroRemainder ./x/precisebank/types
-	go test -tags=test $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzGenesisStateValidate_ZeroRemainder ./x/precisebank/types
+edge-fuzz:
+	go edge -tags=edge $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzMintCoins ./x/precisebank/keeper
+	go edge -tags=edge $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzBurnCoins ./x/precisebank/keeper
+	go edge -tags=edge $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzSendCoins ./x/precisebank/keeper
+	go edge -tags=edge $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzGenesisStateValidate_NonZeroRemainder ./x/precisebank/types
+	go edge -tags=edge $(FUZZLDFLAGS) -run NOTAREALTEST -v -fuzztime 10s -fuzz=FuzzGenesisStateValidate_ZeroRemainder ./x/precisebank/types
 
-test-scripts:
+edge-scripts:
 	@echo "Running scripts tests"
 	@pytest -s -vv ./scripts
 
-test-solidity:
+edge-solidity:
 	@echo "Beginning solidity tests..."
 	./scripts/run-solidity-tests.sh
 
-.PHONY: run-tests test test-all $(TEST_TARGETS)
+.PHONY: run-tests edge edge-all $(TEST_TARGETS)
 
 benchmark:
-	@go test -tags=test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
+	@go edge -tags=edge -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
 
 .PHONY: benchmark
 

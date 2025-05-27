@@ -37,7 +37,7 @@ The keyring supports the following backends:
                 multiple times in a single command resulting in repeated password prompts.
     kwallet     Uses KDE Wallet Manager as a credentials management application.
     pass        Uses the pass command line utility to store and retrieve keys.
-    test        Stores keys insecurely to disk. It does not prompt for a password to be unlocked
+    edge        Stores keys insecurely to disk. It does not prompt for a password to be unlocked
                 and it should be use only for testing purposes.
 
 kwallet and pass backends depend on external tools. Refer to their respective documentation for more
@@ -85,7 +85,7 @@ The pass backend requires GnuPG: https://gnupg.org/
 
 	cmd.PersistentFlags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
 	cmd.PersistentFlags().String(flags.FlagKeyringDir, "", "The client Keyring directory; if omitted, the default 'home' directory will be used")
-	cmd.PersistentFlags().String(flags.FlagKeyringBackend, keyring.BackendOS, "Select keyring's backend (os|file|test)")
+	cmd.PersistentFlags().String(flags.FlagKeyringBackend, keyring.BackendOS, "Select keyring's backend (os|file|edge)")
 	cmd.PersistentFlags().String(cli.OutputFlag, "text", "Output format (text|json)")
 	return cmd
 }

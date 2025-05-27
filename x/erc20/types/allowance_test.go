@@ -78,9 +78,9 @@ func (s *AllowanceTestSuite) TestNewAllowance() {
 		err := allowance.Validate()
 
 		if tc.expectPass {
-			s.Require().NoError(err, "valid test %s failed: %s", tc.msg, err)
+			s.Require().NoError(err, "valid edge %s failed: %s", tc.msg, err)
 		} else {
-			s.Require().Error(err, "invalid test %s passed: %s", tc.msg, err)
+			s.Require().Error(err, "invalid edge %s passed: %s", tc.msg, err)
 		}
 	}
 }

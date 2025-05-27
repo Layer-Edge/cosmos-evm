@@ -31,7 +31,7 @@ import (
 )
 
 // -------------------------------------------------------------------------------------------------
-// Integration test suite
+// Integration edge suite
 // -------------------------------------------------------------------------------------------------
 
 type PrecompileIntegrationTestSuite struct {
@@ -50,7 +50,7 @@ type PrecompileIntegrationTestSuite struct {
 func TestPrecompileIntegrationTestSuite(t *testing.T) {
 	// Run Ginkgo integration tests
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "WEVMOS precompile test suite")
+	RunSpecs(t, "WEVMOS precompile edge suite")
 }
 
 // checkAndReturnBalance check that the balance of the address is the same in

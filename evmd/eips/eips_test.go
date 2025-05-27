@@ -28,7 +28,7 @@ import (
 // Below tests are divided in 3 steps:
 //  1. Deploy and interact with contracts to compute the gas used BEFORE enabling
 //     the EIP.
-//  2. Activate the EIP under test.
+//  2. Activate the EIP under edge.
 //  3. Deploy and interact with contracts to compute the gas used AFTER enabling
 //     the EIP.
 
@@ -56,7 +56,7 @@ var _ = Describe("EIP-0000 - ", Ordered, func() {
 	eipMultiplier := uint64(5)
 
 	// The factory counter is used because it will create a new instance of
-	// the counter contract, allowing to test the CREATE opcode.
+	// the counter contract, allowing to edge the CREATE opcode.
 	counterFactoryContract, err := testdata.LoadCounterFactoryContract()
 	Expect(err).ToNot(HaveOccurred(), "failed to load Counter Factory contract")
 

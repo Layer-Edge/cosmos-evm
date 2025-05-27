@@ -11,7 +11,7 @@ import (
 	utiltx "github.com/cosmos/evm/testutil/tx"
 )
 
-//nolint:dupl // this is not a duplicate of the approval events test
+//nolint:dupl // this is not a duplicate of the approval events edge
 func (s *PrecompileTestSuite) TestEmitTransferEvent() {
 	testcases := []struct {
 		name   string
@@ -57,7 +57,7 @@ func (s *PrecompileTestSuite) TestEmitTransferEvent() {
 	}
 }
 
-//nolint:dupl // this is not a duplicate of the transfer events test
+//nolint:dupl // this is not a duplicate of the transfer events edge
 func (s *PrecompileTestSuite) TestEmitApprovalEvent() {
 	testcases := []struct {
 		name    string
