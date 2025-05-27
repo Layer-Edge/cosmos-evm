@@ -92,27 +92,7 @@ func FeeChecker(
 	}
 
 	feeCoins := feeTx.GetFee()
-
-	// Check if any fees are in gas tokens
 	feeAmtDec := sdkmath.LegacyNewDecFromInt(feeCoins.AmountOfNoDenomValidation(denom))
-	for _, coin := range feeCoins {
-		if coin.Denom != denom {
-			// Check if the token is allowed for gas
-			if !evmtypes.IsAllowedGasToken(coin.Denom) {
-				return nil, 0, errorsmod.Wrapf(errortypes.ErrInsufficientFee, "fee denom %s is not allowed for gas", coin.Denom)
-			}
-
-			// Get exchange rate for the gas token
-			exchangeRate, exists := evmtypes.GetGasTokenExchangeRate(coin.Denom)
-			if !exists {
-				return nil, 0, errorsmod.Wrapf(errortypes.ErrInsufficientFee, "no exchange rate found for gas token %s", coin.Denom)
-			}
-
-			// Convert gas token amount to base token using exchange rate
-			convertedAmount := sdkmath.LegacyNewDecFromInt(coin.Amount).Quo(exchangeRate)
-			feeAmtDec = feeAmtDec.Add(convertedAmount)
-		}
-	}
 
 	feeCap := feeAmtDec.QuoInt(gas)
 

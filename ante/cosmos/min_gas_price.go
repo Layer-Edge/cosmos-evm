@@ -42,10 +42,13 @@ func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	feeCoins := feeTx.GetFee()
 	evmDenom := evmtypes.GetEVMCoinDenom()
 
-	// Check if the fee denomination is valid (either native token, bond denom, or allowed gas token)
-	validFees := len(feeCoins) == 0 || (len(feeCoins) == 1 && (slices.Contains([]string{evmDenom, sdk.DefaultBondDenom}, feeCoins.GetDenomByIndex(0)) || evmtypes.IsAllowedGasToken(feeCoins.GetDenomByIndex(0))))
+	// only allow user to pass in aatom and stake native token as transaction fees
+	// allow use stake native tokens for fees is just for unit tests to pass
+	//
+	// TODO: is the handling of stake necessary here? Why not adjust the tests to contain the correct denom?
+	validFees := len(feeCoins) == 0 || (len(feeCoins) == 1 && slices.Contains([]string{evmDenom, sdk.DefaultBondDenom}, feeCoins.GetDenomByIndex(0)))
 	if !validFees && !simulate {
-		return ctx, fmt.Errorf("expected only native token %s, bond denom %s, or allowed gas tokens for fee, but got %s", evmDenom, sdk.DefaultBondDenom, feeCoins.String())
+		return ctx, fmt.Errorf("expected only native token %s for fee, but got %s", evmDenom, feeCoins.String())
 	}
 
 	// Short-circuit if min gas price is 0 or if simulating
@@ -53,21 +56,11 @@ func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		return next(ctx, tx, simulate)
 	}
 
-	// Create minimum gas prices for all allowed tokens
 	minGasPrices := sdk.DecCoins{
 		{
 			Denom:  evmDenom,
 			Amount: minGasPrice,
 		},
-	}
-
-	// Add minimum gas prices for allowed gas tokens
-	// TODO: Consider adding different minimum gas prices for different gas tokens
-	for denom := range evmtypes.AllowedGasTokens {
-		minGasPrices = minGasPrices.Add(sdk.DecCoin{
-			Denom:  denom,
-			Amount: minGasPrice, // Using same min gas price for now, can be customized per token
-		})
 	}
 
 	gas := feeTx.GetGas()
