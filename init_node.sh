@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CHAINID="${CHAIN_ID:-9001}"
-MONIKER="localtestnet"
+CHAINID="${CHAIN_ID:-3456}"
+MONIKER="layeredge"
 # Remember to change to other types of keyring like 'file' in-case exposing to outside world,
 # otherwise your balance will be wiped quickly
 # The keyring test does not require private key to steal tokens from you
@@ -19,6 +19,7 @@ BASEFEE=10000000
 # Path variables
 CONFIG=$HOMEDIR/config/config.toml
 APP_TOML=$HOMEDIR/config/app.toml
+CLIENT_TOML=$HOMEDIR/config/client.toml
 GENESIS=$HOMEDIR/config/genesis.json
 TMP_GENESIS=$HOMEDIR/config/tmp_genesis.json
 
@@ -96,33 +97,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	$evmd config set client chain-id "$CHAINID" --home "$HOMEDIR"
 	$evmd config set client keyring-backend "$KEYRING" --home "$HOMEDIR"
 
-	# myKey address 0x7cb61d4117ae31a12e393a1cfa3bac666481d02e | os10jmp6sgh4cc6zt3e8gw05wavvejgr5pwjnpcky
-	VAL_KEY="mykey"
-	VAL_MNEMONIC="gesture inject test cycle original hollow east ridge hen combine junk child bacon zero hope comfort vacuum milk pitch cage oppose unhappy lunar seat"
-
-	# dev0 address 0xc6fe5d33615a1c52c08018c47e8bc53646a0e101 | os1cml96vmptgw99syqrrz8az79xer2pcgp84pdun
-	USER1_KEY="dev0"
-	USER1_MNEMONIC="copper push brief egg scan entry inform record adjust fossil boss egg comic alien upon aspect dry avoid interest fury window hint race symptom"
-
-	# dev1 address 0x963ebdf2e1f8db8707d05fc75bfeffba1b5bac17 | os1jcltmuhplrdcwp7stlr4hlhlhgd4htqh3a79sq
-	USER2_KEY="dev1"
-	USER2_MNEMONIC="maximum display century economy unlock van census kite error heart snow filter midnight usage egg venture cash kick motor survey drastic edge muffin visual"
-
-	# dev2 address 0x40a0cb1C63e026A81B55EE1308586E21eec1eFa9 | os1gzsvk8rruqn2sx64acfsskrwy8hvrmafqkaze8
-	USER3_KEY="dev2"
-	USER3_MNEMONIC="will wear settle write dance topic tape sea glory hotel oppose rebel client problem era video gossip glide during yard balance cancel file rose"
-
-	# dev3 address 0x498B5AeC5D439b733dC2F58AB489783A23FB26dA | os1fx944mzagwdhx0wz7k9tfztc8g3lkfk6rrgv6l
-	USER4_KEY="dev3"
-	USER4_MNEMONIC="doll midnight silk carpet brush boring pluck office gown inquiry duck chief aim exit gain never tennis crime fragile ship cloud surface exotic patch"
-
-	# Import keys from mnemonics
-	echo "$VAL_MNEMONIC" | $evmd keys add "$VAL_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
-	echo "$USER1_MNEMONIC" | $evmd keys add "$USER1_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
-	echo "$USER2_MNEMONIC" | $evmd keys add "$USER2_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
-	echo "$USER3_MNEMONIC" | $evmd keys add "$USER3_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
-	echo "$USER4_MNEMONIC" | $evmd keys add "$USER4_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
-
 	# Set moniker and chain-id for the example chain (Moniker can be anything, chain-id must be an integer)
 	$evmd init $MONIKER -o --chain-id "$CHAINID" --home "$HOMEDIR"
 
@@ -135,13 +109,10 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	jq '.app_state["mint"]["params"]["mint_denom"]="aedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Add default token metadata to genesis
-	jq '.app_state["bank"]["denom_metadata"]=[{"description":"The native staking token for evmd.","denom_units":[{"denom":"aedgen","exponent":0,"aliases":["attoedgen"]},{"denom":"edgen","exponent":18,"aliases":[]}],"base":"aedgen","display":"edgen","name":"Edgen Token","symbol":"EDGEN","uri":"","uri_hash":""}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["bank"]["denom_metadata"]=[{"description":"The native staking token for evmd.","denom_units":[{"denom":"aedgen","exponent":0,"aliases":["aedgen"]},{"denom":"edgen","exponent":18,"aliases":[]}],"base":"aedgen","display":"edgen","name":"LayerEdge Testnet Staking Token","symbol":"EDGEN","uri":"","uri_hash":""}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Enable precompiles in EVM params
 	jq '.app_state["evm"]["params"]["active_static_precompiles"]=["0x0000000000000000000000000000000000000100","0x0000000000000000000000000000000000000400","0x0000000000000000000000000000000000000800","0x0000000000000000000000000000000000000801","0x0000000000000000000000000000000000000802","0x0000000000000000000000000000000000000803","0x0000000000000000000000000000000000000804","0x0000000000000000000000000000000000000805"]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-
-	# Set EVM config
-	jq '.app_state["evm"]["params"]["evm_denom"]="aedgen"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Enable native denomination as a token pair for STRv2
 	jq '.app_state.erc20.params.native_precompiles=["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -191,41 +162,18 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	sed -i.bak 's/"expedited_voting_period": "86400s"/"expedited_voting_period": "15s"/g' "$GENESIS"
 
 	# set custom pruning settings
+	sed -i.bak 's/node = "tcp:\/\/localhost:26657"/node = "tcp:\/\/0.0.0.0:26657"/g' "$CLIENT_TOML"
+	sed -i.bak 's/pprof_laddr = "localhost:6060"/pprof_laddr = "0.0.0.0:6060"/' "$CONFIG"
+	sed -i.bak 's/proxy_app = "tcp:\/\/127.0.0.1:26658"/proxy_app = "tcp:\/\/0.0.0.0:26658"/' "$CONFIG"
+	sed -i.bak 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/' "$CONFIG"
+	sed -i.bak 's/address = "tcp:\/\/localhost:1317"/address = "tcp:\/\/0.0.0.0:1317"/g' "$APP_TOML"
+	sed -i.bak 's/address = "localhost:9090"/address = "0.0.0.0:9090"/g' "$APP_TOML"
+	sed -i.bak 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$APP_TOML"
+	sed -i.bak 's/address = "127.0.0.1:8546"/address = "0.0.0.0:8546"/g' "$APP_TOML"
+	sed -i.bak 's/metrics-address = "127.0.0.1:6065"/metrics-address = "0.0.0.0:6065"/g' "$APP_TOML"
+	sed -i.bak 's/minimum-gas-prices = "0aatom"/minimum-gas-prices = "0.025aedgen"/g' "$APP_TOML"
+	sed -i.bak 's/pruning = "default"/pruning = "custom"/g' "$APP_TOML"
 	sed -i.bak 's/pruning = "default"/pruning = "custom"/g' "$APP_TOML"
 	sed -i.bak 's/pruning-keep-recent = "0"/pruning-keep-recent = "2"/g' "$APP_TOML"
 	sed -i.bak 's/pruning-interval = "0"/pruning-interval = "10"/g' "$APP_TOML"
-
-	# Allocate genesis accounts (cosmos formatted addresses)
-	$evmd genesis add-genesis-account "$VAL_KEY" 100000000000000000000000000aedgen --keyring-backend "$KEYRING" --home "$HOMEDIR"
-	$evmd genesis add-genesis-account "$USER1_KEY" 1000000000000000000000aedgen --keyring-backend "$KEYRING" --home "$HOMEDIR"
-	$evmd genesis add-genesis-account "$USER2_KEY" 1000000000000000000000aedgen --keyring-backend "$KEYRING" --home "$HOMEDIR"
-	$evmd genesis add-genesis-account "$USER3_KEY" 1000000000000000000000aedgen --keyring-backend "$KEYRING" --home "$HOMEDIR"
-	$evmd genesis add-genesis-account "$USER4_KEY" 1000000000000000000000aedgen --keyring-backend "$KEYRING" --home "$HOMEDIR"
-
-	# Sign genesis transaction
-	$evmd genesis gentx "$VAL_KEY" 1000000000000000000000aedgen --gas-prices ${BASEFEE}aedgen --keyring-backend "$KEYRING" --chain-id "$CHAINID" --home "$HOMEDIR"
-	## In case you want to create multiple validators at genesis
-	## 1. Back to `evmd keys add` step, init more keys
-	## 2. Back to `evmd add-genesis-account` step, add balance for those
-	## 3. Clone this ~/.evmd home directory into some others, let's say `~/.clonedOsd`
-	## 4. Run `gentx` in each of those folders
-	## 5. Copy the `gentx-*` folders under `~/.clonedOsd/config/gentx/` folders into the original `~/.evmd/config/gentx`
-
-	# Collect genesis tx
-	$evmd genesis collect-gentxs --home "$HOMEDIR"
-
-	# Run this to ensure everything worked and that the genesis file is setup correctly
-	$evmd genesis validate-genesis --home "$HOMEDIR"
-
-	if [[ $1 == "pending" ]]; then
-		echo "pending mode is on, please wait for the first block committed."
-	fi
 fi
-
-# Start the node
-$evmd start "$TRACE" \
-	--log_level $LOGLEVEL \
-	--minimum-gas-prices=0.0025aedgen \
-	--home "$HOMEDIR" \
-	--json-rpc.api eth,txpool,personal,net,debug,web3 \
-	--chain-id "$CHAINID"
