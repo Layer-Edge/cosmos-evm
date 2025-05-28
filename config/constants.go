@@ -1,6 +1,6 @@
 package config
 
-const ( // TODO:VLAD - Clean this up
+const (
 	// ExampleChainDenom is the denomination of the Cosmos EVM example chain's base coin.
 	ExampleChainDenom = "aedgens"
 
@@ -18,6 +18,8 @@ const ( // TODO:VLAD - Clean this up
 
 	// TwoDecimalsChainID is the chain ID for the 2 decimals chain.
 	TwoDecimalsChainID = 9004
+
+	CosmosChainID = 3456
 
 	// TestChainID1 is test chain IDs for IBC E2E test
 	TestChainID1 = 9005

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"math/big"
 
 	gethparams "github.com/ethereum/go-ethereum/params"
@@ -8,6 +9,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 )
+
+// testChainID represents the ChainID used for the purpose of testing.
+const testChainID uint64 = 3456
 
 // chainConfig is the chain configuration used in the EVM to defined which
 // opcodes are active based on Ethereum upgrades.
@@ -21,42 +25,37 @@ func (cc ChainConfig) EthereumConfig(chainID *big.Int) *gethparams.ChainConfig {
 		cID = chainID
 	}
 	return &gethparams.ChainConfig{
-		ChainID:                 cID,
-		HomesteadBlock:          getBlockValue(cc.HomesteadBlock),
-		DAOForkBlock:            getBlockValue(cc.DAOForkBlock),
-		DAOForkSupport:          cc.DAOForkSupport,
-		EIP150Block:             getBlockValue(cc.EIP150Block),
-		EIP155Block:             getBlockValue(cc.EIP155Block),
-		EIP158Block:             getBlockValue(cc.EIP158Block),
-		ByzantiumBlock:          getBlockValue(cc.ByzantiumBlock),
-		ConstantinopleBlock:     getBlockValue(cc.ConstantinopleBlock),
-		PetersburgBlock:         getBlockValue(cc.PetersburgBlock),
-		IstanbulBlock:           getBlockValue(cc.IstanbulBlock),
-		MuirGlacierBlock:        getBlockValue(cc.MuirGlacierBlock),
-		BerlinBlock:             getBlockValue(cc.BerlinBlock),
-		LondonBlock:             getBlockValue(cc.LondonBlock),
-		ArrowGlacierBlock:       getBlockValue(cc.ArrowGlacierBlock),
-		GrayGlacierBlock:        getBlockValue(cc.GrayGlacierBlock),
-		MergeNetsplitBlock:      getBlockValue(cc.MergeNetsplitBlock),
-		ShanghaiTime:            getTimestampValue(cc.ShanghaiTime),
-		CancunTime:              getTimestampValue(cc.CancunTime),
-		PragueTime:              getTimestampValue(cc.PragueTime),
-		OsakaTime:               getTimestampValue(cc.OsakaTime),
-		VerkleTime:              getTimestampValue(cc.VerkleTime),
-		TerminalTotalDifficulty: nil,
-		Ethash:                  nil,
-		Clique:                  nil,
-		BlobScheduleConfig: &gethparams.BlobScheduleConfig{
-			Cancun: gethparams.DefaultCancunBlobConfig,
-			Prague: gethparams.DefaultPragueBlobConfig,
-			Osaka:  gethparams.DefaultOsakaBlobConfig,
-		},
+		ChainID:                       cID,
+		HomesteadBlock:                getBlockValue(cc.HomesteadBlock),
+		DAOForkBlock:                  getBlockValue(cc.DAOForkBlock),
+		DAOForkSupport:                cc.DAOForkSupport,
+		EIP150Block:                   getBlockValue(cc.EIP150Block),
+		EIP155Block:                   getBlockValue(cc.EIP155Block),
+		EIP158Block:                   getBlockValue(cc.EIP158Block),
+		ByzantiumBlock:                getBlockValue(cc.ByzantiumBlock),
+		ConstantinopleBlock:           getBlockValue(cc.ConstantinopleBlock),
+		PetersburgBlock:               getBlockValue(cc.PetersburgBlock),
+		IstanbulBlock:                 getBlockValue(cc.IstanbulBlock),
+		MuirGlacierBlock:              getBlockValue(cc.MuirGlacierBlock),
+		BerlinBlock:                   getBlockValue(cc.BerlinBlock),
+		LondonBlock:                   getBlockValue(cc.LondonBlock),
+		ArrowGlacierBlock:             getBlockValue(cc.ArrowGlacierBlock),
+		GrayGlacierBlock:              getBlockValue(cc.GrayGlacierBlock),
+		MergeNetsplitBlock:            getBlockValue(cc.MergeNetsplitBlock),
+		ShanghaiTime:                  getTimestampValue(cc.ShanghaiTime),
+		CancunTime:                    getTimestampValue(cc.CancunTime),
+		PragueTime:                    getTimestampValue(cc.PragueTime),
+		VerkleTime:                    getTimestampValue(cc.VerkleTime),
+		TerminalTotalDifficulty:       nil,
+		TerminalTotalDifficultyPassed: true,
+		Ethash:                        nil,
+		Clique:                        nil,
 	}
 }
 
 func DefaultChainConfig(evmChainID uint64) *ChainConfig {
 	if evmChainID == 0 {
-		evmChainID = DefaultEVMChainID
+		evmChainID = testChainID
 	}
 
 	homesteadBlock := sdkmath.ZeroInt()
@@ -76,12 +75,11 @@ func DefaultChainConfig(evmChainID uint64) *ChainConfig {
 	mergeNetsplitBlock := sdkmath.ZeroInt()
 	shanghaiTime := sdkmath.ZeroInt()
 	cancunTime := sdkmath.ZeroInt()
-	pragueTime := sdkmath.ZeroInt()
 
 	cfg := &ChainConfig{
 		ChainId:             evmChainID,
-		Denom:               DefaultEVMDenom,    // TODO:VLAD - Remove this
-		Decimals:            DefaultEVMDecimals, // TODO:VLAD - Remove this
+		Denom:               DefaultEVMDenom,
+		Decimals:            DefaultEVMDecimals,
 		HomesteadBlock:      &homesteadBlock,
 		DAOForkBlock:        &daoForkBlock,
 		DAOForkSupport:      true,
@@ -100,11 +98,29 @@ func DefaultChainConfig(evmChainID uint64) *ChainConfig {
 		MergeNetsplitBlock:  &mergeNetsplitBlock,
 		ShanghaiTime:        &shanghaiTime,
 		CancunTime:          &cancunTime,
-		PragueTime:          &pragueTime,
-		OsakaTime:           nil,
+		PragueTime:          nil,
 		VerkleTime:          nil,
 	}
 	return cfg
+}
+
+// setChainConfig allows to set the `chainConfig` variable modifying the
+// default values. The method is private because it should only be called once
+// in the EVMConfigurator.
+func setChainConfig(cc *ChainConfig) error {
+	if chainConfig != nil {
+		return errors.New("chainConfig already set. Cannot set again the chainConfig")
+	}
+	config := DefaultChainConfig(0)
+	if cc != nil {
+		config = cc
+	}
+	if err := config.Validate(); err != nil {
+		return err
+	}
+	chainConfig = config
+
+	return nil
 }
 
 func getBlockValue(block *sdkmath.Int) *big.Int {
@@ -179,9 +195,6 @@ func (cc ChainConfig) Validate() error {
 	}
 	if err := validateBlockOrTimestamp(cc.PragueTime); err != nil {
 		return errorsmod.Wrap(err, "PragueTime")
-	}
-	if err := validateBlockOrTimestamp(cc.OsakaTime); err != nil {
-		return errorsmod.Wrap(err, "OsakaTime")
 	}
 	if err := validateBlockOrTimestamp(cc.VerkleTime); err != nil {
 		return errorsmod.Wrap(err, "VerkleTime")
