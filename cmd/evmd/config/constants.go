@@ -6,7 +6,7 @@ import (
 
 const (
 	// ExampleChainDenom is the denomination of the Cosmos EVM example chain's base coin.
-	ExampleChainDenom = "tedgen"
+	ExampleChainDenom = "edgens"
 
 	// ExampleDisplayDenom is the display denomination of the Cosmos EVM example chain's base coin.
 	ExampleDisplayDenom = "edgen"

@@ -12,12 +12,8 @@ type GasToken struct {
 
 // AllowedGasTokens is a map of allowed token denominations that can be used for gas fees
 var AllowedGasTokens = map[string]GasToken{
-	"tedgen": {
-		Denom:        "tedgen",
-		ExchangeRate: math.LegacyNewDec(1), // 1:1 exchange rate
-	},
-	"sedgen": {
-		Denom:        "sedgen",
+	"edgens": {
+		Denom:        "edgens",
 		ExchangeRate: math.LegacyNewDec(1), // 1:1 exchange rate
 	},
 }
