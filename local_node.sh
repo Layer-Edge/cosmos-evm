@@ -225,7 +225,7 @@ fi
 # Start the node
 $evmd start "$TRACE" \
 	--log_level $LOGLEVEL \
-	--minimum-gas-prices=0.0001aedgen \
+	--minimum-gas-prices=0.0025aedgen \
 	--home "$HOMEDIR" \
 	--json-rpc.api eth,txpool,personal,net,debug,web3 \
 	--chain-id "$CHAINID"
