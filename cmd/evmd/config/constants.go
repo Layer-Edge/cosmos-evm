@@ -2,10 +2,10 @@ package config
 
 const (
 	// ExampleChainDenom is the denomination of the Cosmos EVM example chain's base coin.
-	ExampleChainDenom = "aatom"
+	ExampleChainDenom = "wei"
 
 	// ExampleDisplayDenom is the display denomination of the Cosmos EVM example chain's base coin.
-	ExampleDisplayDenom = "atom"
+	ExampleDisplayDenom = "edgen"
 
 	// EighteenDecimalsChainID is the chain ID for the 18 decimals chain.
 	EighteenDecimalsChainID = 9001
@@ -19,7 +19,7 @@ const (
 	// TwoDecimalsChainID is the chain ID for the 2 decimals chain.
 	TwoDecimalsChainID = 9004
 
-	CosmosChainID = 262144
+	CosmosChainID = 3456
 
 	// TestChainID1 is test chain IDs for IBC E2E test
 	TestChainID1 = 9005
