@@ -33,7 +33,7 @@ message FractionalBalance {
 
   // amount indicates amount of only the fractional balance owned by the
   // address. FractionalBalance currently only supports tracking 1 single asset,
-  // e.g. fractional balances of uatom.
+  // e.g. fractional balances of uedgens.
   string amount = 2 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",

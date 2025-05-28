@@ -1,37 +1,28 @@
-package precisebank
+package keeper_test
 
 import (
 	"fmt"
-	"maps"
 	"math/big"
 	"math/rand"
-	"sort"
 	"testing"
 
-	corevm "github.com/ethereum/go-ethereum/core/vm"
 	"github.com/stretchr/testify/require"
 
+	"github.com/cosmos/evm/evmd"
 	testconstants "github.com/cosmos/evm/testutil/constants"
-	cosmosevmutils "github.com/cosmos/evm/utils"
-	erc20types "github.com/cosmos/evm/x/erc20/types"
-	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	"github.com/cosmos/evm/x/precisebank/types"
-	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModuleMatchingErrors() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule_MatchingErrors() {
 	// No specific errors for SendCoinsFromAccountToModule, only 1 panic if
 	// the module account does not exist
 
@@ -60,26 +51,26 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModuleMatchingErr
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
-			s.Require().NotEmpty(tt.wantPanic, "test case must have a wantPanic")
+			suite.Require().NotEmpty(tt.wantPanic, "test case must have a wantPanic")
 
-			s.Require().PanicsWithError(tt.wantPanic, func() {
-				err := s.network.App.GetBankKeeper().SendCoinsFromAccountToModule(s.network.GetContext(), tt.sender, tt.recipientModule, tt.sendAmount)
-				s.Require().Error(err)
+			suite.Require().PanicsWithError(tt.wantPanic, func() {
+				err := suite.network.App.BankKeeper.SendCoinsFromAccountToModule(suite.network.GetContext(), tt.sender, tt.recipientModule, tt.sendAmount)
+				suite.Require().Error(err)
 			}, "wantPanic should match x/bank SendCoinsFromAccountToModule panic")
 
-			s.Require().PanicsWithError(tt.wantPanic, func() {
-				err := s.network.App.GetPreciseBankKeeper().SendCoinsFromAccountToModule(s.network.GetContext(), tt.sender, tt.recipientModule, tt.sendAmount)
-				s.Require().Error(err)
+			suite.Require().PanicsWithError(tt.wantPanic, func() {
+				err := suite.network.App.PreciseBankKeeper.SendCoinsFromAccountToModule(suite.network.GetContext(), tt.sender, tt.recipientModule, tt.sendAmount)
+				suite.Require().Error(err)
 			}, "x/precisebank panic should match x/bank SendCoinsFromAccountToModule panic")
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErrors() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount_MatchingErrors() {
 	// Ensure errors match x/bank errors AND panics. This needs to be well
 	// tested before SendCoins as all send tests rely on this to initialize
 	// account balances.
@@ -87,8 +78,8 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErr
 	// we only are testing the errors/panics specific to the method and
 	// remaining logic is the same as SendCoins.
 
-	blockedMacAddrs := blockedAddresses()
-	precisebankAddr := s.network.App.GetAccountKeeper().GetModuleAddress(types.ModuleName)
+	blockedMacAddrs := evmd.BlockedAddresses()
+	precisebankAddr := suite.network.App.AccountKeeper.GetModuleAddress(types.ModuleName)
 
 	var blockedAddr sdk.AccAddress
 	// Get the first blocked address
@@ -108,15 +99,15 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErr
 	// x/precisebank is blocked from use with SendCoinsFromModuleToAccount as we
 	// don't want external modules to modify x/precisebank balances.
 	var senderModuleName string
-	macPerms := getMaccPerms()
+	macPerms := evmd.GetMaccPerms()
 	for moduleName := range macPerms {
 		if moduleName != types.ModuleName && moduleName != stakingtypes.BondedPoolName {
 			senderModuleName = moduleName
 		}
 	}
 
-	s.Require().NotEmpty(blockedAddr, "no blocked addresses found")
-	s.Require().NotEmpty(senderModuleName, "no sender module name found")
+	suite.Require().NotEmpty(blockedAddr, "no blocked addresses found")
+	suite.Require().NotEmpty(senderModuleName, "no sender module name found")
 
 	tests := []struct {
 		name         string
@@ -181,7 +172,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErr
 			"insufficient balance - extended",
 			senderModuleName,
 			sdk.AccAddress([]byte{2}),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still test insufficient bal errors with "aedgens" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -191,37 +182,37 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErr
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
 			if tt.wantPanic == "" && tt.wantErr == "" {
-				s.FailNow("test case must have a wantErr or wantPanic")
+				suite.FailNow("test case must have a wantErr or wantPanic")
 			}
 
 			if tt.wantPanic != "" {
-				s.Require().Empty(tt.wantErr, "test case must not have a wantErr if wantPanic is set")
+				suite.Require().Empty(tt.wantErr, "test case must not have a wantErr if wantPanic is set")
 
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					err := s.network.App.GetBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
-					s.Require().Error(err)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					err := suite.network.App.BankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
+					suite.Require().Error(err)
 				}, "wantPanic should match x/bank SendCoinsFromModuleToAccount panic")
 
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					err := s.network.App.GetPreciseBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
-					s.Require().Error(err)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					err := suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
+					suite.Require().Error(err)
 				}, "x/precisebank panic should match x/bank SendCoinsFromModuleToAccount panic")
 			}
 
 			if tt.wantErr != "" {
-				bankErr := s.network.App.GetBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
-				s.Require().Error(bankErr)
-				s.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank SendCoins error")
+				bankErr := suite.network.App.BankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
+				suite.Require().Error(bankErr)
+				suite.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank SendCoins error")
 
-				pbankErr := s.network.App.GetPreciseBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
-				s.Require().Error(pbankErr)
+				pbankErr := suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), tt.senderModule, tt.recipient, tt.sendAmount)
+				suite.Require().Error(pbankErr)
 				// Compare strings instead of errors, as error stack is still different
-				s.Require().Equal(
+				suite.Require().Equal(
 					bankErr.Error(),
 					pbankErr.Error(),
 					"x/precisebank error should match x/bank SendCoins error",
@@ -231,7 +222,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccountMatchingErr
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsMatchingErrors() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 	// Ensure errors match x/bank errors
 
 	tests := []struct {
@@ -257,7 +248,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsMatchingErrors() {
 		{
 			"insufficient empty balance - extended",
 			cs(),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still test insufficient bal errors with "aedgens" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -270,29 +261,29 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsMatchingErrors() {
 			fmt.Sprintf("spendable balance 100%s is smaller than 1000%s: insufficient funds",
 				types.IntegerCoinDenom(), types.IntegerCoinDenom()),
 		},
-		// non-empty aatom transfer error is tested in SendCoins, not here since
-		// x/bank doesn't hold aatom
+		// non-empty aedgens transfer error is tested in SendCoins, not here since
+		// x/bank doesn't hold aedgens
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 			sender := sdk.AccAddress([]byte{1})
 			recipient := sdk.AccAddress([]byte{2})
 
-			s.Require().NotEmpty(tt.wantErr, "test case must have a wantErr")
+			suite.Require().NotEmpty(tt.wantErr, "test case must have a wantErr")
 
-			s.MintToAccount(sender, tt.initialAmount)
+			suite.MintToAccount(sender, tt.initialAmount)
 
-			bankErr := s.network.App.GetBankKeeper().SendCoins(s.network.GetContext(), sender, recipient, tt.sendAmount)
-			s.Require().Error(bankErr)
-			s.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank SendCoins error")
+			bankErr := suite.network.App.BankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, tt.sendAmount)
+			suite.Require().Error(bankErr)
+			suite.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank SendCoins error")
 
-			pbankErr := s.network.App.GetPreciseBankKeeper().SendCoins(s.network.GetContext(), sender, recipient, tt.sendAmount)
-			s.Require().Error(pbankErr)
+			pbankErr := suite.network.App.PreciseBankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, tt.sendAmount)
+			suite.Require().Error(pbankErr)
 			// Compare strings instead of errors, as error stack is still different
-			s.Require().Equal(
+			suite.Require().Equal(
 				bankErr.Error(),
 				pbankErr.Error(),
 				"x/precisebank error should match x/bank SendCoins error",
@@ -301,7 +292,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsMatchingErrors() {
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoins() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 	// SendCoins is tested mostly in this integration test, as a unit test with
 	// mocked BankKeeper overcomplicates expected keepers and makes initializing
 	// balances very complex.
@@ -343,17 +334,17 @@ func (s *KeeperIntegrationTestSuite) TestSendCoins() {
 			"",
 		},
 		{
-			"aatom send - 1aatom to 0 balance",
+			"aedgens send - 1aedgens to 0 balance",
 			// Starting balances
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(5))),
 			cs(),
 			// Send amount
-			cs(c(types.ExtendedCoinDenom(), 1)), // aatom
+			cs(c(types.ExtendedCoinDenom(), 1)), // aedgens
 			"",
 		},
 		{
 			"sender borrow from integer",
-			// 1uatom, 0 fractional
+			// 1uedgens, 0 fractional
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(),
 			// Send 1 with 0 fractional balance
@@ -362,7 +353,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoins() {
 		},
 		{
 			"sender borrow from integer - max fractional amount",
-			// 1uatom, 0 fractional
+			// 1uedgens, 0 fractional
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(),
 			// Max fractional amount
@@ -388,40 +379,34 @@ func (s *KeeperIntegrationTestSuite) TestSendCoins() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			s.SetupTest()
+		suite.Run(tt.name, func() {
+			suite.SetupTest()
 
 			sender := sdk.AccAddress([]byte{1})
 			recipient := sdk.AccAddress([]byte{2})
 
 			// Initialize balances
-			s.MintToAccount(sender, tt.giveStartBalSender)
-			s.MintToAccount(recipient, tt.giveStartBalRecipient)
+			suite.MintToAccount(sender, tt.giveStartBalSender)
+			suite.MintToAccount(recipient, tt.giveStartBalRecipient)
 
-			senderBalBefore := s.GetAllBalances(sender)
-			recipientBalBefore := s.GetAllBalances(recipient)
+			senderBalBefore := suite.GetAllBalances(sender)
+			recipientBalBefore := suite.GetAllBalances(recipient)
 
-			senderFracBalBefore := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), sender)
-			recipientFracBalBefore := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipient)
-
-			err := s.network.App.GetPreciseBankKeeper().SendCoins(s.network.GetContext(), sender, recipient, tt.giveAmt)
+			err := suite.network.App.PreciseBankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, tt.giveAmt)
 			if tt.wantErr != "" {
-				s.Require().Error(err)
-				s.Require().EqualError(err, tt.wantErr)
+				suite.Require().Error(err)
+				suite.Require().EqualError(err, tt.wantErr)
 				return
 			}
 
-			s.Require().NoError(err)
+			suite.Require().NoError(err)
 
 			// Check balances
-			senderBalAfter := s.GetAllBalances(sender)
-			recipientBalAfter := s.GetAllBalances(recipient)
-
-			senderFracBalAfter := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), sender)
-			recipientFracBalAfter := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipient)
+			senderBalAfter := suite.GetAllBalances(sender)
+			recipientBalAfter := suite.GetAllBalances(recipient)
 
 			// Convert send amount coins to extended coins. i.e. if send coins
-			// includes uatom, convert it so that its the equivalent aatom
+			// includes uedgens, convert it so that its the equivalent aedgens
 			// amount so its easier to compare. Compare extended coins only.
 			sendAmountFullExtended := tt.giveAmt
 			sendAmountInteger := tt.giveAmt.AmountOf(types.IntegerCoinDenom())
@@ -435,43 +420,57 @@ func (s *KeeperIntegrationTestSuite) TestSendCoins() {
 				sendAmountFullExtended = sendAmountFullExtended.Add(extendedCoin)
 			}
 
-			s.Require().Equal(
+			suite.Require().Equal(
 				senderBalBefore.Sub(sendAmountFullExtended...),
 				senderBalAfter,
 			)
 
-			s.Require().Equal(
+			suite.Require().Equal(
 				recipientBalBefore.Add(sendAmountFullExtended...),
 				recipientBalAfter,
 			)
 
 			// Check events
-			events := s.network.GetContext().EventManager().Events()
-			targetEvents := []sdk.Event{}
-			for _, event := range events {
-				if event.Type == types.EventTypeFractionalBalanceChange {
-					targetEvents = append(targetEvents, event)
-				}
+
+			// FULL aedgens equivalent, including uedgens only/mixed sends
+			sendExtendedAmount := sdk.NewCoin(
+				types.ExtendedCoinDenom(),
+				sendAmountFullExtended.AmountOf(types.ExtendedCoinDenom()),
+			)
+			extCoins := sdk.NewCoins(sendExtendedAmount)
+
+			// No extra events if not sending aedgens
+			if sendExtendedAmount.IsZero() {
+				return
 			}
 
-			if !senderFracBalAfter.Sub(senderFracBalBefore).Equal(sdkmath.ZeroInt()) {
-				expSenderFracBalChangeEvent := types.NewEventFractionalBalanceChange(
-					sender, senderFracBalBefore, senderFracBalAfter,
-				)
-				s.Require().Contains(targetEvents, expSenderFracBalChangeEvent)
-			}
+			extendedEvent := sdk.NewEvent(
+				banktypes.EventTypeTransfer,
+				sdk.NewAttribute(banktypes.AttributeKeyRecipient, recipient.String()),
+				sdk.NewAttribute(banktypes.AttributeKeySender, sender.String()),
+				sdk.NewAttribute(sdk.AttributeKeyAmount, sendExtendedAmount.String()),
+			)
 
-			if !recipientFracBalAfter.Sub(recipientFracBalBefore).Equal(sdkmath.ZeroInt()) {
-				expRecipientFracBalChangeEvent := types.NewEventFractionalBalanceChange(
-					recipient, recipientFracBalBefore, recipientFracBalAfter,
-				)
-				s.Require().Contains(targetEvents, expRecipientFracBalChangeEvent)
-			}
+			expReceivedEvent := banktypes.NewCoinReceivedEvent(
+				recipient,
+				extCoins,
+			)
+
+			expSentEvent := banktypes.NewCoinSpentEvent(
+				sender,
+				extCoins,
+			)
+
+			events := suite.network.GetContext().EventManager().Events()
+
+			suite.Require().Contains(events, extendedEvent)
+			suite.Require().Contains(events, expReceivedEvent)
+			suite.Require().Contains(events, expSentEvent)
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsMatrix() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoins_Matrix() {
 	// SendCoins is tested mostly in this integration test, as a unit test with
 	// mocked BankKeeper overcomplicates expected keepers and makes initializing
 	// balances very complex.
@@ -532,49 +531,49 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsMatrix() {
 					sendAmt.name, sendAmt.amt,
 				)
 
-				s.Run(testName, func() {
-					s.SetupTest()
+				suite.Run(testName, func() {
+					suite.SetupTest()
 
 					sender := sdk.AccAddress([]byte{1})
 					recipient := sdk.AccAddress([]byte{2})
 
 					// Initialize balances
-					s.MintToAccount(sender, senderStartBal.bal)
-					s.MintToAccount(recipient, recipientStartBal.bal)
+					suite.MintToAccount(sender, senderStartBal.bal)
+					suite.MintToAccount(recipient, recipientStartBal.bal)
 
 					// balances & send amount will only contain total equivalent
 					// extended coins and no integer coins so its easier to compare
-					senderBalBefore := s.GetAllBalances(sender)
-					recipientBalBefore := s.GetAllBalances(recipient)
+					senderBalBefore := suite.GetAllBalances(sender)
+					recipientBalBefore := suite.GetAllBalances(recipient)
 
 					sendAmtNormalized := ConvertCoinsToExtendedCoinDenom(sendAmt.amt)
 
-					err := s.network.App.GetPreciseBankKeeper().SendCoins(s.network.GetContext(), sender, recipient, sendAmt.amt)
+					err := suite.network.App.PreciseBankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, sendAmt.amt)
 
 					hasSufficientBal := senderBalBefore.IsAllGTE(sendAmtNormalized)
 
 					if hasSufficientBal {
-						s.Require().NoError(err)
+						suite.Require().NoError(err)
 					} else {
-						s.Require().Error(err, "expected insufficient funds error")
+						suite.Require().Error(err, "expected insufficient funds error")
 						// No balance checks if insufficient funds
 						return
 					}
 
 					// Check balances
-					senderBalAfter := s.GetAllBalances(sender)
-					recipientBalAfter := s.GetAllBalances(recipient)
+					senderBalAfter := suite.GetAllBalances(sender)
+					recipientBalAfter := suite.GetAllBalances(recipient)
 
 					// Convert send amount coins to extended coins. i.e. if send coins
-					// includes uatom, convert it so that its the equivalent aatom
+					// includes uedgens, convert it so that its the equivalent aedgens
 					// amount so its easier to compare. Compare extended coins only.
 
-					s.Require().Equal(
+					suite.Require().Equal(
 						senderBalBefore.Sub(sendAmtNormalized...),
 						senderBalAfter,
 					)
 
-					s.Require().Equal(
+					suite.Require().Equal(
 						recipientBalBefore.Add(sendAmtNormalized...),
 						recipientBalAfter,
 					)
@@ -584,43 +583,43 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsMatrix() {
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule() {
 	// Ensure recipient correctly matches the specified module account. Specific
 	// send amount and cases are handled by SendCoins() tests, so we are only
 	// checking SendCoinsFromAccountToModule specific behavior here.
 
 	sender := sdk.AccAddress([]byte{1})
 	recipientModule := minttypes.ModuleName
-	recipientAddr := s.network.App.GetAccountKeeper().GetModuleAddress(recipientModule)
+	recipientAddr := suite.network.App.AccountKeeper.GetModuleAddress(recipientModule)
 
 	sendAmt := cs(c(types.ExtendedCoinDenom(), 1000))
 
-	s.MintToAccount(sender, sendAmt)
+	suite.MintToAccount(sender, sendAmt)
 
-	err := s.network.App.GetPreciseBankKeeper().SendCoinsFromAccountToModule(
-		s.network.GetContext(),
+	err := suite.network.App.PreciseBankKeeper.SendCoinsFromAccountToModule(
+		suite.network.GetContext(),
 		sender,
 		recipientModule,
 		sendAmt,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 
 	// Check balances
-	senderBalAfter := s.GetAllBalances(sender)
-	recipientBalAfter := s.GetAllBalances(recipientAddr)
+	senderBalAfter := suite.GetAllBalances(sender)
+	recipientBalAfter := suite.GetAllBalances(recipientAddr)
 
-	s.Require().Equal(
+	suite.Require().Equal(
 		cs(),
 		senderBalAfter,
 	)
 
-	s.Require().Equal(
+	suite.Require().Equal(
 		sendAmt,
 		recipientBalAfter,
 	)
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModuleBlockedRecipientCarry() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModule_BlockedRecipientCarry() {
 	// Carrying to module account balance. This tests that SendCoinsFromAccountToModule
 	// does not fail when sending to a blocked module account.
 
@@ -629,27 +628,27 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsFromAccountToModuleBlockedReci
 	sendAmt := cs(c(types.ExtendedCoinDenom(), 1000))
 	sendAmt2 := cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().SubRaw(10)))
 
-	s.MintToAccount(sender, sendAmt.Add(sendAmt2...))
+	suite.MintToAccount(sender, sendAmt.Add(sendAmt2...))
 
-	err := s.network.App.GetPreciseBankKeeper().SendCoinsFromAccountToModule(
-		s.network.GetContext(),
+	err := suite.network.App.PreciseBankKeeper.SendCoinsFromAccountToModule(
+		suite.network.GetContext(),
 		sender,
 		authtypes.FeeCollectorName,
 		sendAmt,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 
 	// Trigger carry for fee_collector module account
-	err = s.network.App.GetPreciseBankKeeper().SendCoinsFromAccountToModule(
-		s.network.GetContext(),
+	err = suite.network.App.PreciseBankKeeper.SendCoinsFromAccountToModule(
+		suite.network.GetContext(),
 		sender,
 		authtypes.FeeCollectorName,
 		sendAmt2,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsBlockedRecipientCarry() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoins_BlockedRecipientCarry() {
 	// Same test as TestSendCoinsFromModuleToAccount_Blocked, but with SendCoins
 	// which also should not fail when sending to a blocked module account.
 	sender := sdk.AccAddress([]byte{1})
@@ -657,66 +656,66 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsBlockedRecipientCarry() {
 	sendAmt := cs(c(types.ExtendedCoinDenom(), 1000))
 	sendAmt2 := cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().SubRaw(10)))
 
-	s.MintToAccount(sender, sendAmt.Add(sendAmt2...))
+	suite.MintToAccount(sender, sendAmt.Add(sendAmt2...))
 
-	recipient := s.network.App.GetAccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	recipient := suite.network.App.AccountKeeper.GetModuleAddress(authtypes.FeeCollectorName)
 
-	err := s.network.App.GetPreciseBankKeeper().SendCoins(
-		s.network.GetContext(),
+	err := suite.network.App.PreciseBankKeeper.SendCoins(
+		suite.network.GetContext(),
 		sender,
 		recipient,
 		sendAmt,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 
 	// Trigger carry for fee_collector module account
-	err = s.network.App.GetPreciseBankKeeper().SendCoins(
-		s.network.GetContext(),
+	err = suite.network.App.PreciseBankKeeper.SendCoins(
+		suite.network.GetContext(),
 		sender,
 		recipient,
 		sendAmt2,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount() {
 	// Ensure sender correctly matches the specified module account. Opposite
 	// of SendCoinsFromAccountToModule, so we are only checking the correct
 	// addresses are being used.
 
 	senderModule := evmtypes.ModuleName
-	senderAddr := s.network.App.GetAccountKeeper().GetModuleAddress(senderModule)
+	senderAddr := suite.network.App.AccountKeeper.GetModuleAddress(senderModule)
 
 	recipient := sdk.AccAddress([]byte{1})
 
 	sendAmt := cs(c(types.ExtendedCoinDenom(), 1000))
 
-	s.MintToModuleAccount(senderModule, sendAmt)
+	suite.MintToModuleAccount(senderModule, sendAmt)
 
-	err := s.network.App.GetPreciseBankKeeper().SendCoinsFromModuleToAccount(
-		s.network.GetContext(),
+	err := suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(
+		suite.network.GetContext(),
 		senderModule,
 		recipient,
 		sendAmt,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 
 	// Check balances
-	senderBalAfter := s.GetAllBalances(senderAddr)
-	recipientBalAfter := s.GetAllBalances(recipient)
+	senderBalAfter := suite.GetAllBalances(senderAddr)
+	recipientBalAfter := suite.GetAllBalances(recipient)
 
-	s.Require().Equal(
+	suite.Require().Equal(
 		cs(),
 		senderBalAfter,
 	)
 
-	s.Require().Equal(
+	suite.Require().Equal(
 		sendAmt,
 		recipientBalAfter,
 	)
 }
 
-func (s *KeeperIntegrationTestSuite) TestSendCoinsRandomValueMultiDecimals() {
+func (suite *KeeperIntegrationTestSuite) TestSendCoins_RandomValueMultiDecimals() {
 	tests := []struct {
 		name    string
 		chainID testconstants.ChainID
@@ -736,15 +735,15 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsRandomValueMultiDecimals() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			s.SetupTestWithChainID(tt.chainID)
+		suite.Run(tt.name, func() {
+			suite.SetupTestWithChainID(tt.chainID)
 
 			sender := sdk.AccAddress([]byte{1})
 			recipient := sdk.AccAddress([]byte{2})
 
 			// Initial balance large enough to cover many small sends
 			initialBalance := types.ConversionFactor().MulRaw(100)
-			s.MintToAccount(sender, cs(ci(types.ExtendedCoinDenom(), initialBalance)))
+			suite.MintToAccount(sender, cs(ci(types.ExtendedCoinDenom(), initialBalance)))
 
 			// Setup test parameters
 			maxSendUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
@@ -756,7 +755,7 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsRandomValueMultiDecimals() {
 			// Continue transfers as long as sender has balance remaining
 			for {
 				// Check current sender balance
-				senderAmount := s.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
+				senderAmount := suite.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
 				if senderAmount.IsZero() {
 					break
 				}
@@ -769,28 +768,28 @@ func (s *KeeperIntegrationTestSuite) TestSendCoinsRandomValueMultiDecimals() {
 				randAmount := sdkmath.NewIntFromBigInt(new(big.Int).Rand(r, maxPossibleSend.BigInt())).AddRaw(1)
 
 				sendAmount := cs(ci(types.ExtendedCoinDenom(), randAmount))
-				err := s.network.App.GetPreciseBankKeeper().SendCoins(s.network.GetContext(), sender, recipient, sendAmount)
-				s.NoError(err)
+				err := suite.network.App.PreciseBankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, sendAmount)
+				suite.NoError(err)
 				totalSent = totalSent.Add(randAmount)
 				sentCount++
 			}
 
-			s.T().Logf("Completed %d random sends, total sent: %s", sentCount, totalSent.String())
+			suite.T().Logf("Completed %d random sends, total sent: %s", sentCount, totalSent.String())
 
 			// Check sender balance
-			senderAmount := s.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
-			s.Equal(senderAmount.BigInt().Cmp(big.NewInt(0)), 0, "sender balance should be zero")
+			senderAmount := suite.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
+			suite.Equal(senderAmount.BigInt().Cmp(big.NewInt(0)), 0, "sender balance should be zero")
 
 			// Check recipient balance
-			recipientBal := s.GetAllBalances(recipient)
+			recipientBal := suite.GetAllBalances(recipient)
 			intReceived := recipientBal.AmountOf(types.ExtendedCoinDenom()).Quo(types.ConversionFactor())
-			fracReceived := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipient)
+			fracReceived := suite.network.App.PreciseBankKeeper.GetFractionalBalance(suite.network.GetContext(), recipient)
 
 			expectedInt := totalSent.Quo(types.ConversionFactor())
 			expectedFrac := totalSent.Mod(types.ConversionFactor())
 
-			s.Equal(expectedInt.BigInt().Cmp(intReceived.BigInt()), 0, "integer carry mismatch (expected: %s, received: %s)", expectedInt, intReceived)
-			s.Equal(expectedFrac.BigInt().Cmp(fracReceived.BigInt()), 0, "fractional balance mismatch (expected: %s, received: %s)", expectedFrac, fracReceived)
+			suite.Equal(expectedInt.BigInt().Cmp(intReceived.BigInt()), 0, "integer carry mismatch (expected: %s, received: %s)", expectedInt, intReceived)
+			suite.Equal(expectedFrac.BigInt().Cmp(fracReceived.BigInt()), 0, "fractional balance mismatch (expected: %s, received: %s)", expectedFrac, fracReceived)
 		})
 	}
 }
@@ -832,7 +831,7 @@ func FuzzSendCoins(f *testing.F) {
 
 		// Send amount
 		sendCoins := cs(c(types.ExtendedCoinDenom(), int64(sendAmount))) //nolint:gosec // G115
-		err := suite.network.App.GetPreciseBankKeeper().SendCoins(suite.network.GetContext(), sender, recipient, sendCoins)
+		err := suite.network.App.PreciseBankKeeper.SendCoins(suite.network.GetContext(), sender, recipient, sendCoins)
 		if startBalSender < sendAmount {
 			suite.Require().Error(err, "expected insufficient funds error")
 			return
@@ -853,136 +852,4 @@ func FuzzSendCoins(f *testing.F) {
 			balReceiver.AmountOf(types.ExtendedCoinDenom()).Uint64(),
 		)
 	})
-}
-
-func (s *KeeperIntegrationTestSuite) TestSendMsg_RandomValueMultiDecimals() { //nolint:revive // false positive due to file name
-	tests := []struct {
-		name    string
-		chainID testconstants.ChainID
-	}{
-		{
-			name:    "6 decimals",
-			chainID: testconstants.SixDecimalsChainID,
-		},
-		{
-			name:    "12 decimals",
-			chainID: testconstants.TwelveDecimalsChainID,
-		},
-		{
-			name:    "2 decimals",
-			chainID: testconstants.TwoDecimalsChainID,
-		},
-	}
-
-	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			s.SetupTestWithChainID(tt.chainID)
-
-			sender := sdk.AccAddress([]byte{1})
-			recipient := sdk.AccAddress([]byte{2})
-
-			// Initial balance large enough to cover many small sends
-			initialBalance := types.ConversionFactor().MulRaw(100)
-			s.MintToAccount(sender, cs(ci(types.ExtendedCoinDenom(), initialBalance)))
-
-			// Setup test parameters
-			maxSendUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
-			r := rand.New(rand.NewSource(SEED))
-
-			totalSent := sdkmath.ZeroInt()
-			sentCount := 0
-
-			// Continue transfers as long as sender has balance remaining
-			for {
-				// Check current sender balance
-				senderAmount := s.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
-				if senderAmount.IsZero() {
-					break
-				}
-
-				// Generate random amount within the range of max possible send amount
-				maxPossibleSend := maxSendUnit
-				if maxPossibleSend.GT(senderAmount) {
-					maxPossibleSend = senderAmount
-				}
-				randAmount := sdkmath.NewIntFromBigInt(new(big.Int).Rand(r, maxPossibleSend.BigInt())).AddRaw(1)
-
-				sendAmount := cs(ci(types.ExtendedCoinDenom(), randAmount))
-				msgSend := banktypes.MsgSend{
-					FromAddress: sender.String(),
-					ToAddress:   recipient.String(),
-					Amount:      sendAmount,
-				}
-				_, err := s.network.App.GetPreciseBankKeeper().Send(s.network.GetContext(), &msgSend)
-				s.NoError(err)
-				totalSent = totalSent.Add(randAmount)
-				sentCount++
-			}
-
-			s.T().Logf("Completed %d random sends, total sent: %s", sentCount, totalSent.String())
-
-			// Check sender balance
-			senderAmount := s.GetAllBalances(sender).AmountOf(types.ExtendedCoinDenom())
-			s.Equal(senderAmount.BigInt().Cmp(big.NewInt(0)), 0, "sender balance should be zero")
-
-			// Check recipient balance
-			recipientBal := s.GetAllBalances(recipient)
-			intReceived := recipientBal.AmountOf(types.ExtendedCoinDenom()).Quo(types.ConversionFactor())
-			fracReceived := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipient)
-
-			expectedInt := totalSent.Quo(types.ConversionFactor())
-			expectedFrac := totalSent.Mod(types.ConversionFactor())
-
-			s.Equal(expectedInt.BigInt().Cmp(intReceived.BigInt()), 0, "integer carry mismatch (expected: %s, received: %s)", expectedInt, intReceived)
-			s.Equal(expectedFrac.BigInt().Cmp(fracReceived.BigInt()), 0, "fractional balance mismatch (expected: %s, received: %s)", expectedFrac, fracReceived)
-		})
-	}
-}
-
-func blockedAddresses() map[string]bool {
-	blockedAddrs := make(map[string]bool)
-
-	maccPerms := getMaccPerms()
-	accs := make([]string, 0, len(maccPerms))
-	for acc := range maccPerms {
-		accs = append(accs, acc)
-	}
-	sort.Strings(accs)
-
-	for _, acc := range accs {
-		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
-	}
-
-	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesPrague {
-		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
-	}
-
-	for _, precompile := range blockedPrecompilesHex {
-		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
-	}
-
-	return blockedAddrs
-}
-
-// module account permissions
-var maccPerms = map[string][]string{
-	authtypes.FeeCollectorName:     nil,
-	distrtypes.ModuleName:          nil,
-	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-	minttypes.ModuleName:           {authtypes.Minter},
-	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:            {authtypes.Burner},
-
-	// Cosmos EVM modules
-	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName:   nil,
-	erc20types.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-}
-
-// getMaccPerms returns a copy of the module account permissions
-func getMaccPerms() map[string][]string {
-	return maps.Clone(maccPerms)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 // MintToAccount mints coins to an account with the x/precisebank methods. This
-// must be used when minting extended coins, ie. aatom coins. This depends on
+// must be used when minting extended coins, ie. aedgens coins. This depends on
 // the methods to be properly tested to be implemented correctly.
 func (s *KeeperIntegrationTestSuite) MintToAccount(addr sdk.AccAddress, amt sdk.Coins) {
 	accBalancesBefore := s.GetAllBalances(addr)
@@ -31,7 +31,7 @@ func (s *KeeperIntegrationTestSuite) MintToAccount(addr sdk.AccAddress, amt sdk.
 }
 
 // MintToModuleAccount mints coins to an account with the x/precisebank methods. This
-// must be used when minting extended coins, ie. aatom coins. This depends on
+// must be used when minting extended coins, ie. aedgens coins. This depends on
 // the methods to be properly tested to be implemented correctly.
 func (s *KeeperIntegrationTestSuite) MintToModuleAccount(moduleName string, amt sdk.Coins) {
 	moduleAddr := s.network.App.GetAccountKeeper().GetModuleAddress(moduleName)

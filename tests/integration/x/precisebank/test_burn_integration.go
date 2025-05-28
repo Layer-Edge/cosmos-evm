@@ -1,4 +1,4 @@
-package precisebank
+package keeper_test
 
 import (
 	"fmt"
@@ -16,9 +16,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-func (s *KeeperIntegrationTestSuite) TestBurnCoinsMatchingErrors() {
+func (suite *KeeperIntegrationTestSuite) TestBurnCoins_MatchingErrors() {
 	// x/precisebank BurnCoins should be identical to x/bank BurnCoins to
 	// consumers. This test ensures that the panics & errors returned by
 	// x/precisebank are identical to x/bank.
@@ -68,24 +69,24 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsMatchingErrors() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
 			if tt.wantErr == "" && tt.wantPanic == "" {
-				s.Fail("test must specify either wantErr or wantPanic")
+				suite.Fail("test must specify either wantErr or wantPanic")
 			}
 
 			if tt.wantErr != "" {
 				// Check x/bank BurnCoins for identical error
-				bankErr := s.network.App.GetBankKeeper().BurnCoins(s.network.GetContext(), tt.recipientModule, tt.burnAmount)
-				s.Require().Error(bankErr)
-				s.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank BurnCoins error")
+				bankErr := suite.network.App.BankKeeper.BurnCoins(suite.network.GetContext(), tt.recipientModule, tt.burnAmount)
+				suite.Require().Error(bankErr)
+				suite.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank BurnCoins error")
 
-				pbankErr := s.network.App.GetPreciseBankKeeper().BurnCoins(s.network.GetContext(), tt.recipientModule, tt.burnAmount)
-				s.Require().Error(pbankErr)
+				pbankErr := suite.network.App.PreciseBankKeeper.BurnCoins(suite.network.GetContext(), tt.recipientModule, tt.burnAmount)
+				suite.Require().Error(pbankErr)
 				// Compare strings instead of errors, as error stack is still different
-				s.Require().Equal(
+				suite.Require().Equal(
 					bankErr.Error(),
 					pbankErr.Error(),
 					"x/precisebank error should match x/bank BurnCoins error",
@@ -96,19 +97,19 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsMatchingErrors() {
 				// First check the wantPanic string is correct.
 				// Actually specify the panic string in the test since it makes
 				// it more clear we are testing specific and different cases.
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					_ = s.network.App.GetBankKeeper().BurnCoins(s.network.GetContext(), tt.recipientModule, tt.burnAmount)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					_ = suite.network.App.BankKeeper.BurnCoins(suite.network.GetContext(), tt.recipientModule, tt.burnAmount)
 				}, "expected panic error should match x/bank BurnCoins")
 
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					_ = s.network.App.GetPreciseBankKeeper().BurnCoins(s.network.GetContext(), tt.recipientModule, tt.burnAmount)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					_ = suite.network.App.PreciseBankKeeper.BurnCoins(suite.network.GetContext(), tt.recipientModule, tt.burnAmount)
 				}, "x/precisebank panic should match x/bank BurnCoins")
 			}
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestBurnCoins() {
+func (suite *KeeperIntegrationTestSuite) TestBurnCoins() {
 	tests := []struct {
 		name         string
 		startBalance sdk.Coins
@@ -149,7 +150,7 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoins() {
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(2))),
 			cs(),
-			// Returns correct error with aatom balance (rewrites Bank BurnCoins err)
+			// Returns correct error with aedgens balance (rewrites Bank BurnCoins err)
 			fmt.Sprintf("spendable balance 1000000000000%s is smaller than 2000000000000%s: insufficient funds",
 				types.ExtendedCoinDenom(), types.ExtendedCoinDenom()),
 		},
@@ -165,131 +166,142 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoins() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
 			moduleName := evmtypes.ModuleName
-			recipientAddr := s.network.App.GetAccountKeeper().GetModuleAddress(moduleName)
+			recipientAddr := suite.network.App.AccountKeeper.GetModuleAddress(moduleName)
 
 			// Start balance
-			err := s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), moduleName, tt.startBalance)
-			s.Require().NoError(err)
-
-			// Get fractional balance before burn
-			fracBalBefore := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipientAddr)
+			err := suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), moduleName, tt.startBalance)
+			suite.Require().NoError(err)
 
 			// Burn
-			err = s.network.App.GetPreciseBankKeeper().BurnCoins(s.network.GetContext(), moduleName, tt.burnCoins)
+			err = suite.network.App.PreciseBankKeeper.BurnCoins(suite.network.GetContext(), moduleName, tt.burnCoins)
 			if tt.wantErr != "" {
-				s.Require().Error(err)
-				s.Require().EqualError(err, tt.wantErr)
+				suite.Require().Error(err)
+				suite.Require().EqualError(err, tt.wantErr)
 				return
 			}
 
-			s.Require().NoError(err)
-
-			// Get fractional balance after burn
-			fracBalAfter := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipientAddr)
+			suite.Require().NoError(err)
 
 			// -------------------------------------------------------------
 			// Check FULL balances
 			// x/bank balances + x/precisebank balance
-			// Exclude "uatom" as x/precisebank balance will include it
-			afterBalance := s.GetAllBalances(recipientAddr)
+			// Exclude "uedgens" as x/precisebank balance will include it
+			afterBalance := suite.GetAllBalances(recipientAddr)
 
-			s.Require().Equal(
+			suite.Require().Equal(
 				tt.wantBalance.String(),
 				afterBalance.String(),
 				"unexpected balance after minting %s to %s",
 			)
 
-			// Check fractinoal balance change event
-			if !fracBalAfter.Sub(fracBalBefore).Equal(sdkmath.ZeroInt()) {
-				expEvent := types.NewEventFractionalBalanceChange(recipientAddr, fracBalBefore, fracBalAfter)
-				events := s.network.GetContext().EventManager().Events()
-				s.Require().Contains(events, expEvent)
+			intCoinAmt := tt.burnCoins.AmountOf(types.IntegerCoinDenom()).
+				Mul(types.ConversionFactor())
+
+			fraCoinAmt := tt.burnCoins.AmountOf(types.ExtendedCoinDenom())
+
+			totalExtCoinAmt := intCoinAmt.Add(fraCoinAmt)
+			spentCoins := sdk.NewCoins(sdk.NewCoin(
+				types.ExtendedCoinDenom(),
+				totalExtCoinAmt,
+			))
+
+			events := suite.network.GetContext().EventManager().Events()
+
+			expBurnEvent := banktypes.NewCoinBurnEvent(recipientAddr, spentCoins)
+			expSpendEvent := banktypes.NewCoinSpentEvent(recipientAddr, spentCoins)
+
+			if totalExtCoinAmt.IsZero() {
+				suite.Require().NotContains(events, expBurnEvent)
+				suite.Require().NotContains(events, expSpendEvent)
+			} else {
+				suite.Require().Contains(events, expBurnEvent)
+				suite.Require().Contains(events, expSpendEvent)
 			}
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestBurnCoinsRemainder() {
+func (suite *KeeperIntegrationTestSuite) TestBurnCoins_Remainder() {
 	// This tests a series of small burns to ensure the remainder is both
 	// updated correctly and reserve is correctly updated. This only burns from
 	// 1 single account.
 
-	reserveAddr := s.network.App.GetAccountKeeper().GetModuleAddress(types.ModuleName)
+	reserveAddr := suite.network.App.AccountKeeper.GetModuleAddress(types.ModuleName)
 
 	moduleName := evmtypes.ModuleName
-	moduleAddr := s.network.App.GetAccountKeeper().GetModuleAddress(moduleName)
+	moduleAddr := suite.network.App.AccountKeeper.GetModuleAddress(moduleName)
 
 	startCoins := cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(5)))
 
 	// Start balance
-	err := s.network.App.GetPreciseBankKeeper().MintCoins(
-		s.network.GetContext(),
+	err := suite.network.App.PreciseBankKeeper.MintCoins(
+		suite.network.GetContext(),
 		moduleName,
 		startCoins,
 	)
-	s.Require().NoError(err)
+	suite.Require().NoError(err)
 
 	burnAmt := types.ConversionFactor().QuoRaw(10)
 	burnCoins := cs(ci(types.ExtendedCoinDenom(), burnAmt))
 
 	// Burn 0.1 until balance is 0
 	for {
-		reserveBalBefore := s.network.App.GetBankKeeper().GetBalance(
-			s.network.GetContext(),
+		reserveBalBefore := suite.network.App.BankKeeper.GetBalance(
+			suite.network.GetContext(),
 			reserveAddr,
 			types.IntegerCoinDenom(),
 		)
 
-		balBefore := s.network.App.GetPreciseBankKeeper().GetBalance(
-			s.network.GetContext(),
+		balBefore := suite.network.App.PreciseBankKeeper.GetBalance(
+			suite.network.GetContext(),
 			moduleAddr,
 			types.ExtendedCoinDenom(),
 		)
-		remainderBefore := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
+		remainderBefore := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
 
 		// ----------------------------------------
 		// Burn
-		err := s.network.App.GetPreciseBankKeeper().BurnCoins(
-			s.network.GetContext(),
+		err := suite.network.App.PreciseBankKeeper.BurnCoins(
+			suite.network.GetContext(),
 			moduleName,
 			burnCoins,
 		)
-		s.Require().NoError(err)
+		suite.Require().NoError(err)
 
 		// ----------------------------------------
 		// Checks
-		remainderAfter := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
-		balAfter := s.network.App.GetPreciseBankKeeper().GetBalance(
-			s.network.GetContext(),
+		remainderAfter := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
+		balAfter := suite.network.App.PreciseBankKeeper.GetBalance(
+			suite.network.GetContext(),
 			moduleAddr,
 			types.ExtendedCoinDenom(),
 		)
-		reserveBalAfter := s.network.App.GetBankKeeper().GetBalance(
-			s.network.GetContext(),
+		reserveBalAfter := suite.network.App.BankKeeper.GetBalance(
+			suite.network.GetContext(),
 			reserveAddr,
 			types.IntegerCoinDenom(),
 		)
 
-		s.Require().Equal(
+		suite.Require().Equal(
 			balBefore.Amount.Sub(burnAmt).String(),
 			balAfter.Amount.String(),
 			"balance should decrease by burn amount",
 		)
 
 		// Remainder should be updated correctly
-		s.Require().Equal(
+		suite.Require().Equal(
 			remainderBefore.Add(burnAmt).Mod(types.ConversionFactor()),
 			remainderAfter,
 		)
 
 		// If remainder has exceeded (then rolled over), reserve should be updated
 		if remainderAfter.LT(remainderBefore) {
-			s.Require().Equal(
+			suite.Require().Equal(
 				reserveBalBefore.Amount.SubRaw(1).String(),
 				reserveBalAfter.Amount.String(),
 				"reserve should decrease by 1 if remainder exceeds ConversionFactor",
@@ -303,15 +315,15 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsRemainder() {
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestBurnCoinsSpreadRemainder() {
+func (suite *KeeperIntegrationTestSuite) TestBurnCoins_Spread_Remainder() {
 	// This tests a series of small burns to ensure the remainder is both
 	// updated correctly and reserve is correctly updated. This burns from
 	// a series of multiple accounts, to test when the remainder is modified
 	// by multiple accounts.
 
-	reserveAddr := s.network.App.GetAccountKeeper().GetModuleAddress(types.ModuleName)
+	reserveAddr := suite.network.App.AccountKeeper.GetModuleAddress(types.ModuleName)
 	burnerModuleName := evmtypes.ModuleName
-	burnerAddr := s.network.App.GetAccountKeeper().GetModuleAddress(burnerModuleName)
+	burnerAddr := suite.network.App.AccountKeeper.GetModuleAddress(burnerModuleName)
 
 	accCount := 20
 	startCoins := cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(5)))
@@ -320,7 +332,7 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsSpreadRemainder() {
 
 	for i := 0; i < accCount; i++ {
 		addr := sdk.AccAddress(fmt.Sprintf("addr%d", i))
-		s.MintToAccount(addr, startCoins)
+		suite.MintToAccount(addr, startCoins)
 
 		addrs = append(addrs, addr)
 	}
@@ -330,66 +342,66 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsSpreadRemainder() {
 
 	// Burn 0.1 from each account
 	for _, addr := range addrs {
-		reserveBalBefore := s.network.App.GetBankKeeper().GetBalance(
-			s.network.GetContext(),
+		reserveBalBefore := suite.network.App.BankKeeper.GetBalance(
+			suite.network.GetContext(),
 			reserveAddr,
 			types.IntegerCoinDenom(),
 		)
 
-		balBefore := s.network.App.GetPreciseBankKeeper().GetBalance(
-			s.network.GetContext(),
+		balBefore := suite.network.App.PreciseBankKeeper.GetBalance(
+			suite.network.GetContext(),
 			addr,
 			types.ExtendedCoinDenom(),
 		)
-		remainderBefore := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
+		remainderBefore := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
 
 		// ----------------------------------------
 		// Send & Burn
-		err := s.network.App.GetPreciseBankKeeper().SendCoins(
-			s.network.GetContext(),
+		err := suite.network.App.PreciseBankKeeper.SendCoins(
+			suite.network.GetContext(),
 			addr,
 			burnerAddr,
 			burnCoins,
 		)
-		s.Require().NoError(err)
+		suite.Require().NoError(err)
 
-		err = s.network.App.GetPreciseBankKeeper().BurnCoins(
-			s.network.GetContext(),
+		err = suite.network.App.PreciseBankKeeper.BurnCoins(
+			suite.network.GetContext(),
 			burnerModuleName,
 			burnCoins,
 		)
-		s.Require().NoError(err)
+		suite.Require().NoError(err)
 
 		// ----------------------------------------
 		// Checks
-		remainderAfter := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
-		balAfter := s.network.App.GetPreciseBankKeeper().GetBalance(
-			s.network.GetContext(),
+		remainderAfter := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
+		balAfter := suite.network.App.PreciseBankKeeper.GetBalance(
+			suite.network.GetContext(),
 			addr,
 			types.ExtendedCoinDenom(),
 		)
-		reserveBalAfter := s.network.App.GetBankKeeper().GetBalance(
-			s.network.GetContext(),
+		reserveBalAfter := suite.network.App.BankKeeper.GetBalance(
+			suite.network.GetContext(),
 			reserveAddr,
 			types.IntegerCoinDenom(),
 		)
 
-		s.Require().Equal(
+		suite.Require().Equal(
 			balBefore.Amount.Sub(burnAmt).String(),
 			balAfter.Amount.String(),
 			"balance should decrease by burn amount",
 		)
 
 		// Remainder should be updated correctly
-		s.Require().Equal(
+		suite.Require().Equal(
 			remainderBefore.Add(burnAmt).Mod(types.ConversionFactor()),
 			remainderAfter,
 		)
 
-		s.T().Logf("acc: %s", string(addr.Bytes()))
-		s.T().Logf("acc bal: %s -> %s", balBefore, balAfter)
-		s.T().Logf("remainder: %s -> %s", remainderBefore, remainderAfter)
-		s.T().Logf("reserve: %v -> %v", reserveBalBefore, reserveBalAfter)
+		suite.T().Logf("acc: %s", string(addr.Bytes()))
+		suite.T().Logf("acc bal: %s -> %s", balBefore, balAfter)
+		suite.T().Logf("remainder: %s -> %s", remainderBefore, remainderAfter)
+		suite.T().Logf("reserve: %v -> %v", reserveBalBefore, reserveBalAfter)
 
 		// Reserve will change when:
 		// 1. Account needs to borrow from integer (transfers to reserve)
@@ -406,7 +418,7 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsSpreadRemainder() {
 			reserveIncrease = reserveIncrease.SubRaw(1)
 		}
 
-		s.Require().Equal(
+		suite.Require().Equal(
 			reserveBalBefore.Amount.Add(reserveIncrease).String(),
 			reserveBalAfter.Amount.String(),
 			"reserve should be updated by remainder and borrowing",
@@ -414,7 +426,7 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsSpreadRemainder() {
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestBurnCoinsRandomValueMultiDecimals() {
+func (suite *KeeperIntegrationTestSuite) TestBurnCoins_RandomValueMultiDecimals() {
 	tests := []struct {
 		name    string
 		chainID testconstants.ChainID
@@ -434,8 +446,8 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsRandomValueMultiDecimals() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			s.SetupTestWithChainID(tt.chainID)
+		suite.Run(tt.name, func() {
+			suite.SetupTestWithChainID(tt.chainID)
 
 			// Has burn permissions
 			burnerModuleName := evmtypes.ModuleName
@@ -444,10 +456,10 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsRandomValueMultiDecimals() {
 			// Initial balance large enough to cover many small burns
 			initialBalance := types.ConversionFactor().MulRaw(100)
 			initialCoin := cs(ci(types.ExtendedCoinDenom(), initialBalance))
-			err := s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), burnerModuleName, initialCoin)
-			s.Require().NoError(err)
-			err = s.network.App.GetPreciseBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), burnerModuleName, burner, initialCoin)
-			s.Require().NoError(err)
+			err := suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), burnerModuleName, initialCoin)
+			suite.Require().NoError(err)
+			err = suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), burnerModuleName, burner, initialCoin)
+			suite.Require().NoError(err)
 
 			// Setup test parameters
 			maxBurnUnit := types.ConversionFactor().MulRaw(2).SubRaw(1)
@@ -459,7 +471,7 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsRandomValueMultiDecimals() {
 			// Continue burns as long as burner has balance remaining
 			for {
 				// Check current burner balance
-				burnerAmount := s.GetAllBalances(burner).AmountOf(types.ExtendedCoinDenom())
+				burnerAmount := suite.GetAllBalances(burner).AmountOf(types.ExtendedCoinDenom())
 				if burnerAmount.IsZero() {
 					break
 				}
@@ -473,26 +485,26 @@ func (s *KeeperIntegrationTestSuite) TestBurnCoinsRandomValueMultiDecimals() {
 
 				// 1. send to burner module
 				burnCoins := cs(ci(types.ExtendedCoinDenom(), randAmount))
-				err := s.network.App.GetPreciseBankKeeper().SendCoinsFromAccountToModule(s.network.GetContext(), burner, burnerModuleName, burnCoins)
-				s.Require().NoError(err)
+				err := suite.network.App.PreciseBankKeeper.SendCoinsFromAccountToModule(suite.network.GetContext(), burner, burnerModuleName, burnCoins)
+				suite.Require().NoError(err)
 
 				// 2. burn from burner module
-				err = s.network.App.GetPreciseBankKeeper().BurnCoins(s.network.GetContext(), burnerModuleName, burnCoins)
-				s.Require().NoError(err)
+				err = suite.network.App.PreciseBankKeeper.BurnCoins(suite.network.GetContext(), burnerModuleName, burnCoins)
+				suite.Require().NoError(err)
 
 				totalBurned = totalBurned.Add(randAmount)
 				burnCount++
 			}
 
-			s.T().Logf("Completed %d random burns, total burned: %s", burnCount, totalBurned)
+			suite.T().Logf("Completed %d random burns, total burned: %s", burnCount, totalBurned)
 
 			// Check burner balance
-			burnerBal := s.GetAllBalances(burner).AmountOf(types.ExtendedCoinDenom())
-			s.Equal(burnerBal.BigInt().Cmp(big.NewInt(0)), 0, "burner balance mismatch (expected: %s, actual: %s)", big.NewInt(0), burnerBal)
+			burnerBal := suite.GetAllBalances(burner).AmountOf(types.ExtendedCoinDenom())
+			suite.Equal(burnerBal.BigInt().Cmp(big.NewInt(0)), 0, "burner balance mismatch (expected: %s, actual: %s)", big.NewInt(0), burnerBal)
 
 			// Check remainder
-			remainder := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
-			s.Equal(remainder.BigInt().Cmp(big.NewInt(0)), 0, "remainder should be zero (expected: %s, actual: %s)", big.NewInt(0), remainder)
+			remainder := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
+			suite.Equal(remainder.BigInt().Cmp(big.NewInt(0)), 0, "remainder should be zero (expected: %s, actual: %s)", big.NewInt(0), remainder)
 		})
 	}
 }
@@ -526,10 +538,10 @@ func FuzzBurnCoins(f *testing.F) {
 
 		// Has both mint & burn permissions
 		moduleName := evmtypes.ModuleName
-		moduleAddr := suite.network.App.GetAccountKeeper().GetModuleAddress(moduleName)
+		moduleAddr := suite.network.App.AccountKeeper.GetModuleAddress(moduleName)
 
 		// Start balance
-		err := suite.network.App.GetPreciseBankKeeper().MintCoins(
+		err := suite.network.App.PreciseBankKeeper.MintCoins(
 			suite.network.GetContext(),
 			moduleName,
 			cs(ci(types.ExtendedCoinDenom(), sdkmath.NewInt(amount).MulRaw(burnCount))),
@@ -538,7 +550,7 @@ func FuzzBurnCoins(f *testing.F) {
 
 		// Burn multiple times to ensure different balance scenarios
 		for i := int64(0); i < burnCount; i++ {
-			err := suite.network.App.GetPreciseBankKeeper().BurnCoins(
+			err := suite.network.App.PreciseBankKeeper.BurnCoins(
 				suite.network.GetContext(),
 				moduleName,
 				cs(c(types.ExtendedCoinDenom(), amount)),
@@ -547,7 +559,7 @@ func FuzzBurnCoins(f *testing.F) {
 		}
 
 		// Check full balances
-		balAfter := suite.network.App.GetPreciseBankKeeper().GetBalance(suite.network.GetContext(), moduleAddr, types.ExtendedCoinDenom())
+		balAfter := suite.network.App.PreciseBankKeeper.GetBalance(suite.network.GetContext(), moduleAddr, types.ExtendedCoinDenom())
 
 		suite.Require().Equalf(
 			int64(0),

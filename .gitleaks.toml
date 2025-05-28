@@ -1714,7 +1714,7 @@ stopwords= [
     "phalcon",
     "input",
     "custom",
-    "atom",
+    "edgens",
     "oracle",
     "phonegap",
     "ubuntu",

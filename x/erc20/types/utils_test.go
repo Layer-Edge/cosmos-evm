@@ -66,37 +66,37 @@ func TestEqualMetadata(t *testing.T) {
 		{
 			"equal metadata",
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 					{
-						Denom:    "atom",
+						Denom:    "edgens",
 						Exponent: 18,
 					},
 				},
 			},
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 					{
-						Denom:    "atom",
+						Denom:    "edgens",
 						Exponent: 18,
 					},
 				},
@@ -106,44 +106,44 @@ func TestEqualMetadata(t *testing.T) {
 		{
 			"different base field",
 			banktypes.Metadata{
-				Base: "aatom",
+				Base: "aedgens",
 			},
 			banktypes.Metadata{
-				Base: "taatom",
+				Base: "taedgens",
 			},
 			true,
 		},
 		{
 			"different denom units length",
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 					{
-						Denom:    "atom",
+						Denom:    "edgens",
 						Exponent: 18,
 					},
 				},
 			},
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 				},
 			},
@@ -152,47 +152,47 @@ func TestEqualMetadata(t *testing.T) {
 		{
 			"different denom units",
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 					{
-						Denom:    "uatom",
+						Denom:    "uedgens",
 						Exponent: 12,
 						Aliases:  []string{"micro evmos"},
 					},
 					{
-						Denom:    "atom",
+						Denom:    "edgens",
 						Exponent: 18,
 					},
 				},
 			},
 			banktypes.Metadata{
-				Base:        "aatom",
-				Display:     "atom",
+				Base:        "aedgens",
+				Display:     "edgens",
 				Name:        "Cosmos EVM",
-				Symbol:      "ATOM",
+				Symbol:      "EDGENS",
 				Description: "EVM, staking and governance denom of Cosmos EVM",
 				DenomUnits: []*banktypes.DenomUnit{
 					{
-						Denom:    "aatom",
+						Denom:    "aedgens",
 						Exponent: 0,
-						Aliases:  []string{"atto atom"},
+						Aliases:  []string{"atto edgens"},
 					},
 					{
-						Denom:    "Uatom",
+						Denom:    "Uedgens",
 						Exponent: 12,
 						Aliases:  []string{"micro evmos"},
 					},
 					{
-						Denom:    "atom",
+						Denom:    "edgens",
 						Exponent: 18,
 					},
 				},
@@ -227,25 +227,25 @@ func TestEqualAliases(t *testing.T) {
 		{
 			"different lengths",
 			[]string{},
-			[]string{"atto atom"},
+			[]string{"atto edgens"},
 			false,
 		},
 		{
 			"different values",
 			[]string{"attoevmos"},
-			[]string{"atto atom"},
+			[]string{"atto edgens"},
 			false,
 		},
 		{
 			"same values, unsorted",
-			[]string{"atto atom", "aatom"},
-			[]string{"aatom", "atto atom"},
+			[]string{"atto edgens", "aedgens"},
+			[]string{"aedgens", "atto edgens"},
 			false,
 		},
 		{
 			"same values, sorted",
-			[]string{"aatom", "atto atom"},
-			[]string{"aatom", "atto atom"},
+			[]string{"aedgens", "atto edgens"},
+			[]string{"aedgens", "atto edgens"},
 			true,
 		},
 	}

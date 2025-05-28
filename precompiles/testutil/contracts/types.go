@@ -82,7 +82,7 @@ func (c CallArgs) WithArgs(args ...interface{}) CallArgs {
 }
 
 // WithAmount populates the CallArgs struct's Amount field with the given amount.
-// This is the amount of ATOM that will be sent with the contract call.
+// This is the amount of EDGENS that will be sent with the contract call.
 func (c CallArgs) WithAmount(amount *big.Int) CallArgs {
 	c.Amount = amount
 	return c

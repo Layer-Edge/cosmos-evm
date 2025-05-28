@@ -29,7 +29,7 @@ func TestKeeper_GetBalance(t *testing.T) {
 		{
 			"extended denom - no fractional balance",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uedgens when querying for aedgens
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			// integer + fractional
@@ -60,7 +60,7 @@ func TestKeeper_GetBalance(t *testing.T) {
 			sdk.NewCoin(types.ExtendedCoinDenom(), sdkmath.NewInt(1000_999_999_999_999)),
 		},
 		{
-			"non-extended denom - uatom returns uatom",
+			"non-extended denom - uedgens returns uedgens",
 			types.IntegerCoinDenom(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
@@ -143,7 +143,7 @@ func TestKeeper_SpendableCoin(t *testing.T) {
 		{
 			"extended denom - no fractional balance",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uedgens when querying for aedgens
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			// integer + fractional
@@ -174,7 +174,7 @@ func TestKeeper_SpendableCoin(t *testing.T) {
 			sdk.NewCoin(types.ExtendedCoinDenom(), sdkmath.NewInt(1000_999_999_999_999)),
 		},
 		{
-			"non-extended denom - uatom returns uatom",
+			"non-extended denom - uedgens returns uedgens",
 			types.IntegerCoinDenom(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
@@ -263,12 +263,12 @@ func TestHiddenReserve(t *testing.T) {
 		expectedBalance sdk.Coin
 	}{
 		{
-			"aatom",
+			"aedgens",
 			types.ExtendedCoinDenom(),
 			sdk.NewCoin(types.ExtendedCoinDenom(), sdkmath.ZeroInt()),
 		},
 		{
-			"uatom",
+			"uedgens",
 			types.IntegerCoinDenom(),
 			sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1)),
 		},

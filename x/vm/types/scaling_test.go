@@ -68,7 +68,7 @@ func TestConvertEvmCoinFrom18Decimals(t *testing.T) {
 		{
 			name:        "fail - not evm denom",
 			evmCoinInfo: sixDecimalsCoinInfo,
-			coin:        sdk.Coin{Denom: "atom", Amount: math.NewInt(1)},
+			coin:        sdk.Coin{Denom: "edgens", Amount: math.NewInt(1)},
 			expErr:      true,
 		},
 	}

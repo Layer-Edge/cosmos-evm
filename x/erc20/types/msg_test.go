@@ -135,7 +135,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoinGetters() {
 	msgInvalid := types.MsgConvertCoin{}
 	msg := types.NewMsgConvertCoin(
 		sdk.NewCoin(
-			"atest",
+			"aedgen",
 			math.NewInt(100),
 		),
 		utiltx.GenerateAddress(),
@@ -157,7 +157,7 @@ func (suite *MsgsTestSuite) TestNewMsgConvertCoin() {
 	}{
 		{
 			"msg convert coin - pass",
-			"atest",
+			"aedgen",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
@@ -196,7 +196,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"cannot mint a non-positive amount",
-			"atest",
+			"aedgen",
 			math.NewInt(-100),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
 			utiltx.GenerateAddress().String(),
@@ -204,7 +204,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"invalid sender address",
-			"atest",
+			"aedgen",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress{}.String(),
@@ -212,7 +212,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"invalid receiver hex address",
-			"atest",
+			"aedgen",
 			math.NewInt(100),
 			"not_a_hex_address",
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),
@@ -220,7 +220,7 @@ func (suite *MsgsTestSuite) TestMsgConvertCoin() {
 		},
 		{
 			"msg convert coin - pass",
-			"atest",
+			"aedgen",
 			math.NewInt(100),
 			utiltx.GenerateAddress().String(),
 			sdk.AccAddress(utiltx.GenerateAddress().Bytes()).String(),

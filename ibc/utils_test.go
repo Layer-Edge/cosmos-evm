@@ -22,6 +22,90 @@ func init() {
 	cfg.SetBech32PrefixForAccount("cosmos", "cosmospub")
 }
 
+func TestGetTransferSenderRecipient(t *testing.T) {
+	testCases := []struct {
+		name         string
+		data         transfertypes.FungibleTokenPacketData
+		expSender    string
+		expRecipient string
+		expError     bool
+	}{
+		{
+			name:         "empty FungibleTokenPacketData",
+			data:         transfertypes.FungibleTokenPacketData{},
+			expSender:    "",
+			expRecipient: "",
+			expError:     true,
+		},
+		{
+			name: "invalid sender",
+			data: transfertypes.FungibleTokenPacketData{
+				Sender:   "cosmos1",
+				Receiver: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
+				Amount:   "123456",
+			},
+			expSender:    "",
+			expRecipient: "",
+			expError:     true,
+		},
+		{
+			name: "invalid recipient",
+			data: transfertypes.FungibleTokenPacketData{
+				Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+				Receiver: "cosmos1",
+				Amount:   "123456",
+			},
+			expSender:    "",
+			expRecipient: "",
+			expError:     true,
+		},
+		{
+			name: "valid - cosmos sender, evmos recipient",
+			data: transfertypes.FungibleTokenPacketData{
+				Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+				Receiver: "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
+				Amount:   "123456",
+			},
+			expSender:    "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+			expRecipient: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
+			expError:     false,
+		},
+		{
+			name: "valid - evmos sender, cosmos recipient",
+			data: transfertypes.FungibleTokenPacketData{
+				Sender:   "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
+				Receiver: "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+				Amount:   "123456",
+			},
+			expSender:    "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
+			expRecipient: "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+			expError:     false,
+		},
+		{
+			name: "valid - osmosis sender, evmos recipient",
+			data: transfertypes.FungibleTokenPacketData{
+				Sender:   "osmo1qql8ag4cluz6r4dz28p3w00dnc9w8ueuhnecd2",
+				Receiver: "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
+				Amount:   "123456",
+			},
+			expSender:    "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
+			expRecipient: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
+			expError:     false,
+		},
+	}
+
+	for _, tc := range testCases {
+		sender, recipient, _, _, err := cosmosevmibc.GetTransferSenderRecipient(tc.data)
+		if tc.expError {
+			require.Error(t, err, tc.name)
+		} else {
+			require.NoError(t, err, tc.name)
+			require.Equal(t, tc.expSender, sender.String())
+			require.Equal(t, tc.expRecipient, recipient.String())
+		}
+	}
+}
+
 func TestGetTransferAmount(t *testing.T) {
 	testCases := []struct {
 		name      string
@@ -62,11 +146,11 @@ func TestGetTransferAmount(t *testing.T) {
 					&transfertypes.FungibleTokenPacketData{
 						Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
 						Receiver: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
-						Amount:   "test",
+						Amount:   "edgen",
 					},
 				),
 			},
-			expAmount: "test",
+			expAmount: "edgen",
 			expError:  true,
 		},
 		{
@@ -136,14 +220,14 @@ func TestGetReceivedCoin(t *testing.T) {
 			dstChannel: chan1,
 			rawDenom: func() string {
 				denom := transfertypes.NewDenom(
-					"uatom",
+					"uedgens",
 					transfertypes.NewHop(port, chan0),
 				)
 				return denom.Path()
 			},
 			rawAmount: "10",
 			expCoin: func() sdk.Coin {
-				expectedDenom := transfertypes.NewDenom("uatom").IBCDenom()
+				expectedDenom := transfertypes.NewDenom("uedgens").IBCDenom()
 				return sdk.NewCoin(expectedDenom, math.NewInt(10))
 			},
 		},
@@ -177,7 +261,7 @@ func TestGetReceivedCoin(t *testing.T) {
 			dstPort:    port,
 			dstChannel: chan0,
 			rawDenom: func() string {
-				denom := transfertypes.NewDenom("uatom",
+				denom := transfertypes.NewDenom("uedgens",
 					transfertypes.NewHop(port, chan1),
 				)
 				return denom.Path()
@@ -185,7 +269,7 @@ func TestGetReceivedCoin(t *testing.T) {
 			rawAmount: "10",
 			expCoin: func() sdk.Coin {
 				expectedDenom := transfertypes.NewDenom(
-					"uatom",
+					"uedgens",
 					transfertypes.NewHop(port, chan0),
 					transfertypes.NewHop(port, chan1),
 				).IBCDenom()
@@ -222,14 +306,14 @@ func TestGetSentCoin(t *testing.T) {
 		expCoin   sdk.Coin
 	}{
 		{
-			"get unwrapped aatom coin",
+			"get unwrapped aedgens coin",
 			baseDenom,
 			"10",
 			sdk.Coin{Denom: baseDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get ibc wrapped aatom coin",
-			"transfer/channel-0/aatom",
+			"get ibc wrapped aedgens coin",
+			"transfer/channel-0/aedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.AatomIbcDenom, Amount: math.NewInt(10)},
 		},
@@ -240,14 +324,14 @@ func TestGetSentCoin(t *testing.T) {
 			sdk.Coin{Denom: precompilestestutil.UosmoIbcDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get ibc wrapped uatom coin",
-			"transfer/channel-1/uatom",
+			"get ibc wrapped uedgens coin",
+			"transfer/channel-1/uedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.UatomIbcDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get 2x ibc wrapped uatom coin",
-			"transfer/channel-0/transfer/channel-1/uatom",
+			"get 2x ibc wrapped uedgens coin",
+			"transfer/channel-0/transfer/channel-1/uedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.UatomOsmoIbcDenom, Amount: math.NewInt(10)},
 		},
@@ -283,14 +367,14 @@ func TestDeriveDecimalsFromDenom(t *testing.T) {
 		},
 		{
 			name:      "success: micro 'u' prefix",
-			baseDenom: "uatom",
+			baseDenom: "uedgens",
 			expDec:    6,
 			expFail:   false,
 			expErrMsg: "",
 		},
 		{
 			name:      "success: atto 'a' prefix",
-			baseDenom: "aatom",
+			baseDenom: "aedgens",
 			expDec:    18,
 			expFail:   false,
 			expErrMsg: "",
@@ -306,5 +390,41 @@ func TestDeriveDecimalsFromDenom(t *testing.T) {
 			require.NoError(t, err)
 		}
 		require.Equal(t, tc.expDec, dec)
+	}
+}
+
+func TestIsBaseDenomFromSourceChain(t *testing.T) {
+	tests := []struct {
+		name     string
+		denom    string
+		expected bool
+	}{
+		{
+			name:     "one hop",
+			denom:    "transfer/channel-0/uedgens",
+			expected: false,
+		},
+		{
+			name:     "no hop with factory prefix",
+			denom:    "factory/owner/uedgens",
+			expected: false,
+		},
+		{
+			name:     "multi hop",
+			denom:    "transfer/channel-0/transfer/channel-1/uedgens",
+			expected: false,
+		},
+		{
+			name:     "no hop",
+			denom:    "uedgens",
+			expected: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := cosmosevmibc.IsBaseDenomFromSourceChain(tt.denom)
+			require.Equal(t, tt.expected, result)
+		})
 	}
 }

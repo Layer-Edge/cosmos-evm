@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "WATOM",
-  "sourceName": "solidity/WATOM.sol",
+  "contractName": "WEDGENS",
+  "sourceName": "solidity/WEDGENS.sol",
   "abi": [
     {
       "anonymous": false,

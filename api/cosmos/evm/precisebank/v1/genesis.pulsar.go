@@ -1126,7 +1126,7 @@ type FractionalBalance struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	// amount indicates amount of only the fractional balance owned by the
 	// address. FractionalBalance currently only supports tracking 1 single asset,
-	// e.g. fractional balances of uatom.
+	// e.g. fractional balances of uedgens.
 	Amount string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 

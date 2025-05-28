@@ -10,12 +10,12 @@ import (
 // amount in extended coins. This is intended to get the full value to emit in
 // events.
 func SumExtendedCoin(amt sdk.Coins) sdk.Coin {
-	// uatom converted to aatom
+	// uedgens converted to aedgens
 	integerAmount := amt.AmountOf(IntegerCoinDenom()).Mul(ConversionFactor())
-	// aatom as is
+	// aedgens as is
 	extendedAmount := amt.AmountOf(ExtendedCoinDenom())
 
-	// total of uatom and aatom amounts
+	// total of uedgens and aedgens amounts
 	fullEmissionAmount := integerAmount.Add(extendedAmount)
 
 	return sdk.NewCoin(

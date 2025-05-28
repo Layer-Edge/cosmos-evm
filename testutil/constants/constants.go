@@ -12,13 +12,13 @@ const (
 	DefaultGasPrice = 20
 
 	// ExampleAttoDenom provides an example denom for use in tests
-	ExampleAttoDenom = "aatom"
+	ExampleAttoDenom = "aedgens"
 
 	// ExampleMicroDenom provides an example denom for use in tests
-	ExampleMicroDenom = "uatom"
+	ExampleMicroDenom = "uedgens"
 
 	// ExampleDisplayDenom provides an example display denom for use in tests
-	ExampleDisplayDenom = "atom"
+	ExampleDisplayDenom = "edgens"
 
 	// ExampleBech32Prefix provides an example Bech32 prefix for use in tests
 	ExampleBech32Prefix = "cosmos"
@@ -79,25 +79,25 @@ var (
 			Denom:         ExampleAttoDenom,
 			ExtendedDenom: ExampleAttoDenom,
 			DisplayDenom:  ExampleDisplayDenom,
-			Decimals:      evmtypes.EighteenDecimals.Uint32(),
+			Decimals:      evmtypes.EighteenDecimals,
 		},
 		SixDecimalsChainID: {
-			Denom:         "utest",
-			ExtendedDenom: "atest",
-			DisplayDenom:  "test",
-			Decimals:      evmtypes.SixDecimals.Uint32(),
+			Denom:         "uedgen",
+			ExtendedDenom: "aedgen",
+			DisplayDenom:  "edgen",
+			Decimals:      evmtypes.SixDecimals,
 		},
 		TwelveDecimalsChainID: {
 			Denom:         "ptest2",
 			ExtendedDenom: "atest2",
 			DisplayDenom:  "test2",
-			Decimals:      evmtypes.TwelveDecimals.Uint32(),
+			Decimals:      evmtypes.TwelveDecimals,
 		},
 		TwoDecimalsChainID: {
 			Denom:         "ctest3",
 			ExtendedDenom: "atest3",
 			DisplayDenom:  "test3",
-			Decimals:      evmtypes.TwoDecimals.Uint32(),
+			Decimals:      evmtypes.TwoDecimals,
 		},
 	}
 

@@ -2,10 +2,10 @@ package config
 
 const ( // TODO:VLAD - Clean this up
 	// ExampleChainDenom is the denomination of the Cosmos EVM example chain's base coin.
-	ExampleChainDenom = "aatom"
+	ExampleChainDenom = "aedgens"
 
 	// ExampleDisplayDenom is the display denomination of the Cosmos EVM example chain's base coin.
-	ExampleDisplayDenom = "atom"
+	ExampleDisplayDenom = "edgens"
 
 	// EighteenDecimalsChainID is the chain ID for the 18 decimals chain.
 	EighteenDecimalsChainID = 9001

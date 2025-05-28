@@ -1,4 +1,4 @@
-package precisebank
+package keeper_test
 
 import (
 	"fmt"
@@ -20,30 +20,30 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-func (s *KeeperIntegrationTestSuite) TestBlockedRecipient() {
+func (suite *KeeperIntegrationTestSuite) TestBlockedRecipient() {
 	// Tests that sending funds to x/precisebank is disallowed.
 	// x/precisebank balance is used as the reserve funds and should not be
 	// directly interacted with by external modules or users.
-	msgServer := bankkeeper.NewMsgServerImpl(s.network.App.GetBankKeeper())
+	msgServer := bankkeeper.NewMsgServerImpl(suite.network.App.BankKeeper)
 
 	fromAddr := sdk.AccAddress{1}
 
 	// To x/precisebank
-	toAddr := s.network.App.GetAccountKeeper().GetModuleAddress(types.ModuleName)
+	toAddr := suite.network.App.AccountKeeper.GetModuleAddress(types.ModuleName)
 	amount := cs(c(types.IntegerCoinDenom(), 1000))
 
 	msg := banktypes.NewMsgSend(fromAddr, toAddr, amount)
 
-	_, err := msgServer.Send(s.network.GetContext(), msg)
-	s.Require().Error(err)
+	_, err := msgServer.Send(suite.network.GetContext(), msg)
+	suite.Require().Error(err)
 
-	s.Require().EqualError(
+	suite.Require().EqualError(
 		err,
 		fmt.Sprintf("%s is not allowed to receive funds: unauthorized", toAddr.String()),
 	)
 }
 
-func (s *KeeperIntegrationTestSuite) TestMintCoinsMatchingErrors() {
+func (suite *KeeperIntegrationTestSuite) TestMintCoins_MatchingErrors() {
 	// x/precisebank MintCoins should be identical to x/bank MintCoins to
 	// consumers. This test ensures that the panics & errors returned by
 	// x/precisebank are identical to x/bank.
@@ -80,24 +80,24 @@ func (s *KeeperIntegrationTestSuite) TestMintCoinsMatchingErrors() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
 			if tt.wantErr == "" && tt.wantPanic == "" {
-				s.Fail("test must specify either wantErr or wantPanic")
+				suite.Fail("test must specify either wantErr or wantPanic")
 			}
 
 			if tt.wantErr != "" {
 				// Check x/bank MintCoins for identical error
-				bankErr := s.network.App.GetBankKeeper().MintCoins(s.network.GetContext(), tt.recipientModule, tt.mintAmount)
-				s.Require().Error(bankErr)
-				s.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank MintCoins error")
+				bankErr := suite.network.App.BankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, tt.mintAmount)
+				suite.Require().Error(bankErr)
+				suite.Require().EqualError(bankErr, tt.wantErr, "expected error should match x/bank MintCoins error")
 
-				pbankErr := s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), tt.recipientModule, tt.mintAmount)
-				s.Require().Error(pbankErr)
+				pbankErr := suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, tt.mintAmount)
+				suite.Require().Error(pbankErr)
 				// Compare strings instead of errors, as error stack is still different
-				s.Require().Equal(
+				suite.Require().Equal(
 					bankErr.Error(),
 					pbankErr.Error(),
 					"x/precisebank error should match x/bank MintCoins error",
@@ -108,19 +108,19 @@ func (s *KeeperIntegrationTestSuite) TestMintCoinsMatchingErrors() {
 				// First check the wantPanic string is correct.
 				// Actually specify the panic string in the test since it makes
 				// it more clear we are testing specific and different cases.
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					_ = s.network.App.GetBankKeeper().MintCoins(s.network.GetContext(), tt.recipientModule, tt.mintAmount)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					_ = suite.network.App.BankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, tt.mintAmount)
 				}, "expected panic error should match x/bank MintCoins")
 
-				s.Require().PanicsWithError(tt.wantPanic, func() {
-					_ = s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), tt.recipientModule, tt.mintAmount)
+				suite.Require().PanicsWithError(tt.wantPanic, func() {
+					_ = suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, tt.mintAmount)
 				}, "x/precisebank panic should match x/bank MintCoins")
 			}
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestMintCoins() {
+func (suite *KeeperIntegrationTestSuite) TestMintCoins() {
 	type mintTest struct {
 		mintAmount sdk.Coins
 		// Expected **full** balances after MintCoins(mintAmount)
@@ -276,29 +276,23 @@ func (s *KeeperIntegrationTestSuite) TestMintCoins() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
+		suite.Run(tt.name, func() {
 			// Reset
-			s.SetupTest()
+			suite.SetupTest()
 
-			recipientAddr := s.network.App.GetAccountKeeper().GetModuleAddress(tt.recipientModule)
+			recipientAddr := suite.network.App.AccountKeeper.GetModuleAddress(tt.recipientModule)
 
 			for _, mt := range tt.mints {
-				// Get fractional balance before mint
-				fracBalBefore := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipientAddr)
-
-				err := s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), tt.recipientModule, mt.mintAmount)
-				s.Require().NoError(err)
+				err := suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), tt.recipientModule, mt.mintAmount)
+				suite.Require().NoError(err)
 
 				// -------------------------------------------------------------
 				// Check FULL balances
 				// x/bank balances + x/precisebank balance
-				// Exclude "uatom" as x/precisebank balance will include it
-				bankCoins := s.network.App.GetBankKeeper().GetAllBalances(s.network.GetContext(), recipientAddr)
+				// Exclude "uedgens" as x/precisebank balance will include it
+				bankCoins := suite.network.App.BankKeeper.GetAllBalances(suite.network.GetContext(), recipientAddr)
 
-				// Get fractional balance after mint
-				fracBalAfter := s.network.App.GetPreciseBankKeeper().GetFractionalBalance(s.network.GetContext(), recipientAddr)
-
-				// Only use x/bank balances for non-uatom denoms
+				// Only use x/bank balances for non-uedgens denoms
 				var denoms []string
 				for _, coin := range bankCoins {
 					// Ignore integer coins, query the extended denom instead
@@ -311,34 +305,57 @@ func (s *KeeperIntegrationTestSuite) TestMintCoins() {
 
 				// Add the extended denom to the list of denoms to balance check
 				// Will be included in balance check even if x/bank doesn't have
-				// uatom.
+				// uedgens.
 				denoms = append(denoms, types.ExtendedCoinDenom())
 
 				// All balance queries through x/precisebank
 				afterBalance := sdk.NewCoins()
 				for _, denom := range denoms {
-					coin := s.network.App.GetPreciseBankKeeper().GetBalance(s.network.GetContext(), recipientAddr, denom)
+					coin := suite.network.App.PreciseBankKeeper.GetBalance(suite.network.GetContext(), recipientAddr, denom)
 					afterBalance = afterBalance.Add(coin)
 				}
 
-				s.Require().Equal(
+				suite.Require().Equal(
 					mt.wantBalance.String(),
 					afterBalance.String(),
 					"unexpected balance after minting %s to %s",
 				)
 
-				// Check fractinoal balance change event
-				if !fracBalAfter.Sub(fracBalBefore).Equal(sdkmath.ZeroInt()) {
-					expEvent := types.NewEventFractionalBalanceChange(recipientAddr, fracBalBefore, fracBalAfter)
-					events := s.network.GetContext().EventManager().Events()
-					s.Require().Contains(events, expEvent)
+				// Get event for minted coins
+				intCoinAmt := mt.mintAmount.AmountOf(types.IntegerCoinDenom()).
+					Mul(types.ConversionFactor())
+
+				fraCoinAmt := mt.mintAmount.AmountOf(types.ExtendedCoinDenom())
+
+				totalExtCoinAmt := intCoinAmt.Add(fraCoinAmt)
+				extCoins := sdk.NewCoins(sdk.NewCoin(types.ExtendedCoinDenom(), totalExtCoinAmt))
+
+				// Check for mint event
+				events := suite.network.GetContext().EventManager().Events()
+
+				expMintEvent := banktypes.NewCoinMintEvent(
+					recipientAddr,
+					extCoins,
+				)
+
+				expReceivedEvent := banktypes.NewCoinReceivedEvent(
+					recipientAddr,
+					extCoins,
+				)
+
+				if totalExtCoinAmt.IsZero() {
+					suite.Require().NotContains(events, expMintEvent)
+					suite.Require().NotContains(events, expReceivedEvent)
+				} else {
+					suite.Require().Contains(events, expMintEvent)
+					suite.Require().Contains(events, expReceivedEvent)
 				}
 			}
 		})
 	}
 }
 
-func (s *KeeperIntegrationTestSuite) TestMintCoinsRandomValueMultiDecimals() {
+func (suite *KeeperIntegrationTestSuite) TestMintCoins_RandomValueMultiDecimals() {
 	tests := []struct {
 		name    string
 		chainID testconstants.ChainID
@@ -358,8 +375,8 @@ func (s *KeeperIntegrationTestSuite) TestMintCoinsRandomValueMultiDecimals() {
 	}
 
 	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			s.SetupTestWithChainID(tt.chainID)
+		suite.Run(tt.name, func() {
+			suite.SetupTestWithChainID(tt.chainID)
 
 			// Has mint permissions
 			minterModuleName := evmtypes.ModuleName
@@ -378,7 +395,7 @@ func (s *KeeperIntegrationTestSuite) TestMintCoinsRandomValueMultiDecimals() {
 			// Continue mints as long as target balance is not reached
 			for {
 				// Check current minter balance
-				minterBal := s.GetAllBalances(minter).AmountOf(types.ExtendedCoinDenom())
+				minterBal := suite.GetAllBalances(minter).AmountOf(types.ExtendedCoinDenom())
 				if minterBal.GTE(targetBalance) {
 					break
 				}
@@ -390,26 +407,26 @@ func (s *KeeperIntegrationTestSuite) TestMintCoinsRandomValueMultiDecimals() {
 
 				// 1. mint to evm module
 				mintCoins := cs(ci(types.ExtendedCoinDenom(), randAmount))
-				err := s.network.App.GetPreciseBankKeeper().MintCoins(s.network.GetContext(), minterModuleName, mintCoins)
-				s.Require().NoError(err)
+				err := suite.network.App.PreciseBankKeeper.MintCoins(suite.network.GetContext(), minterModuleName, mintCoins)
+				suite.Require().NoError(err)
 
 				// 2. send to account
-				err = s.network.App.GetPreciseBankKeeper().SendCoinsFromModuleToAccount(s.network.GetContext(), minterModuleName, minter, mintCoins)
-				s.Require().NoError(err)
+				err = suite.network.App.PreciseBankKeeper.SendCoinsFromModuleToAccount(suite.network.GetContext(), minterModuleName, minter, mintCoins)
+				suite.Require().NoError(err)
 
 				totalMinted = totalMinted.Add(randAmount)
 				mintCount++
 			}
 
-			s.T().Logf("Completed %d random mints, total minted: %s", mintCount, totalMinted)
+			suite.T().Logf("Completed %d random mints, total minted: %s", mintCount, totalMinted)
 
 			// Check minter balance
-			minterBal := s.GetAllBalances(minter).AmountOf(types.ExtendedCoinDenom())
-			s.Equal(minterBal.BigInt().Cmp(targetBalance.BigInt()), 0, "minter balance mismatch (expected: %s, actual: %s)", targetBalance, minterBal)
+			minterBal := suite.GetAllBalances(minter).AmountOf(types.ExtendedCoinDenom())
+			suite.Equal(minterBal.BigInt().Cmp(targetBalance.BigInt()), 0, "minter balance mismatch (expected: %s, actual: %s)", targetBalance, minterBal)
 
 			// Check remainder
-			remainder := s.network.App.GetPreciseBankKeeper().GetRemainderAmount(s.network.GetContext())
-			s.Equal(remainder.BigInt().Cmp(big.NewInt(0)), 0, "remainder should be zero (expected: %s, actual: %s)", big.NewInt(0), remainder)
+			remainder := suite.network.App.PreciseBankKeeper.GetRemainderAmount(suite.network.GetContext())
+			suite.Equal(remainder.BigInt().Cmp(big.NewInt(0)), 0, "remainder should be zero (expected: %s, actual: %s)", big.NewInt(0), remainder)
 		})
 	}
 }
@@ -446,7 +463,7 @@ func FuzzMintCoins(f *testing.F) {
 
 		// Mint 10 times to include mints from non-zero balances
 		for i := int64(0); i < mintCount; i++ {
-			err := suite.network.App.GetPreciseBankKeeper().MintCoins(
+			err := suite.network.App.PreciseBankKeeper.MintCoins(
 				suite.network.GetContext(),
 				evmtypes.ModuleName,
 				cs(c(types.ExtendedCoinDenom(), amount)),
@@ -455,8 +472,8 @@ func FuzzMintCoins(f *testing.F) {
 		}
 
 		// Check full balances
-		recipientAddr := suite.network.App.GetAccountKeeper().GetModuleAddress(evmtypes.ModuleName)
-		bal := suite.network.App.GetPreciseBankKeeper().GetBalance(suite.network.GetContext(), recipientAddr, types.ExtendedCoinDenom())
+		recipientAddr := suite.network.App.AccountKeeper.GetModuleAddress(evmtypes.ModuleName)
+		bal := suite.network.App.PreciseBankKeeper.GetBalance(suite.network.GetContext(), recipientAddr, types.ExtendedCoinDenom())
 
 		suite.Require().Equalf(
 			amount*mintCount,

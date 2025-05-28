@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract WATOM {
-    string public name = "Wrapped Atom";
-    string public symbol = "WATOM";
+contract WEDGENS {
+    string public name = "Wrapped Edgens";
+    string public symbol = "WEDGENS";
     uint8 public decimals = 18;
 
     mapping(address => uint256) public balanceOf;
@@ -12,7 +12,7 @@ contract WATOM {
     event Withdrawal(address indexed src, uint256 amount);
     event Transfer(address indexed src, address indexed dst, uint256 amount);
 
-    // Receive ether and wrap it into ATOM
+    // Receive ether and wrap it into EDGENS
     receive() external payable {
         deposit();
     }
