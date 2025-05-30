@@ -289,10 +289,10 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins() {
 				// -------------------------------------------------------------
 				// Check FULL balances
 				// x/bank balances + x/precisebank balance
-				// Exclude "uatom" as x/precisebank balance will include it
+				// Exclude "uedgens" as x/precisebank balance will include it
 				bankCoins := suite.network.App.BankKeeper.GetAllBalances(suite.network.GetContext(), recipientAddr)
 
-				// Only use x/bank balances for non-uatom denoms
+				// Only use x/bank balances for non-uedgens denoms
 				var denoms []string
 				for _, coin := range bankCoins {
 					// Ignore integer coins, query the extended denom instead
@@ -305,7 +305,7 @@ func (suite *KeeperIntegrationTestSuite) TestMintCoins() {
 
 				// Add the extended denom to the list of denoms to balance check
 				// Will be included in balance check even if x/bank doesn't have
-				// uatom.
+				// uedgens.
 				denoms = append(denoms, types.ExtendedCoinDenom())
 
 				// All balance queries through x/precisebank

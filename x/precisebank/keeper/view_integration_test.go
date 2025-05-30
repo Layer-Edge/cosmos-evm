@@ -24,7 +24,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 		{
 			"extended denom, no fractional - locked coins",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uedgens when querying for aedgens
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(10))),
@@ -37,7 +37,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 		{
 			"extended denom, with fractional - locked coins",
 			types.ExtendedCoinDenom(),
-			// queried bank balance in uatom when querying for aatom
+			// queried bank balance in uedgens when querying for aedgens
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.NewInt(5000),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(10))),
@@ -48,7 +48,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 			),
 		},
 		{
-			"non-extended denom - uatom returns uatom",
+			"non-extended denom - uedgens returns uedgens",
 			types.IntegerCoinDenom(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			sdkmath.ZeroInt(),
@@ -56,7 +56,7 @@ func (suite *KeeperIntegrationTestSuite) TestKeeper_SpendableCoin() {
 			sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(990)),
 		},
 		{
-			"non-extended denom, with fractional - uatom returns uatom",
+			"non-extended denom, with fractional - uedgens returns uedgens",
 			types.IntegerCoinDenom(),
 			sdk.NewCoins(sdk.NewCoin(types.IntegerCoinDenom(), sdkmath.NewInt(1000))),
 			// does not affect balance

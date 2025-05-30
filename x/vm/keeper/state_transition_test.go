@@ -569,9 +569,9 @@ func (suite *KeeperTestSuite) TestApplyTransaction() {
 	suite.SetupTest()
 	// set bounded cosmos block gas limit
 	ctx := suite.network.GetContext().WithBlockGasMeter(storetypes.NewGasMeter(1e6))
-	err := suite.network.App.BankKeeper.MintCoins(ctx, "mint", sdk.NewCoins(sdk.NewCoin("aatom", sdkmath.NewInt(3e18))))
+	err := suite.network.App.BankKeeper.MintCoins(ctx, "mint", sdk.NewCoins(sdk.NewCoin("aedgens", sdkmath.NewInt(3e18))))
 	suite.Require().NoError(err)
-	err = suite.network.App.BankKeeper.SendCoinsFromModuleToModule(ctx, "mint", "fee_collector", sdk.NewCoins(sdk.NewCoin("aatom", sdkmath.NewInt(3e18))))
+	err = suite.network.App.BankKeeper.SendCoinsFromModuleToModule(ctx, "mint", "fee_collector", sdk.NewCoins(sdk.NewCoin("aedgens", sdkmath.NewInt(3e18))))
 	suite.Require().NoError(err)
 	testCases := []struct {
 		name       string
@@ -593,7 +593,7 @@ func (suite *KeeperTestSuite) TestApplyTransaction() {
 				GasLimit: tc.gasLimit,
 			})
 			suite.Require().NoError(err)
-			initialBalance := suite.network.App.BankKeeper.GetBalance(ctx, suite.keyring.GetAccAddr(0), "aatom")
+			initialBalance := suite.network.App.BankKeeper.GetBalance(ctx, suite.keyring.GetAccAddr(0), "aedgens")
 
 			ethTx := tx.GetMsgs()[0].(*types.MsgEthereumTx).AsTransaction()
 			res, err := suite.network.App.EVMKeeper.ApplyTransaction(ctx, ethTx)
@@ -602,7 +602,7 @@ func (suite *KeeperTestSuite) TestApplyTransaction() {
 			// Half of the gas should be refunded based on the protocol refund cap.
 			// Note that the balance should only increment by the refunded amount
 			// because ApplyTransaction does not consume and take the gas from the user.
-			balanceAfterRefund := suite.network.App.BankKeeper.GetBalance(ctx, suite.keyring.GetAccAddr(0), "aatom")
+			balanceAfterRefund := suite.network.App.BankKeeper.GetBalance(ctx, suite.keyring.GetAccAddr(0), "aedgens")
 			expectedRefund := new(big.Int).Mul(new(big.Int).SetUint64(6e6/2), suite.network.App.EVMKeeper.GetBaseFee(ctx))
 			suite.Require().Equal(balanceAfterRefund.Sub(initialBalance).Amount, sdkmath.NewIntFromBigInt(expectedRefund))
 		})

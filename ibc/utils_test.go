@@ -146,11 +146,11 @@ func TestGetTransferAmount(t *testing.T) {
 					&transfertypes.FungibleTokenPacketData{
 						Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
 						Receiver: "cosmos1x2w87cvt5mqjncav4lxy8yfreynn273x34qlwy",
-						Amount:   "test",
+						Amount:   "edgen",
 					},
 				),
 			},
-			expAmount: "test",
+			expAmount: "edgen",
 			expError:  true,
 		},
 		{
@@ -220,14 +220,14 @@ func TestGetReceivedCoin(t *testing.T) {
 			dstChannel: chan1,
 			rawDenom: func() string {
 				denom := transfertypes.NewDenom(
-					"uatom",
+					"uedgens",
 					transfertypes.NewHop(port, chan0),
 				)
 				return denom.Path()
 			},
 			rawAmount: "10",
 			expCoin: func() sdk.Coin {
-				expectedDenom := transfertypes.NewDenom("uatom").IBCDenom()
+				expectedDenom := transfertypes.NewDenom("uedgens").IBCDenom()
 				return sdk.NewCoin(expectedDenom, math.NewInt(10))
 			},
 		},
@@ -261,7 +261,7 @@ func TestGetReceivedCoin(t *testing.T) {
 			dstPort:    port,
 			dstChannel: chan0,
 			rawDenom: func() string {
-				denom := transfertypes.NewDenom("uatom",
+				denom := transfertypes.NewDenom("uedgens",
 					transfertypes.NewHop(port, chan1),
 				)
 				return denom.Path()
@@ -269,7 +269,7 @@ func TestGetReceivedCoin(t *testing.T) {
 			rawAmount: "10",
 			expCoin: func() sdk.Coin {
 				expectedDenom := transfertypes.NewDenom(
-					"uatom",
+					"uedgens",
 					transfertypes.NewHop(port, chan0),
 					transfertypes.NewHop(port, chan1),
 				).IBCDenom()
@@ -306,14 +306,14 @@ func TestGetSentCoin(t *testing.T) {
 		expCoin   sdk.Coin
 	}{
 		{
-			"get unwrapped aatom coin",
+			"get unwrapped aedgens coin",
 			baseDenom,
 			"10",
 			sdk.Coin{Denom: baseDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get ibc wrapped aatom coin",
-			"transfer/channel-0/aatom",
+			"get ibc wrapped aedgens coin",
+			"transfer/channel-0/aedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.AatomIbcDenom, Amount: math.NewInt(10)},
 		},
@@ -324,14 +324,14 @@ func TestGetSentCoin(t *testing.T) {
 			sdk.Coin{Denom: precompilestestutil.UosmoIbcDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get ibc wrapped uatom coin",
-			"transfer/channel-1/uatom",
+			"get ibc wrapped uedgens coin",
+			"transfer/channel-1/uedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.UatomIbcDenom, Amount: math.NewInt(10)},
 		},
 		{
-			"get 2x ibc wrapped uatom coin",
-			"transfer/channel-0/transfer/channel-1/uatom",
+			"get 2x ibc wrapped uedgens coin",
+			"transfer/channel-0/transfer/channel-1/uedgens",
 			"10",
 			sdk.Coin{Denom: precompilestestutil.UatomOsmoIbcDenom, Amount: math.NewInt(10)},
 		},
@@ -367,14 +367,14 @@ func TestDeriveDecimalsFromDenom(t *testing.T) {
 		},
 		{
 			name:      "success: micro 'u' prefix",
-			baseDenom: "uatom",
+			baseDenom: "uedgens",
 			expDec:    6,
 			expFail:   false,
 			expErrMsg: "",
 		},
 		{
 			name:      "success: atto 'a' prefix",
-			baseDenom: "aatom",
+			baseDenom: "aedgens",
 			expDec:    18,
 			expFail:   false,
 			expErrMsg: "",
@@ -401,22 +401,22 @@ func TestIsBaseDenomFromSourceChain(t *testing.T) {
 	}{
 		{
 			name:     "one hop",
-			denom:    "transfer/channel-0/uatom",
+			denom:    "transfer/channel-0/uedgens",
 			expected: false,
 		},
 		{
 			name:     "no hop with factory prefix",
-			denom:    "factory/owner/uatom",
+			denom:    "factory/owner/uedgens",
 			expected: false,
 		},
 		{
 			name:     "multi hop",
-			denom:    "transfer/channel-0/transfer/channel-1/uatom",
+			denom:    "transfer/channel-0/transfer/channel-1/uedgens",
 			expected: false,
 		},
 		{
 			name:     "no hop",
-			denom:    "uatom",
+			denom:    "uedgens",
 			expected: true,
 		},
 	}

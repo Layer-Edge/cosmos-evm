@@ -16,7 +16,7 @@ import (
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 )
 
-var DefaultFee = sdk.NewCoin(constants.ExampleAttoDenom, sdkmath.NewInt(1e16)) // 0.01 AATOM
+var DefaultFee = sdk.NewCoin(constants.ExampleAttoDenom, sdkmath.NewInt(1e16)) // 0.01 AEDGENS
 
 // CosmosTxArgs contains the params to create a cosmos tx
 type CosmosTxArgs struct {

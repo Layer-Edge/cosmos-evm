@@ -8,19 +8,19 @@ import (
 )
 
 var (
-	// WATOMJSON are the compiled bytes of the WATOMContract
+	// WEDGENSJSON are the compiled bytes of the WEDGENSContract
 	//
-	//go:embed solidity/WATOM.json
-	WATOMJSON []byte
+	//go:embed solidity/WEDGENS.json
+	WEDGENSJSON []byte
 
-	// WATOMContract is the compiled watom contract
-	WATOMContract evmtypes.CompiledContract
+	// WEDGENSContract is the compiled wedgens contract
+	WEDGENSContract evmtypes.CompiledContract
 )
 
 func init() {
 	var err error
-	if WATOMContract, err = contractutils.ConvertHardhatBytesToCompiledContract(
-		WATOMJSON,
+	if WEDGENSContract, err = contractutils.ConvertHardhatBytesToCompiledContract(
+		WEDGENSJSON,
 	); err != nil {
 		panic(err)
 	}

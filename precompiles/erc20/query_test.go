@@ -26,22 +26,22 @@ var (
 	// validDenom is a denomination with a valid IBC voucher name
 	validDenom = types.NewDenom("uosmo", types.NewHop(types.PortID, "channel-0"))
 	// validAttoDenom is a denomination with a valid IBC voucher name and 18 decimals
-	validAttoDenom = types.NewDenom("aatom", types.NewHop(types.PortID, "channel-0"))
+	validAttoDenom = types.NewDenom("aedgens", types.NewHop(types.PortID, "channel-0"))
 	// validDenomNoMicroAtto is a denomination with a valid IBC voucher name but no micro or atto prefix
-	validDenomNoMicroAtto = types.NewDenom("matom", types.NewHop(types.PortID, "channel-0"))
+	validDenomNoMicroAtto = types.NewDenom("medgens", types.NewHop(types.PortID, "channel-0"))
 
 	// --------------------
 	// Variables for coin with valid metadata
 	//
 
 	// validMetadataDenom is the base denomination of the coin with valid metadata
-	validMetadataDenom = "uatom"
+	validMetadataDenom = "uedgens"
 	// validMetadataDisplay is the denomination displayed of the coin with valid metadata
-	validMetadataDisplay = "atom"
+	validMetadataDisplay = "edgens"
 	// validMetadataName is the name of the coin with valid metadata
-	validMetadataName = "Atom"
+	validMetadataName = "Edgens"
 	// validMetadataSymbol is the symbol of the coin with valid metadata
-	validMetadataSymbol = "ATOM"
+	validMetadataSymbol = "EDGENS"
 
 	// validMetadata is the metadata of the coin with valid metadata
 	validMetadata = banktypes.Metadata{
@@ -147,8 +147,8 @@ func (s *PrecompileTestSuite) TestNameSymbol() {
 				app.TransferKeeper.SetDenom(ctx, validDenomNoMicroAtto)
 			},
 			expPass:   true,
-			expName:   "Atom",
-			expSymbol: "ATOM",
+			expName:   "Edgens",
+			expSymbol: "EDGENS",
 		},
 		{
 			name:  "pass - valid denom with metadata",
@@ -162,8 +162,8 @@ func (s *PrecompileTestSuite) TestNameSymbol() {
 				app.BankKeeper.SetDenomMetaData(ctx, validMetadata)
 			},
 			expPass:   true,
-			expName:   "Atom",
-			expSymbol: "ATOM",
+			expName:   "Edgens",
+			expSymbol: "EDGENS",
 		},
 		{
 			name:  "pass - valid ibc denom without metadata",

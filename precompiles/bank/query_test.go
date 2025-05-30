@@ -83,7 +83,7 @@ func (s *PrecompileTestSuite) TestBalances() {
 			},
 		},
 		{
-			"pass - ATOM and XMPL balances present - mint extra XMPL",
+			"pass - EDGENS and XMPL balances present - mint extra XMPL",
 			func() []interface{} {
 				ctx = s.mintAndSendXMPLCoin(ctx, s.keyring.GetAccAddr(0), math.NewInt(1e18))
 				return []interface{}{
@@ -145,7 +145,7 @@ func (s *PrecompileTestSuite) TestTotalSupply() {
 		expSupply func(cosmosEVMAddr, xmplAddr common.Address) []bank.Balance
 	}{
 		{
-			"pass - ATOM and XMPL total supply",
+			"pass - EDGENS and XMPL total supply",
 			func() {
 				ctx = s.mintAndSendXMPLCoin(ctx, s.keyring.GetAccAddr(0), math.NewInt(1e18))
 			},
@@ -244,7 +244,7 @@ func (s *PrecompileTestSuite) TestSupplyOf() {
 		},
 
 		{
-			"pass - ATOM total supply",
+			"pass - EDGENS total supply",
 			func() []interface{} {
 				return []interface{}{
 					s.cosmosEVMAddr,

@@ -662,7 +662,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -692,7 +692,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -747,7 +747,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -777,7 +777,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -807,7 +807,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -837,7 +837,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -871,7 +871,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),
@@ -901,7 +901,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 					addr[:],
 					sdk.NewCoins(
 						sdk.NewCoin(
-							"uatomz",
+							"uedgensz",
 							sdkmath.NewInt(1),
 						),
 					),

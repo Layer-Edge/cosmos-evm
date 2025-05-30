@@ -18,9 +18,9 @@ var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
 		Decimals:      evmtypes.EighteenDecimals,
 	},
 	CosmosChainID: {
-		Denom:         "atest",
-		ExtendedDenom: "atest",
-		DisplayDenom:  "test",
+		Denom:         "aedgen",
+		ExtendedDenom: "aedgen",
+		DisplayDenom:  "edgen",
 		Decimals:      evmtypes.EighteenDecimals,
 	},
 }
@@ -41,13 +41,13 @@ const (
 	// Bech32PrefixConsPub defines the Bech32 prefix of a consensus node public key.
 	Bech32PrefixConsPub = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixConsensus + sdk.PrefixPublic
 	// DisplayDenom defines the denomination displayed to users in client applications.
-	DisplayDenom = "atom"
+	DisplayDenom = "edgens"
 	// BaseDenom defines to the default denomination used in the Cosmos EVM example chain.
-	BaseDenom = "aatom"
+	BaseDenom = "aedgens"
 	// BaseDenomUnit defines the precision of the base denomination.
 	BaseDenomUnit = 18
 	// EVMChainID defines the EIP-155 replay-protection chain id for the current ethereum chain config.
-	EVMChainID = 262144
+	EVMChainID = 4207
 )
 
 // SetBech32Prefixes sets the global prefixes to be used when serializing addresses and public keys to Bech32 strings.

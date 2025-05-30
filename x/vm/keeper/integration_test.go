@@ -34,8 +34,8 @@ type IntegrationTestSuite struct {
 	keyring     testkeyring.Keyring
 }
 
-// This test suite is meant to test the EVM module in the context of the ATOM.
-// It uses the integration test framework to spin up a local ATOM network and
+// This test suite is meant to test the EVM module in the context of the EDGENS.
+// It uses the integration test framework to spin up a local EDGENS network and
 // perform transactions on it.
 // The test suite focus on testing how the MsgEthereumTx message is handled under the
 // different params configuration of the module while testing the different Tx types

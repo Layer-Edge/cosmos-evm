@@ -37,7 +37,7 @@ const (
 
 // Name returns the name of the token. If the token metadata is registered in the
 // bank module, it returns its name. Otherwise, it returns the base denomination of
-// the token capitalized (e.g. uatom -> Atom).
+// the token capitalized (e.g. uedgens -> Edgens).
 func (p Precompile) Name(
 	ctx sdk.Context,
 	_ *vm.Contract,
@@ -61,7 +61,7 @@ func (p Precompile) Name(
 
 // Symbol returns the symbol of the token. If the token metadata is registered in the
 // bank module, it returns its symbol. Otherwise, it returns the base denomination of
-// the token in uppercase (e.g. uatom -> ATOM).
+// the token in uppercase (e.g. uedgens -> EDGENS).
 func (p Precompile) Symbol(
 	ctx sdk.Context,
 	_ *vm.Contract,
@@ -85,7 +85,7 @@ func (p Precompile) Symbol(
 
 // Decimals returns the decimals places of the token. If the token metadata is registered in the
 // bank module, it returns the display denomination exponent. Otherwise, it infers the decimal
-// value from the first character of the base denomination (e.g. uatom -> 6).
+// value from the first character of the base denomination (e.g. uedgens -> 6).
 func (p Precompile) Decimals(
 	ctx sdk.Context,
 	_ *vm.Contract,

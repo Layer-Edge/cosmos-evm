@@ -172,7 +172,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoinsFromModuleToAccount_Matchi
 			"insufficient balance - extended",
 			senderModuleName,
 			sdk.AccAddress([]byte{2}),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still test insufficient bal errors with "aedgens" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -248,7 +248,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 		{
 			"insufficient empty balance - extended",
 			cs(),
-			// We can still test insufficient bal errors with "aatom" since
+			// We can still test insufficient bal errors with "aedgens" since
 			// we also expect it to not exist in x/bank
 			cs(c(types.ExtendedCoinDenom(), 1000)),
 			fmt.Sprintf("spendable balance 0%s is smaller than 1000%s: insufficient funds",
@@ -261,8 +261,8 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_MatchingErrors() {
 			fmt.Sprintf("spendable balance 100%s is smaller than 1000%s: insufficient funds",
 				types.IntegerCoinDenom(), types.IntegerCoinDenom()),
 		},
-		// non-empty aatom transfer error is tested in SendCoins, not here since
-		// x/bank doesn't hold aatom
+		// non-empty aedgens transfer error is tested in SendCoins, not here since
+		// x/bank doesn't hold aedgens
 	}
 
 	for _, tt := range tests {
@@ -334,17 +334,17 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 			"",
 		},
 		{
-			"aatom send - 1aatom to 0 balance",
+			"aedgens send - 1aedgens to 0 balance",
 			// Starting balances
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(5))),
 			cs(),
 			// Send amount
-			cs(c(types.ExtendedCoinDenom(), 1)), // aatom
+			cs(c(types.ExtendedCoinDenom(), 1)), // aedgens
 			"",
 		},
 		{
 			"sender borrow from integer",
-			// 1uatom, 0 fractional
+			// 1uedgens, 0 fractional
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(),
 			// Send 1 with 0 fractional balance
@@ -353,7 +353,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 		},
 		{
 			"sender borrow from integer - max fractional amount",
-			// 1uatom, 0 fractional
+			// 1uedgens, 0 fractional
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(),
 			// Max fractional amount
@@ -406,7 +406,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 			recipientBalAfter := suite.GetAllBalances(recipient)
 
 			// Convert send amount coins to extended coins. i.e. if send coins
-			// includes uatom, convert it so that its the equivalent aatom
+			// includes uedgens, convert it so that its the equivalent aedgens
 			// amount so its easier to compare. Compare extended coins only.
 			sendAmountFullExtended := tt.giveAmt
 			sendAmountInteger := tt.giveAmt.AmountOf(types.IntegerCoinDenom())
@@ -432,14 +432,14 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins() {
 
 			// Check events
 
-			// FULL aatom equivalent, including uatom only/mixed sends
+			// FULL aedgens equivalent, including uedgens only/mixed sends
 			sendExtendedAmount := sdk.NewCoin(
 				types.ExtendedCoinDenom(),
 				sendAmountFullExtended.AmountOf(types.ExtendedCoinDenom()),
 			)
 			extCoins := sdk.NewCoins(sendExtendedAmount)
 
-			// No extra events if not sending aatom
+			// No extra events if not sending aedgens
 			if sendExtendedAmount.IsZero() {
 				return
 			}
@@ -565,7 +565,7 @@ func (suite *KeeperIntegrationTestSuite) TestSendCoins_Matrix() {
 					recipientBalAfter := suite.GetAllBalances(recipient)
 
 					// Convert send amount coins to extended coins. i.e. if send coins
-					// includes uatom, convert it so that its the equivalent aatom
+					// includes uedgens, convert it so that its the equivalent aedgens
 					// amount so its easier to compare. Compare extended coins only.
 
 					suite.Require().Equal(
