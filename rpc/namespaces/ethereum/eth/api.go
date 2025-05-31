@@ -2,6 +2,8 @@ package eth
 
 import (
 	"context"
+	"fmt"
+	"math"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -74,7 +76,7 @@ type EthereumAPI interface {
 	ProtocolVersion() hexutil.Uint
 	GasPrice() (*hexutil.Big, error)
 	EstimateGas(args evmtypes.TransactionArgs, blockNrOptional *rpctypes.BlockNumber) (hexutil.Uint64, error)
-	FeeHistory(blockCount uint64, lastBlock rpc.BlockNumber, rewardPercentiles []float64) (*rpctypes.FeeHistoryResult, error)
+	FeeHistory(blockCount interface{}, lastBlock rpc.BlockNumber, rewardPercentiles []float64) (*rpctypes.FeeHistoryResult, error)
 	MaxPriorityFeePerGas() (*hexutil.Big, error)
 	ChainId() (*hexutil.Big, error)
 
@@ -311,12 +313,38 @@ func (e *PublicAPI) EstimateGas(args evmtypes.TransactionArgs, blockNrOptional *
 	return e.backend.EstimateGas(args, blockNrOptional)
 }
 
-func (e *PublicAPI) FeeHistory(blockCount uint64,
+func (e *PublicAPI) FeeHistory(blockCount interface{},
 	lastBlock rpc.BlockNumber,
 	rewardPercentiles []float64,
 ) (*rpctypes.FeeHistoryResult, error) {
 	e.logger.Debug("eth_feeHistory")
-	return e.backend.FeeHistory(blockCount, lastBlock, rewardPercentiles)
+
+	// Convert blockCount to uint64
+	var blockCountUint uint64
+	switch v := blockCount.(type) {
+	case string:
+		// Handle hex string
+		blockCountBig, err := hexutil.DecodeBig(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid blockCount: %v", err)
+		}
+		if !blockCountBig.IsUint64() {
+			return nil, fmt.Errorf("blockCount too large")
+		}
+		blockCountUint = blockCountBig.Uint64()
+	case float64:
+		// Handle number
+		if v < 0 || v > float64(math.MaxUint64) {
+			return nil, fmt.Errorf("invalid blockCount")
+		}
+		blockCountUint = uint64(v)
+	case uint64:
+		blockCountUint = v
+	default:
+		return nil, fmt.Errorf("invalid blockCount type: %T", blockCount)
+	}
+
+	return e.backend.FeeHistory(blockCountUint, lastBlock, rewardPercentiles)
 }
 
 // MaxPriorityFeePerGas returns a suggestion for a gas tip cap for dynamic fee transactions.
