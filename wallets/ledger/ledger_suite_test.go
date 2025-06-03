@@ -77,14 +77,14 @@ func (suite *LedgerTestSuite) getMockTxAmino() []byte {
 			"account_number": "0",
 			"chain_id":"%s",
 			"fee":{
-				"amount":[{"amount":"150","denom":"atom"}],
+				"amount":[{"amount":"150","denom":"edgens"}],
 				"gas":"20000"
 			},
 			"memo":"memo",
 			"msgs":[{
 				"type":"cosmos-sdk/MsgSend",
 				"value":{
-					"amount":[{"amount":"150","denom":"atom"}],
+					"amount":[{"amount":"150","denom":"edgens"}],
 					"from_address":"cosmos10jmp6sgh4cc6zt3e8gw05wavvejgr5pwsjskvv",
 					"to_address":"cosmos1fx944mzagwdhx0wz7k9tfztc8g3lkfk6rrgv6l"
 				}
@@ -106,7 +106,7 @@ func (suite *LedgerTestSuite) getMockTxProtobuf() []byte {
 		sdk.MustAccAddressFromBech32("cosmos10t8ca2w09ykd6ph0agdz5stvgau47whhaggl9a"),
 		[]sdk.Coin{
 			{
-				Denom:  "atom",
+				Denom:  "edgens",
 				Amount: math.NewIntFromUint64(150),
 			},
 		},
@@ -141,7 +141,7 @@ func (suite *LedgerTestSuite) getMockTxProtobuf() []byte {
 		Sequence: 6,
 	}
 
-	fee := txTypes.Fee{Amount: sdk.NewCoins(sdk.NewInt64Coin("atom", 150)), GasLimit: 20000}
+	fee := txTypes.Fee{Amount: sdk.NewCoins(sdk.NewInt64Coin("edgens", 150)), GasLimit: 20000}
 
 	authInfo := &txTypes.AuthInfo{
 		SignerInfos: []*txTypes.SignerInfo{signerInfo},

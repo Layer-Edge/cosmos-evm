@@ -150,7 +150,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins() {
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor())),
 			cs(ci(types.ExtendedCoinDenom(), types.ConversionFactor().MulRaw(2))),
 			cs(),
-			// Returns correct error with aatom balance (rewrites Bank BurnCoins err)
+			// Returns correct error with aedgens balance (rewrites Bank BurnCoins err)
 			fmt.Sprintf("spendable balance 1000000000000%s is smaller than 2000000000000%s: insufficient funds",
 				types.ExtendedCoinDenom(), types.ExtendedCoinDenom()),
 		},
@@ -190,7 +190,7 @@ func (suite *KeeperIntegrationTestSuite) TestBurnCoins() {
 			// -------------------------------------------------------------
 			// Check FULL balances
 			// x/bank balances + x/precisebank balance
-			// Exclude "uatom" as x/precisebank balance will include it
+			// Exclude "uedgens" as x/precisebank balance will include it
 			afterBalance := suite.GetAllBalances(recipientAddr)
 
 			suite.Require().Equal(

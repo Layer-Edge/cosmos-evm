@@ -136,7 +136,7 @@ func TestEvmosCoinDenom(t *testing.T) {
 	}{
 		{
 			"valid denom - native coin",
-			"aatom",
+			"aedgens",
 			false,
 		},
 		{
@@ -261,7 +261,7 @@ func TestGetIBCDenomAddress(t *testing.T) {
 	}{
 		{
 			"",
-			"test",
+			edgen,
 			true,
 			"does not have 'ibc/' prefix",
 		},

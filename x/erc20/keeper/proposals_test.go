@@ -39,7 +39,7 @@ const (
 )
 
 var metadataIbc = banktypes.Metadata{
-	Description: "ATOM IBC voucher (channel 14)",
+	Description: "EDGENS IBC voucher (channel 14)",
 	Base:        ibcBase,
 	// NOTE: Denom units MUST be increasing
 	DenomUnits: []*banktypes.DenomUnit{
@@ -48,7 +48,7 @@ var metadataIbc = banktypes.Metadata{
 			Exponent: 0,
 		},
 	},
-	Name:    "ATOM channel-14",
+	Name:    "EDGENS channel-14",
 	Symbol:  "ibcATOM-14",
 	Display: ibcBase,
 }

@@ -237,7 +237,7 @@ func TestExportGenesis(t *testing.T) {
 	require.NoError(t, ts.network.NextBlock(), "failed to advance block")
 
 	genState := vm.ExportGenesis(ts.network.GetContext(), ts.network.App.EVMKeeper)
-	require.Len(t, genState.Accounts, 3, "expected 3 smart contracts in the exported genesis") // NOTE: 2 deployed above + 1 for the aatom denomination ERC-20 pair
+	require.Len(t, genState.Accounts, 3, "expected 3 smart contracts in the exported genesis") // NOTE: 2 deployed above + 1 for the aedgens denomination ERC-20 pair
 
 	genAddresses := make([]string, 0, len(genState.Accounts))
 	for _, acc := range genState.Accounts {
@@ -245,5 +245,5 @@ func TestExportGenesis(t *testing.T) {
 	}
 	require.Contains(t, genAddresses, contractAddr.Hex(), "expected contract 1 address in exported genesis")
 	require.Contains(t, genAddresses, contractAddr2.Hex(), "expected contract 2 address in exported genesis")
-	require.Contains(t, genAddresses, testconstants.WEVMOSContractMainnet, "expected mainnet aatom contract address in exported genesis")
+	require.Contains(t, genAddresses, testconstants.WEVMOSContractMainnet, "expected mainnet aedgens contract address in exported genesis")
 }

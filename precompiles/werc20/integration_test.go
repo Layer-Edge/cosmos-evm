@@ -580,7 +580,7 @@ var _ = When("a user interact with the WEVMOS precompiled contract", func() {
 				var symbol string
 				err = is.precompile.UnpackIntoInterface(&symbol, erc20.SymbolMethod, ethRes.Ret)
 				Expect(err).ToNot(HaveOccurred(), "failed to unpack result")
-				Expect(symbol).To(ContainSubstring("ATOM"), "expected different symbol")
+				Expect(symbol).To(ContainSubstring("EDGENS"), "expected different symbol")
 			})
 
 			It("should return the decimals", func() {

@@ -13,7 +13,7 @@ type OpCodeHooks interface {
 	AddCreateHooks(hooks ...CreateHook)
 }
 
-// DefaultOpCodesHooks is the default implementation of OpCodeHooks for ATOM chain
+// DefaultOpCodesHooks is the default implementation of OpCodeHooks for EDGENS chain
 // The hooks are used to enforce access control policies on EVM operations.
 // They are ran BEFORE the respective opcode execution every time they are called.
 type DefaultOpCodesHooks struct {

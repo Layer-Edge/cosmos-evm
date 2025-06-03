@@ -4,18 +4,18 @@
       "description": "The native staking and governance token of the Cosmos EVM chain",
       "denom_units": [
         {
-          "denom": "aatom",
+          "denom": "aedgens",
           "exponent": 0
         },
         {
-          "denom": "atom",
+          "denom": "edgens",
           "exponent": 18
         }
       ],
-      "base": "aatom",
-      "display": "aatom",
-      "name": "aatom",
-      "symbol": "ATOM"
+      "base": "aedgens",
+      "display": "aedgens",
+      "name": "aedgens",
+      "symbol": "EDGENS"
     }
   ]
 }

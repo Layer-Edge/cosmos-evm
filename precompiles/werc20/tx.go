@@ -65,7 +65,7 @@ func (p Precompile) Deposit(
 
 // Withdraw is a no-op and mock function that provides the same interface as the
 // WETH contract to support equality between the native coin and its wrapped
-// ERC-20 (e.g. ATOM and WEVMOS).
+// ERC-20 (e.g. EDGENS and WEVMOS).
 func (p Precompile) Withdraw(ctx sdk.Context, contract *vm.Contract, stateDB vm.StateDB, args []interface{}) ([]byte, error) {
 	amount, ok := args[0].(*big.Int)
 	if !ok {
